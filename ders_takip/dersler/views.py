@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django import forms
-from .models import Ders_Kayıt
+from .models import Ders
 from .forms import DersForm
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -45,8 +45,3 @@ def kayit(request):
         form = DersForm()
     return render(request, 'dersler/kayit.html', {'form': form})
 
-def kaydedilenler(request):
-    a_dersleri = Ders_Kayıt.objects.filter(kisi='A')  # A Kişisinin Dersleri
-    b_dersleri = Ders_Kayıt.objects.filter(kisi='B')  # B Kişisinin Dersleri
-
-    return render(request, 'dersler/kaydedilenler.html', {"a_dersleri": a_dersleri, "b_dersleri": b_dersleri})
