@@ -120,22 +120,19 @@
 <table border="1">
     <thead>
         <tr>
-            <th>TC</th>
             <th><a href="?sort_by=name&sort_order={% if sort_by == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Ad</a></th>
             <th><a href="?sort_by=surname&sort_order={% if sort_by == 'surname' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Soyad</a></th>
-            <th>Adres</th>
             <th>Telefon</th>
             <th>Email</th>
-            <th><a href="?sort_by=created_at&sort_order={% if sort_by == 'created_at' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Oluşturulma Tarihi</a></th>
         </tr>
     </thead>
     <tbody>
         {% for teacher in page_obj %}
-            <tr onclick="window.location.href='/client/{{ client.id }}';">
-                <td>{{ client.name }}</td>
-                <td>{{ client.surname }}</td>
-                <td>{{ client.phone }}</td>
-                <td>{{ client.email }}</td>
+            <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
+                <td>{{ teacher.ad }}</td>
+                <td>{{ teacher.soyad }}</td>
+                <td>{{ teacher.telefon }}</td>
+                <td>{{ teacher.email }}</td>
             </tr>
         {% empty %}
             <tr>
