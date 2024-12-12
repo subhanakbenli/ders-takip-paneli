@@ -1,0 +1,2 @@
+kayıt sayfası ve kaydedilenler sayfası oluşturuldu.
+kayıt sayfasına girilen bilgiler kaydedilenler sayfasına otomatik olarak aktarılacak

@@ -1,5 +1,4 @@
 from django.db import models
-from django.db import models
 from teacher.models import Teacher
 
 class Ders(models.Model):
@@ -18,4 +17,5 @@ class DersBelgesi(models.Model):
     belge = models.FileField(upload_to="ders_belgeleri/", verbose_name="Belge")
     def __str__(self):
         return f"{self.kategori} + {self.belge_adi}"
+
 
