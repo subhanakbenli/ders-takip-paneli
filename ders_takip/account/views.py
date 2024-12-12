@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import login_required
 def login_request(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -69,6 +69,7 @@ def register_request(request):
 
     return render(request, "account/register.html")
 
+@login_required
 def logout_request(request):
     logout(request)
     return redirect("home")
