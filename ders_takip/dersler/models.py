@@ -10,6 +10,8 @@ class Ders(models.Model):
     def __str__(self):
         return self.ders_adi
     
+        
+
 class DersBelgesi(models.Model):
     ders = models.ForeignKey(Ders, on_delete=models.CASCADE)
     kategori = models.CharField(max_length=255, verbose_name="Kategori")
