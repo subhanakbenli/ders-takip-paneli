@@ -7,6 +7,7 @@ class Ders(models.Model):
     ders_adi = models.CharField(max_length=255, verbose_name="Ders Adı")
     durum = models.CharField(max_length=255, verbose_name="Durum")
     aciklama = models.TextField(verbose_name="Açıklama")
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.ders_adi
     
@@ -17,12 +18,4 @@ class DersBelgesi(models.Model):
     belge = models.FileField(upload_to="ders_belgeleri/", verbose_name="Belge")
     def __str__(self):
         return f"{self.kategori} + {self.belge_adi}"
-
-class Ders_Kayıt(models.Model):
-    ders_adi = models.CharField(max_length=100)  # Ders adı
-    yukleme_miktari = models.IntegerField(default=0)  # Yükleme miktarı
-    tarih = models.DateTimeField(auto_now_add=True)  # Kayıt tarihi
-
-    def __str__(self):
-        return self.ders_adi
 
