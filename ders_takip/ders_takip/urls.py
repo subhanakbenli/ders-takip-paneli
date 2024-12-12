@@ -21,9 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pages.urls')),
     path('account/', include('account.urls')),
-<<<<<<< HEAD
     path('dersler/', include('dersler.urls')),
-=======
     path('teacher/', include('teacher.urls')),
->>>>>>> 6db0558df4138ff7fc6725b44abf361e9d43ae9f
 ]
