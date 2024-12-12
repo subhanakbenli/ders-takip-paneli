@@ -27,3 +27,11 @@ class DersBelgesi(models.Model):
     def __str__(self):
         return f"{self.kategori} + {self.belge_adi}"
 
+class Ders_Kayıt(models.Model):
+    ders_adi = models.CharField(max_length=100)  # Ders adı
+    yukleme_miktari = models.IntegerField(default=0)  # Yükleme miktarı
+    tarih = models.DateTimeField(auto_now_add=True)  # Kayıt tarihi
+
+    def __str__(self):
+        return self.ders_adi
+
