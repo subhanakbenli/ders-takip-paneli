@@ -1,8 +1,8 @@
 Görevler 1 :
     Login işlemleri kontrol edileccek yetkilendirme işlemleri ile yetkili kullanıcı decaratörü oluşturulacak
-    Gerekli tablolar oluşturulacak
     Navbar içine gerekli sayafalara bağlantılar eklenecek
     Dersi veren kişilerin verdikleri dersleri göstereceğimiz bir sayfa
+    Gerekli tablolar oluşturulacak
     
     DErs Kayıt Sayfası Yapıalcak burada zorunlu ve opsiyonel kısımlar var bunu unutmayalım
     Kaydedilen Dersleri listeleyeceğimiz bir sayfa olacak 

@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="{% static 'account/css/style.css' %}">
 {% endblock %}
 
-{% block title%} Register {% endblock %}
+{% block title%} Üye Ekle {% endblock %}
 
 {% block content %}
 
 <div class="container mt-3">
    <div class="col">
-        <h1>Register</h1>
+        <h1>Üye Ekle</h1>
         <hr>
 
         <form method="POST">
@@ -22,7 +22,7 @@
                 </div>
             {% endif %}
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
+                <label for="username" class="form-label">Kullanıcı Adı</label>
                 <input type="text" class="form-control" name="username" value="{{ username }}">
             </div>
             <div class="mb-3">
@@ -31,25 +31,35 @@
             </div>
             <div class="row mb-3">
                 <div class="col">
-                     <label for="firstname" class="form-label">Firstname</label>
+                     <label for="firstname" class="form-label">İsim</label>
                     <input type="text" class="form-control" name="firstname" value="{{ firstname }}">
                 </div>
                 <div class="col">
-                    <label for="lastname" class="form-label">Lastname</label>
+                    <label for="lastname" class="form-label">Soyisim</label>
                 <input type="text" class="form-control" name="lastname" value="{{ lastname }}"> 
                 </div>
             </div>
-
+            <div class="mb-3">
+                <select class="form-select" id="group" name="group" required>
+                    <option value="" selected disabled>Grup Seçiniz</option>
+                    {% for group in groups %}
+                    <option value="{{ group }}"{% if group == selected_group %}selected{% endif %}>
+                        {{ group }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="row mb-3">
                 <div class="col">
-                     <label for="password" class="form-label">Password</label>
+                     <label for="password" class="form-label">Şifre</label>
                     <input type="password" class="form-control" name="password">    
                 </div>
                 <div class="col">
-                    <label for="repassword" class="form-label">Re-Password</label>
+                    <label for="repassword" class="form-label">Şifre Tekrarı</label>
                     <input type="password" class="form-control" name="repassword">
                 </div>
             </div>
+            
             
           
             <div class="mb-3"></div>

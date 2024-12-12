@@ -19,9 +19,21 @@
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/notifications"><i class="fas fa-bell"></i></a> <!-- Font Awesome çan simgesi -->
                 </li>
-                <li class="nav-item logout-item">
-                    <a class="nav-link btn btn-danger text-white" href="{% url 'logout' %}">Çıkış</a>
-                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item logout-item">
+                        <a class="nav-link btn btn-danger text-white" href="{% url 'register' %}">Üye Ekle</a>
+                    </li>
+                    <li class="nav-item logout-item">
+                        <a class="nav-link btn btn-danger text-white" href="{% url 'logout' %}">Çıkış</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item logout-item">
+                        <a class="nav-link btn btn-danger text-white" href="{% url 'login' %}">Giriş</a>
+                    </li>
+                    
+                {% endif %}
+
+                
             </ul>
         </div>
     </div>
