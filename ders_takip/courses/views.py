@@ -45,9 +45,9 @@ def add_course(request):
         for index, baslik in enumerate(basliklar, start=1):
             dersler.append({'id': index, 'baslik': baslik})
 
-    return render(request, 'dersler/add_course.html', {'dersler': dersler})
+    return render(request, 'courses/add_course.html', {'dersler': dersler})
 
-def get_teacher_with_courses_and_documents():
+def get_teachers_with_courses_and_documents():
     teachers_data = []
 
     # Get all teachers
@@ -89,6 +89,10 @@ def get_teacher_with_courses_and_documents():
         })
 
     return teachers_data
+
+def show_teacher_with_courses_and_documents(request):
+    teachers_data = get_teachers_with_courses_and_documents()
+    return render(request, 'courses/teachers_with_courses.html', {'teachers': teachers_data})
 
 def get_course_with_documents(course):
     courses_data = []
