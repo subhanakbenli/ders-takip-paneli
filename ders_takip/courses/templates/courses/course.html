@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}
+Ders Detayı
+{% endblock title %}
+
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .container {
+        max-width: 100%;
+        margin: auto;
+        padding: 0 15px;
+    }
+    .hover-highlight tbody tr {
+        background-color: white; /* Alternatif satır rengi kaldırıldı */
+        transition: background-color 0.3s ease;
+    }
+    .hover-highlight tbody tr:hover {
+        background-color: #d1ecf1; /* Belirgin hover rengi */
+        cursor: pointer;
+    }
+    .card-header, .table thead th {
+        background-color: #007bff;
+        color: white;
+    }
+    .card-footer {
+        background-color: #f8f9fa;
+    }
+    .btn-primary {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .container h1 {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Ders İsmi: {{ course.name }}</h1>
+    
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h4>Ders Bilgileri</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
+                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.decriptiom }}</li>
+            </ul>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered shadow hover-highlight">
+                <thead class="table-light">
+                    <tr>
+                        <th>Ders Adı</th>
+                        <th>Ders Açıklaması</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                        <tr onclick="window.location.href='#';">
+                            <td>{{ course.name }}</td>
+                            <td>{{ course.description }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">Henüz Ders Yok</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% comment %} <div class="card-footer text-center">
+            <a href="{% url 'download_client_docx' client.id %}" class="btn btn-secondary">Word İndir</a>
+            <a href="{% url 'download_client_pdf' client.id %}" class="btn btn-secondary" target="_blank">PDF İndir</a>
+        </div> {% endcomment %}
+
+    </div>
+</div>
+{% endblock content %}

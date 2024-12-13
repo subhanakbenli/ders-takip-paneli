@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 
 
 class Teacher(models.Model):
-    ad = models.CharField(max_length=255, verbose_name="Ad")
-    soyad = models.CharField(max_length=255, verbose_name="Soyad")
-    telefon = models.CharField(max_length=255, verbose_name="Telefon")
-    email = models.EmailField(max_length=255, verbose_name="Email")
-    aciklama = models.TextField(verbose_name="Açıklama")
+    name = models.CharField(max_length=255, verbose_name="name")
+    surname = models.CharField(max_length=255, verbose_name="surname")
+    telephone = models.CharField(max_length=255, verbose_name="telephone", blank=True, null=True)
+    email = models.EmailField(max_length=255, verbose_name="email", blank=True, null=True)
+    description = models.TextField(verbose_name="description", blank=True, null=True)
     def __str__(self):
-        return self.ad + " " + self.soyad
+        return self.name + " " + self.surname

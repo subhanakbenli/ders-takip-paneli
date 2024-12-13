@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import redirect
 from .models import Teacher
-from dersler.models import Ders
+from courses.models import Course
 
 @login_required()
 def add_teacher(request):
@@ -44,7 +44,7 @@ def show_teacher_detail(request, id):
     
     # Sadece giriş yapan kullanıcının kayıtlarını getir
     teacher =Teacher.objects.get(id=id)
-    lessons_for_teacher = Ders.objects.filter(id=id)
+    lessons_for_teacher = Course.objects.filter(id=id)
 
     context = {
         "teacher": teacher,
