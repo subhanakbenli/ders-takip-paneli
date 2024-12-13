@@ -24,6 +24,13 @@ class Kayit(models.Model):
     bolum_adi = models.CharField(max_length=255)
     yukleme_miktari = models.PositiveIntegerField()
     tarih = models.DateTimeField(auto_now_add=True)
+    dersi_veren = models.ForeignKey(
+        'Teacher',  # Öğretmen modeline referans
+        on_delete=models.CASCADE,
+        verbose_name="Dersi Veren Öğretmen",
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.bolum_adi
