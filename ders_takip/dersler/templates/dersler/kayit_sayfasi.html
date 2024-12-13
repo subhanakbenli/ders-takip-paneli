@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kayıt Sayfası</title>
+{% extends "base.html" %}
+
+{% block title %}
+Öğretmen Detayı
+{% endblock title %}
+
+{% block content %}
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -103,7 +104,6 @@
         background-color: #0056b3;
       }
     </style>
-  </head>
   <body>
     <div class="dropdown-container">
       <div class="dropdown">
@@ -300,3 +300,4 @@
     </script>
   </body>
 </html
+{% endblock content %}
