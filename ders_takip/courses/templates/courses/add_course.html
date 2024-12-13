@@ -106,11 +106,11 @@ Ders Kayıt Sayfası
 </style>
 <body>
   <div class="form-group mb-3">
-    <label for="client" class="form-label">Öğretmen</label>
-    <select id="client" name="client" class="form-select" required>
+    <label for="teacher" class="form-label">Öğretmen</label>
+    <select id="teacher" name="teacher" class="form-select" required>
         <option value="">Öğretmen Seçin</option>
         {% for teacher in teachers %}
-            <option value="{{ client.id }}">{{ teacher }}</option>
+            <option value="{{ teacher.id }}">{{ teacher }}</option>
         {% endfor %}
     </select>
   </div>

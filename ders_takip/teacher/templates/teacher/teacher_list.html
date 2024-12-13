@@ -129,9 +129,9 @@
     <tbody>
         {% for teacher in page_obj %}
             <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
-                <td>{{ teacher.ad }}</td>
-                <td>{{ teacher.soyad }}</td>
-                <td>{{ teacher.telefon }}</td>
+                <td>{{ teacher.name }}</td>
+                <td>{{ teacher.surname }}</td>
+                <td>{{ teacher.telephone }}</td>
                 <td>{{ teacher.email }}</td>
             </tr>
         {% empty %}

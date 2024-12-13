@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}
+Öğretmen ve Ders Bilgileri
+{% endblock title %}
+
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .container {
+        max-width: 100%;
+        margin: auto;
+        padding: 0 15px;
+    }
+    .hover-highlight tbody tr {
+        background-color: white;
+        transition: background-color 0.3s ease;
+    }
+    .hover-highlight tbody tr:hover {
+        background-color: #d1ecf1;
+        cursor: pointer;
+    }
+    .card-header, .table thead th {
+        background-color: #007bff;
+        color: white;
+    }
+    .card-footer {
+        background-color: #f8f9fa;
+    }
+    .btn-primary {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .container h1 {
+        font-weight: bold;
+        color: #333;
+    }
+    /* Adjusting the spacing between teacher cards */
+    .teacher-card {
+        margin-bottom: 20px; /* Reduces space between teacher cards */
+        border: 2px solid #007bff; /* Adds a border to distinguish between teachers */
+        border-radius: 10px;
+    }
+    .card-body {
+        padding: 15px; /* Reduces padding inside the cards */
+    }
+    .list-group-item {
+        padding: 10px; /* Makes list items more compact */
+    }
+    .table th, .table td {
+        padding: 8px; /* Makes the table more compact */
+    }
+    .table-responsive {
+        margin-top: 15px;
+    }
+</style>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Öğretmenler ve Dersler</h1>
+    
+    {% for teacher in teachers %}
+        <div class="card shadow-lg teacher-card">
+            <div class="card-header text-center">
+                <h4>{{ teacher.name }} {{ teacher.surname }}</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Telefon:</strong> {{ teacher.telephone }}</li>
+                    <li class="list-group-item"><strong>Email:</strong> {{ teacher.email }}</li>
+                    <li class="list-group-item"><strong>Açıklama:</strong> {{ teacher.description }}</li>
+                </ul>
+                
+                <h5 class="mt-4">Dersler:</h5>
+                {% for course in teacher.courses %}
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-header">
+                            <h5>{{ course.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
+                                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.description }}</li>
+                                <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</li>
+                            </ul>
+
+                            <div class="table-responsive mt-3">
+                                <table class="table table-bordered shadow hover-highlight">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Belge Kategorisi</th>
+                                            <th>Belge Adı</th>
+                                            <th>Belge URL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for document in course.files %}
+                                            <tr>
+                                                <td>{{ document.category }}</td>
+                                                <td>{{ document.belge_adi }}</td>
+                                                <td><a href="{{ document.belge_url }}" target="_blank">Belgeyi Görüntüle</a></td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">Henüz Belge Eklenmemiş</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

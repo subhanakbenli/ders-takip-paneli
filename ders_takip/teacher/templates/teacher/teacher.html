@@ -38,7 +38,7 @@
 </style>
 
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Öğretmen İsmi: {{ teacher.ad }} {{ teacher.soyad }}</h1>
+    <h1 class="text-center mb-4">Öğretmen İsmi: {{ teacher.name }} {{ teacher.surname }}</h1>
     
     <div class="card shadow-lg">
         <div class="card-header text-center">
@@ -46,7 +46,7 @@
         </div>
         <div class="card-body">
             <ul class="list-group">
-                <li class="list-group-item"><strong>Telefon:</strong> {{ teacher.telefon }}</li>
+                <li class="list-group-item"><strong>Telefon:</strong> {{ teacher.telephone }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ teacher.email }}</li>
             </ul>
         </div>
@@ -62,8 +62,8 @@
                 <tbody>
                     {% for ders in ogretmen_dersleri %}
                         <tr onclick="window.location.href='#';">
-                            <td>{{ ders.ad }}</td>
-                            <td>{{ ders.aciklama }}</td>
+                            <td>{{ ders.name }}</td>
+                            <td>{{ ders.description }}</td>
                         </tr>
                     {% empty %}
                         <tr>
