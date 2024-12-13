@@ -9,3 +9,5 @@ def index(request):
 
     login(request, user)
     return render(request, 'base.html')
+def arsiv_view(request):
+    return render(request, 'pages/arsiv.html')
