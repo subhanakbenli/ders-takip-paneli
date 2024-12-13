@@ -41,8 +41,13 @@
         border: 2px solid #007bff; /* Adds a border to distinguish between teachers */
         border-radius: 10px;
     }
+    .course-card, .document-card {
+        border: 2px solid #007bff; /* Adds border to course and document sections */
+        border-radius: 10px;
+        margin-bottom: 10px; /* Reduces space between courses and documents */
+    }
     .card-body {
-        padding: 15px; /* Reduces padding inside the cards */
+        padding: 5px; /* Reduces padding inside the cards */
     }
     .list-group-item {
         padding: 10px; /* Makes list items more compact */
@@ -64,15 +69,9 @@
                 <h4>{{ teacher.name }} {{ teacher.surname }}</h4>
             </div>
             <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Telefon:</strong> {{ teacher.telephone }}</li>
-                    <li class="list-group-item"><strong>Email:</strong> {{ teacher.email }}</li>
-                    <li class="list-group-item"><strong>Açıklama:</strong> {{ teacher.description }}</li>
-                </ul>
-                
                 <h5 class="mt-4">Dersler:</h5>
                 {% for course in teacher.courses %}
-                    <div class="card shadow-sm mb-3">
+                    <div class="card shadow-sm course-card">
                         <div class="card-header">
                             <h5>{{ course.name }}</h5>
                         </div>
@@ -94,7 +93,7 @@
                                     </thead>
                                     <tbody>
                                         {% for document in course.files %}
-                                            <tr>
+                                            <tr class="document-card">
                                                 <td>{{ document.category }}</td>
                                                 <td>{{ document.belge_adi }}</td>
                                                 <td><a href="{{ document.belge_url }}" target="_blank">Belgeyi Görüntüle</a></td>
