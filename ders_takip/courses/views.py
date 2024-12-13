@@ -47,7 +47,7 @@ def add_course(request):
 
     return render(request, 'dersler/add_course.html', {'dersler': dersler})
 
-def get_teachers_with_courses_and_documents():
+def get_teacher_with_courses_and_documents():
     teachers_data = []
 
     # Get all teachers
@@ -55,46 +55,80 @@ def get_teachers_with_courses_and_documents():
 
     for teacher in teachers:
         # Get courses for each teacher
-        courses = Course.objects.filter(dersi_veren=teacher)
+        courses = Course.objects.filter(teacher=teacher)
         
         courses_data = []
         for course in courses:
             # Get documents for each course
-            documents = CourseFile.objects.filter(ders=course)
+            documents = CourseFile.objects.filter(course=course)
 
             documents_data = [
                 {
-                    "kategori": document.kategori,
-                    "belge_adi": document.belge_adi,
-                    "belge_url": document.belge.url
+                    "category": document.category,
+                    "belge_adi": document.name,
+                    "belge_url": document.file.url
                 }
                 for document in documents
             ]
 
             courses_data.append({
-                "ders_adi": course.ders_adi,
-                "durum": course.durum,
-                "aciklama": course.aciklama,
+                "name": course.name,
+                "statu": course.statu,
+                "description": course.description,
                 "created_at": course.created_at,
-                "belgeler": documents_data
+                "files": documents_data
             })
 
         teachers_data.append({
-            "ad": teacher.ad,
-            "soyad": teacher.soyad,
-            "telefon": teacher.telefon,
+            "name": teacher.name,
+            "surname": teacher.surname,
+            "telephone": teacher.telephone,
             "email": teacher.email,
-            "aciklama": teacher.aciklama,
-            "dersler": courses_data
+            "description": teacher.description,
+            "courses": courses_data
         })
 
     return teachers_data
+
+def get_course_with_documents(course):
+    courses_data = []
+
+    # Get all courses
+    # Get documents for each course
+    documents = CourseFile.objects.filter(course=course)
+
+    documents_data = [
+        {
+            "category": document.category,
+            "belge_adi": document.name,
+            "belge_url": document.file.url
+        }
+        for document in documents
+    ]
+
+    courses_data.append({
+        "name": course.name,
+        "statu": course.statu,
+        "description": course.description,
+        "created_at": course.created_at,
+        "files": documents_data
+    })
+
+    return courses_data
+
+def show_course_detail(request, id):
+    course = Course.objects.get(id=id)
+    course_data = get_course_with_documents(course)
+
+    if not course_data:
+        return redirect('show_courses_list')
+
+    return render(request, 'courses/course_detail.html', {'course': course_data})
 
 def show_courses_list(request):
     # ders ekle
     dersi_veren = Teacher.objects.all().first()
     Course.objects.create(
-            name="Matematik",
             name="Matematik 2.sınıf",
             statu="Aktif",
             teacher=dersi_veren,
@@ -118,6 +152,6 @@ def show_courses_list(request):
         'sort_order': sort_order,
         'sort_by': sort_by,
     }
-    return render(request, "dersler/courses_list.html", context)
+    return render(request, "courses/courses_list.html", context)
 
 

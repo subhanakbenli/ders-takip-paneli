@@ -13,11 +13,11 @@ Ders Detayı
         padding: 0 15px;
     }
     .hover-highlight tbody tr {
-        background-color: white; /* Alternatif satır rengi kaldırıldı */
+        background-color: white;
         transition: background-color 0.3s ease;
     }
     .hover-highlight tbody tr:hover {
-        background-color: #d1ecf1; /* Belirgin hover rengi */
+        background-color: #d1ecf1;
         cursor: pointer;
     }
     .card-header, .table thead th {
@@ -38,7 +38,7 @@ Ders Detayı
 </style>
 
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Ders İsmi: {{ course.name }}</h1>
+    <h1 class="text-center mb-4">Ders İsmi: {{ course.0.name }}</h1>
     
     <div class="card shadow-lg">
         <div class="card-header text-center">
@@ -46,8 +46,9 @@ Ders Detayı
         </div>
         <div class="card-body">
             <ul class="list-group">
-                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
-                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.decriptiom }}</li>
+                <li class="list-group-item"><strong>Durum:</strong> {{ course.0.statu }}</li>
+                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.0.description }}</li>
+                <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.0.created_at }}</li>
             </ul>
         </div>
 
@@ -55,30 +56,26 @@ Ders Detayı
             <table class="table table-bordered shadow hover-highlight">
                 <thead class="table-light">
                     <tr>
-                        <th>Ders Adı</th>
-                        <th>Ders Açıklaması</th>
+                        <th>Belge Kategorisi</th>
+                        <th>Belge Adı</th>
+                        <th>Belge URL</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for course in courses %}
-                        <tr onclick="window.location.href='#';">
-                            <td>{{ course.name }}</td>
-                            <td>{{ course.description }}</td>
+                    {% for document in course.0.files %}
+                        <tr>
+                            <td>{{ document.category }}</td>
+                            <td>{{ document.belge_adi }}</td>
+                            <td><a href="{{ document.belge_url }}" target="_blank">Belgeyi Görüntüle</a></td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="4" class="text-center">Henüz Ders Yok</td>
+                            <td colspan="3" class="text-center">Henüz Belge Eklenmemiş</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
-        {% comment %} <div class="card-footer text-center">
-            <a href="{% url 'download_client_docx' client.id %}" class="btn btn-secondary">Word İndir</a>
-            <a href="{% url 'download_client_pdf' client.id %}" class="btn btn-secondary" target="_blank">PDF İndir</a>
-        </div> {% endcomment %}
-
     </div>
 </div>
 {% endblock content %}

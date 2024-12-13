@@ -128,7 +128,7 @@
     </thead>
     <tbody>
         {% for course in page_obj %}
-            <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
+            <tr onclick="window.location.href='/dersler/{{ course.id }}';">
                 <td>{{ course.teacher.name }}</td>
                 <td>{{ course.name }}</td>
                 <td>{{ course.statu }}</td>
