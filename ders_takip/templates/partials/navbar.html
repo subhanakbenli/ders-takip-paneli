@@ -19,14 +19,14 @@
       {% comment %} Navbar Sol Taraf {% endcomment %}
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link text-white" href="/client/client_list"
-            >Ders Listesi</a
-          >
+          <a class="nav-link text-white" href="/dersler/ders_listesi"
+            >Ders Listesi</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="/ogretmen/ogretmen_list"
-            >Öğretmen Listesi</a
-          >
+          <a class="nav-link text-white" href="/dersler/ders_ekle">Ders Ekle</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/ogretmen/ogretmen_list">Öğretmen Listesi</a>
         </li>
         <li class="nav-item">
           <a
@@ -36,11 +36,7 @@
           >
         </li>
         <li class="nav-item">
-          <a
-            class="nav-link text-white"
-            href="/dersler/templates/dersler/kaydedilen_dersler.html"
-            >Kaydedilenler Sayfası</a
-          >
+          <a class="nav-link text-white" href="/dersler/templates/dersler/kaydedilen_dersler.html">Kaydedilenler Sayfası</a>
         </li>
       </ul>
       <!-- Navbar Sağ Taraf -->
@@ -83,49 +79,7 @@
           >
         </li>
         =======
-        <nav
-          class="navbar navbar-expand-lg"
-          style="background-color: #767676; z-index: 1050"
-        >
-          <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-white" href="/"
-              >Ders Takip Sistemi</a
-            >
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarNav"
-              aria-controls="navbarNav"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-              {% comment %} Navbar Sol Taraf {% endcomment %}
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link text-white" href="/client/client_list"
-                    >Ders Listesi</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-white" href="/ogretmen/ogretmen_list"
-                    >Öğretmen Listesi</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link text-white" href="/ogretmen/ogretmen_ekle"
-                    >Öğretmen Ekle</a
-                  >
-                </li>
-
-                {% endif %}
-              </ul>
-            </div>
-          </div>
-        </nav>
+        {% endif %}
 
         <style>
           .navbar {
