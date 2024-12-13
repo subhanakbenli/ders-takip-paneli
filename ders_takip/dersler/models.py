@@ -7,7 +7,6 @@ class Ders(models.Model):
     durum = models.CharField(max_length=255, verbose_name="Durum")
     aciklama = models.TextField(verbose_name="Açıklama")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-    yukleme_miktari = models.PositiveIntegerField(null=True, blank=True, verbose_name="Yükleme Miktarı")
     baslik = models.CharField(max_length=255, null=True, blank=True, verbose_name="Başlık")
 
     def __str__(self):
@@ -21,21 +20,6 @@ class DersBelgesi(models.Model):
 
     def __str__(self):
         return f"{self.kategori} - {self.belge_adi}"
-
-class Kayit(models.Model):
-    bolum_adi = models.CharField(max_length=255, verbose_name="Bölüm Adı")
-    yukleme_miktari = models.PositiveIntegerField(verbose_name="Yükleme Miktarı")
-    tarih = models.DateTimeField(auto_now_add=True, verbose_name="Tarih")
-    dersi_veren = models.ForeignKey(
-        Teacher,  # Teacher modeline doğrudan referans
-        on_delete=models.CASCADE,
-        verbose_name="Dersi Veren Öğretmen",
-        null=True,
-        blank=True
-    )
-
-    def __str__(self):
-        return self.bolum_adi
 
 
 

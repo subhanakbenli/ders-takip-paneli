@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 
 {% block title %}Öğretmen Listesi{% endblock %}
@@ -106,7 +107,7 @@
     }
 </style>
 
-<h2>Öğretmen Listesi</h2>
+<h2>Ders Listesi</h2>
 
 <label for="per_page">Sayfa başına:</label>
 <select id="per_page" onchange="updatePerPage()">
@@ -120,23 +121,21 @@
 <table border="1">
     <thead>
         <tr>
-            <th><a href="?sort_by=name&sort_order={% if sort_by == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Ad</a></th>
-            <th><a href="?sort_by=surname&sort_order={% if sort_by == 'surname' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Soyad</a></th>
-            <th>Telefon</th>
-            <th>Email</th>
+            <th><a>Dersi Veren </a></th>
+            <th><a>Ders Adı</a></th>
+            <th>Durum</th>
         </tr>
     </thead>
     <tbody>
-        {% for teacher in page_obj %}
+        {% for course in page_obj %}
             <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
-                <td>{{ teacher.ad }}</td>
-                <td>{{ teacher.soyad }}</td>
-                <td>{{ teacher.telefon }}</td>
-                <td>{{ teacher.email }}</td>
+                <td>{{ course.dersi_veren }}</td>
+                <td>{{ course.ders_adi }}</td>
+                <td>{{ course.durum }}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="7">Öğretmen bulunamadı.</td>
+                <td colspan="7">Ders Bulunamadı</td>
             </tr>
         {% endfor %}
     </tbody>
