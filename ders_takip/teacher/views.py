@@ -81,3 +81,5 @@ def show_teacher_list(request):
     }
     return render(request, "teacher/teacher_list.html", context)
 
+
+

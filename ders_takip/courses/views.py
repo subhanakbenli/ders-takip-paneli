@@ -159,3 +159,5 @@ def show_courses_list(request):
     return render(request, "courses/courses_list.html", context)
 
 
+
+
