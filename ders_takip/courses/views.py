@@ -132,11 +132,11 @@ def show_course_detail(request, id):
 def show_courses_list(request):
     # ders ekle
     dersi_veren = Teacher.objects.all().first()
-    Course.objects.create(
-            name="Matematik 2.sınıf",
-            statu="Aktif",
-            teacher=dersi_veren,
-        )
+    # Course.objects.create(
+    #         name="Matematik 2.sınıf",
+    #         statu="Aktif",
+    #         teacher=dersi_veren,
+    #     )
     per_page = request.GET.get('per_page', 10)
     sort_by = request.GET.get('sort_by', 'name')
     sort_order = request.GET.get('sort_order', 'asc')
