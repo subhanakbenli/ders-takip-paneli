@@ -107,9 +107,36 @@
       font-size: 14px;
       padding: 10px 16px;
     }
-    .arsiv{
-      text-align: right
-    }
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-right: 20px;
+  }
+
+  #arsiv, #sil {
+      padding: 10px 20px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+
+  #arsiv:hover {
+      background-color: #187bcd;
+  }
+
+  #sil {
+      background-color: #ff4d4d;
+  }
+
+  #sil:hover {
+      background-color: #c82333;
+  }
   }
 </style>
 <script>
@@ -467,6 +494,9 @@
       </tr>
     </tbody>
   </table>
-  <button id = 'arsiv'>Arşivle</button> <button>Sil</button>
+  <div class="button-container">
+    <button id="arsiv">Arşivle</button>
+    <button id="sil">Sil</button>
+  </div>
 </body>
 {% endblock content %}
