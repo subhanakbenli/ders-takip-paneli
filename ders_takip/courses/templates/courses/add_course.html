@@ -67,7 +67,7 @@ Ders Kayıt Sayfası
 <body>
 
   <h1>Kayıt Sayfası</h1>
-  <form method="post" action="/kaydet/">
+  <form method="post" action="ders_ekle">
     {% csrf_token %}
     <input type="hidden" id="selected-teacher-input" name="selected_teacher" value="" />
     <div class="form-group mb-3">
@@ -78,6 +78,14 @@ Ders Kayıt Sayfası
           <option value="{{ teacher.id }}">{{ teacher }}</option>
         {% endfor %}
       </select>
+    </div>
+    <div class="form-group mb-3">
+      <label for="lesson-name" class="form-label">Ders Adı</label>
+      <input id="lesson-name" type="text" name="lesson_name" class="form-control" placeholder="Ders adını girin" required />
+    </div>
+    <div class="form-group mb-3">
+      <label for="description" class="form-label">Açıklama</label>
+      <input id="description" type="text" name="description" class="form-control" placeholder="Ders kodunu girin" />
     </div>
     <table id="dynamic-table">
       <thead>
@@ -161,12 +169,7 @@ Ders Kayıt Sayfası
           <td><input type="number" name="yukleme_miktari_12" min="0" /></td>
           <td></td>
         </tr>
-        <tr>
-          <td>13</td>
-          <td>Açıklama</td>
-          <td><input type="number" name="yukleme_miktari_13" min="0" /></td>
-          <td></td>
-        </tr>
+        
         <!-- Dinamik satırlar buraya eklenecek -->
         <tr>
           <td colspan="4" style="text-align: center;">
