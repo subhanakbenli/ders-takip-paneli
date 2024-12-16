@@ -10,7 +10,6 @@ Ders Kayıt Sayfası
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     padding: 20px;
-    position: relative;
   }
   h1 {
     text-align: center;
@@ -21,8 +20,7 @@ Ders Kayıt Sayfası
     border-collapse: collapse;
     margin: 20px 0;
   }
-  table th,
-  table td {
+  table th, table td {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: left;
@@ -44,6 +42,7 @@ Ders Kayıt Sayfası
   input[type="number"], input[type="text"] {
     width: 100%;
     padding: 5px;
+    box-sizing: border-box;
   }
   #submit-button {
     position: fixed;
@@ -64,12 +63,11 @@ Ders Kayıt Sayfası
     box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
   }
 </style>
-<body>
 
+<body>
   <h1>Kayıt Sayfası</h1>
   <form method="post" action="ders_ekle">
     {% csrf_token %}
-    <input type="hidden" id="selected-teacher-input" name="selected_teacher" value="" />
     <div class="form-group mb-3">
       <label for="teacher" class="form-label">Öğretmen</label>
       <select id="teacher" name="teacher" class="form-select" required>
@@ -97,79 +95,17 @@ Ders Kayıt Sayfası
         </tr>
       </thead>
       <tbody>
+        {% for item in sections %}
         <tr>
-          <td>1</td>
-          <td>Ders Belgesi</td>
-          <td><input type="number" name="ders_belgesi_yukleme_miktari" min="0" /></td>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ item }}</td>
+          <td>
+            <input type="number" name="uploads[{{ forloop.counter }}][amount]" min="0" />
+            <input type="hidden" name="uploads[{{ forloop.counter }}][label]" value="{{ item }}" />
+          </td>
           <td></td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>Müdür Yardımcısı Onaylı Ders Belgesi</td>
-          <td><input type="number" name="mudur_onayli_ders_belgesi_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Ödevler Belgesi</td>
-          <td><input type="number" name="odevler_belgesi_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>Müdür Yardımcısı Onaylı Ödevler Belgesi</td>
-          <td><input type="number" name="mudur_onayli_odevler_belgesi_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" name="yapilmis_odevler_belgesi_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" name="mudur_onayli_yapilmis_odevler_belgesi_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>Raporlar</td>
-          <td><input type="number" name="raporlar_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>Müdür Yardımcısı Onaylı Raporlar</td>
-          <td><input type="number" name="mudur_onayli_raporlar_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>Video</td>
-          <td><input type="number" name="video_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>Excel Dosya Yüklemesi</td>
-          <td><input type="number" name="excel_dosya_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>Dilekçe Yüklemesi</td>
-          <td><input type="number" name="dilekce_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>Eksiklik Belirtme</td>
-          <td><input type="number" name="eksiklik_belirtme_yukleme_miktari" min="0" /></td>
-          <td></td>
-        </tr>
-        <!-- Dinamik satırlar buraya eklenecek -->
+        {% endfor %}
         <tr>
           <td colspan="4" style="text-align: center;">
             <button id="add-row-btn" type="button">Ekle</button>
@@ -181,7 +117,6 @@ Ders Kayıt Sayfası
   </form>
 
   <script>
-    // Tabloyu ve "Ekle" butonunu seç
     const table = document.getElementById("dynamic-table");
     const addRowButton = document.getElementById("add-row-btn");
 
@@ -198,14 +133,14 @@ Ders Kayıt Sayfası
       const nameCell = document.createElement("td");
       const nameInput = document.createElement("input");
       nameInput.type = "text";
-      nameInput.name = `bolum_adi_${newRowNumber}`;
+      nameInput.name = `uploads[${newRowNumber}][label]`;
       nameInput.placeholder = "Bölüm Adı Girin";
       nameCell.appendChild(nameInput);
 
       const amountCell = document.createElement("td");
       const amountInput = document.createElement("input");
       amountInput.type = "number";
-      amountInput.name = `yukleme_miktari_${newRowNumber}`;
+      amountInput.name = `uploads[${newRowNumber}][amount]`;
       amountInput.min = 0;
       amountCell.appendChild(amountInput);
 

@@ -4,39 +4,71 @@ from teacher.models import Teacher  # Öğretmen modeli
 from django.core.paginator import Paginator
 
 
+
+def get_default_sections():
+    """Varsayılan bölümleri döndürür."""
+    return [
+        "Ders Belgesi",
+        "Müdür Yardımcısı Onaylı Ders Belgesi",
+        "Ödevler Belgesi",
+        "Müdür Yardımcısı Onaylı Ödevler Belgesi",
+        "Yapılmış Ödevler Belgesi",
+        "Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi",
+        "Raporlar",
+        "Müdür Yardımcısı Onaylı Raporlar",
+        "Video",
+        "Excel Dosya Yüklemesi",
+        "Dilekçe Yüklemesi",
+        "Eksiklik Belirtme",
+    ]
+
 def add_course(request):
     if request.method == 'POST':
+        # Öğretmen seçimini al
         teacher_id = request.POST.get('teacher')
-        teacher = Teacher.objects.get(id=teacher_id)
+        try:
+            teacher = Teacher.objects.get(id=teacher_id)
+        except Teacher.DoesNotExist:
+            # Eğer geçerli bir öğretmen seçilmemişse hata döndür
+            return render(request, "courses/add_course.html", {
+                "error": "Geçersiz öğretmen seçimi!",
+                "teachers": Teacher.objects.all(),
+                "sections": get_default_sections()
+            })
 
+        # Kurs bilgilerini al ve kaydet
+        course_name = request.POST.get('lesson_name')
+        description = request.POST.get('description', "")
+        course = Course(name=course_name, teacher=teacher, description=description)
+        course.save()
+
+        # Dinamik tabloda gönderilen verileri işleyin
         data = {}
         for key, value in request.POST.items():
-            if key.startswith('yukleme_miktari_') and value.isdigit():
-                # Bölüm adı inputunu al (örneğin: bolum_adi_1)
-                row_number = key.split('_')[-1]  # Satır numarasını al
-                bolum_adi_key = f'bolum_adi_{row_number}'
-                bolum_adi = request.POST.get(bolum_adi_key, f'Bölüm {row_number}')
+            if key.startswith('uploads') and value.isdigit():  # Yükleme miktarı kontrolü
+                # Satır numarasını ve bölüm adını çıkart
+                row_data = key.split('[')[1].split(']')[0]
+                label_key = f"uploads[{row_data}][label]"
+                label = request.POST.get(label_key, f"Bölüm {row_data}")
 
-                data[bolum_adi] = int(value)
-        print(data)
-        
-        course = Course(
-            name=request.POST.get('lesson_name'),
-            teacher=teacher,
-            description=request.POST.get('description'))
-        course.save()
+                # Bölüm adını ve yükleme miktarını kaydet
+                data[label] = int(value)
+
+        # Bölümlere göre CourseFile kaydet
         for bolum_adi, yukleme_miktari in data.items():
             for _ in range(yukleme_miktari):
-                course_file = CourseFile(
-                    course=course,
-                    category=bolum_adi,)
-                course_file.save()    
+                CourseFile.objects.create(course=course, category=bolum_adi)
 
-        return redirect('show_courses_list') 
+        return redirect('show_courses_list')
 
     else:
-        teachers = Teacher.objects.all()
-        return render(request, 'courses/add_course.html', {'teachers': teachers})
+        # GET isteğinde öğretmen ve varsayılan bölümleri render et
+        return render(request, "courses/add_course.html", {
+            "teachers": Teacher.objects.all(),
+            "sections": get_default_sections()
+        })
+
+
 
 def get_teachers_with_courses_and_documents():
     teachers_data = []
