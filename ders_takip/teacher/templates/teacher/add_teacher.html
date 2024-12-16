@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Müvekkil {% endblock %}
+{% block title %}Öğretmen Ekle {% endblock %}
 
 {% block content %}
 <style>
@@ -57,18 +57,7 @@
                                        pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" title="Soyisim sadece harflerden oluşmalıdır." placeholder="Soyisim giriniz">
                             </div>
 
-                            <!-- Telefon numarası alanı, geçerli bir formatta olmalı -->
-                            <div class="form-group mb-3">
-                                <label for="phone" class="form-label">Telefon Numarası:</label>
-                                <input type="tel" id="phone" name="phone" class="form-control" required 
-                                       pattern="^\+?\d{10,13}$" title="Telefon numarası geçerli bir formatta olmalıdır (örn: +905555555555 veya 05555555555)." placeholder="+905555555555">
-                            </div>
-
-                            <!-- Mail adresi alanı, HTML5 e-posta doğrulaması -->
-                            <div class="form-group mb-3">
-                                <label for="email" class="form-label">Mail Adresi:</label>
-                                <input type="email" id="email" name="email" class="form-control" required placeholder="mail@example.com">
-                            </div>
+                            
                             <!-- Öğretmenin Açıklama -->
                             <div class="form-group mb-3">
                                 <label for="description" class="form-label">Açıklama:</label>
