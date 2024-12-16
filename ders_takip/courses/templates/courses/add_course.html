@@ -85,7 +85,7 @@ Ders Kayıt Sayfası
     </div>
     <div class="form-group mb-3">
       <label for="description" class="form-label">Açıklama</label>
-      <input id="description" type="text" name="description" class="form-control" placeholder="Ders kodunu girin" />
+      <input id="description" type="text" name="description" class="form-control" placeholder="Ders açıklamasını girin" />
     </div>
     <table id="dynamic-table">
       <thead>
@@ -100,76 +100,75 @@ Ders Kayıt Sayfası
         <tr>
           <td>1</td>
           <td>Ders Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_1" min="0" /></td>
+          <td><input type="number" name="ders_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>2</td>
           <td>Müdür Yardımcısı Onaylı Ders Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_2" min="0" /></td>
+          <td><input type="number" name="mudur_onayli_ders_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>3</td>
           <td>Ödevler Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_3" min="0" /></td>
+          <td><input type="number" name="odevler_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>4</td>
           <td>Müdür Yardımcısı Onaylı Ödevler Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_4" min="0" /></td>
+          <td><input type="number" name="mudur_onayli_odevler_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>5</td>
           <td>Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_5" min="0" /></td>
+          <td><input type="number" name="yapilmis_odevler_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>6</td>
           <td>Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" name="yukleme_miktari_6" min="0" /></td>
+          <td><input type="number" name="mudur_onayli_yapilmis_odevler_belgesi_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>7</td>
           <td>Raporlar</td>
-          <td><input type="number" name="yukleme_miktari_7" min="0" /></td>
+          <td><input type="number" name="raporlar_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>8</td>
           <td>Müdür Yardımcısı Onaylı Raporlar</td>
-          <td><input type="number" name="yukleme_miktari_8" min="0" /></td>
+          <td><input type="number" name="mudur_onayli_raporlar_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>9</td>
           <td>Video</td>
-          <td><input type="number" name="yukleme_miktari_9" min="0" /></td>
+          <td><input type="number" name="video_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>10</td>
           <td>Excel Dosya Yüklemesi</td>
-          <td><input type="number" name="yukleme_miktari_10" min="0" /></td>
+          <td><input type="number" name="excel_dosya_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>11</td>
           <td>Dilekçe Yüklemesi</td>
-          <td><input type="number" name="yukleme_miktari_11" min="0" /></td>
+          <td><input type="number" name="dilekce_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
         <tr>
           <td>12</td>
           <td>Eksiklik Belirtme</td>
-          <td><input type="number" name="yukleme_miktari_12" min="0" /></td>
+          <td><input type="number" name="eksiklik_belirtme_yukleme_miktari" min="0" /></td>
           <td></td>
         </tr>
-        
         <!-- Dinamik satırlar buraya eklenecek -->
         <tr>
           <td colspan="4" style="text-align: center;">
@@ -186,23 +185,16 @@ Ders Kayıt Sayfası
     const table = document.getElementById("dynamic-table");
     const addRowButton = document.getElementById("add-row-btn");
 
-    // "Ekle" butonuna tıklandığında çalışacak fonksiyon
     addRowButton.addEventListener("click", function () {
-      // Tabloya eklenen tüm satırların sayısını bul
       const rows = table.querySelectorAll("tbody tr");
-      const lastRowIndex = rows.length - 1; // Son satırın indexi (Ekle butonunun olduğu satır)
+      const lastRowIndex = rows.length - 1;
+      const newRowNumber = rows.length;
 
-      // Yeni sıra numarasını hesapla
-      const newRowNumber = rows.length; // Toplam satır sayısı, yeni sıra numarası olur
-
-      // Yeni satır oluştur
       const newRow = document.createElement("tr");
 
-      // Sıra numarası hücresi
       const numberCell = document.createElement("td");
       numberCell.innerText = newRowNumber;
 
-      // Bölüm adı hücresi (manuel giriş için bir input alanı)
       const nameCell = document.createElement("td");
       const nameInput = document.createElement("input");
       nameInput.type = "text";
@@ -210,7 +202,6 @@ Ders Kayıt Sayfası
       nameInput.placeholder = "Bölüm Adı Girin";
       nameCell.appendChild(nameInput);
 
-      // Yükleme miktarı hücresi (sabit bir giriş alanı)
       const amountCell = document.createElement("td");
       const amountInput = document.createElement("input");
       amountInput.type = "number";
@@ -218,16 +209,13 @@ Ders Kayıt Sayfası
       amountInput.min = 0;
       amountCell.appendChild(amountInput);
 
-      // İşlem hücresi (şu an boş)
       const actionCell = document.createElement("td");
 
-      // Yeni hücreleri satıra ekle
       newRow.appendChild(numberCell);
       newRow.appendChild(nameCell);
       newRow.appendChild(amountCell);
       newRow.appendChild(actionCell);
 
-      // "Ekle" butonunu içeren satırdan önce yeni satırı ekle
       table.querySelector("tbody").insertBefore(newRow, rows[lastRowIndex]);
     });
   </script>

@@ -21,7 +21,7 @@
         cursor: pointer;
     }
     .card-header, .table thead th {
-        background-color: #007bff;
+        background-color:rgb(75, 157, 239);
         color: white;
     }
     .card-footer {
@@ -54,6 +54,7 @@
     }
     .table th, .table td {
         padding: 8px; /* Makes the table more compact */
+        vertical-align: middle; /* Centers text vertically */
     }
     .table-responsive {
         margin-top: 15px;
@@ -76,19 +77,33 @@
                             <h5>{{ course.name }}</h5>
                         </div>
                         <div class="card-body">
-                            <ul class="list-group">
-                                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
-                                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.description }}</li>
-                                <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</li>
-                            </ul>
+                            <!-- Tablo: Durum, Açıklama ve Oluşturulma Tarihi -->
+                            <div class="table-responsive">
+                                <table class="table table-bordered shadow">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Durum</th>
+                                            <th>Açıklama</th>
+                                            <th>Oluşturulma Tarihi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ course.statu }}</td>
+                                            <td>{{ course.description }}</td>
+                                            <td>{{ course.created_at }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
+                            <!-- Tablo: Belge Kategorisi ve Adı -->
                             <div class="table-responsive mt-3">
                                 <table class="table table-bordered shadow hover-highlight">
                                     <thead class="table-light">
                                         <tr>
                                             <th>Belge Kategorisi</th>
                                             <th>Belge Adı</th>
-                                            <th>Belge URL</th>
                                         </tr>
                                     </thead>
                                     <tbody>
