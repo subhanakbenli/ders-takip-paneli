@@ -1,121 +1,110 @@
-{% extends "base.html" %} {% block title %}Ders Kayıt Sayfası{%endblock title%}
+{% extends "base.html" %}
+{% block title %}Ders Kayıt Sayfası{% endblock title %}
 {% block content %}
 
-<title>Ders Arşivi Detayı</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #eef7ff;
-    color: #333;
-  }
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ders Arşivi Detayı</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #eef7ff;
+      color: #333;
+    }
 
-  h1 {
-    text-align: center;
-    color: #1e90ff;
-    margin-top: 20px;
-  }
+    h1 {
+      text-align: center;
+      color: #1e90ff;
+      margin-top: 20px;
+    }
 
-  .teacher-select {
-    margin: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    .teacher-select {
+      margin: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-  .teacher-select label {
-    font-size: 16px;
-    font-weight: bold;
-  }
+    .teacher-select label {
+      font-size: 16px;
+      font-weight: bold;
+    }
 
-  select {
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-  #selected-teacher {
-    font-size: 16px;
-    font-weight: bold;
-    color: #1e90ff;
-  }
+    #selected-teacher {
+      font-size: 16px;
+      font-weight: bold;
+      color: #1e90ff;
+    }
 
-  table {
-    margin: 20px auto;
-    border-collapse: collapse;
-    width: 90%;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-
-  th {
-    background-color: #1e90ff;
-    color: white;
-    text-align: center;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f0f8ff;
-  }
-
-  tr:hover {
-    background-color: #dbefff;
-  }
-
-  button {
-    display: block;
-    margin: 20px auto;
-    padding: 12px 20px;
-    background-color: #1e90ff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #187bcd;
-  }
-
-  select:hover {
-    border-color: #1e90ff;
-  }
-
-  @media (max-width: 600px) {
     table {
-      width: 100%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     th,
     td {
-      font-size: 14px;
-      padding: 8px;
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1e90ff;
+      color: white;
+      text-align: center;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f0f8ff;
+    }
+
+    tr:hover {
+      background-color: #dbefff;
     }
 
     button {
-      font-size: 14px;
-      padding: 10px 16px;
+      padding: 12px 20px;
+      background-color: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-      padding-right: 20px;
-  }
 
-  #arsiv, #sil {
+    button:hover {
+      background-color: #187bcd;
+    }
+
+    select:hover {
+      border-color: #1e90ff;
+    }
+
+    .button-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    #arsiv, #sil {
       padding: 10px 20px;
       background-color: #1e90ff;
       color: white;
@@ -124,28 +113,44 @@
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
-  }
+    }
 
-  #arsiv:hover {
+    #arsiv:hover {
       background-color: #187bcd;
-  }
+    }
 
-  #sil {
+    #sil {
       background-color: #ff4d4d;
-  }
+    }
 
-  #sil:hover {
+    #sil:hover {
       background-color: #c82333;
-  }
-  }
-</style>
-<script>
-  function updateTeacher() {
-    const selectBox = document.getElementById("teacher-select");
-    const selectedTeacher = selectBox.options[selectBox.selectedIndex].text;
-    document.getElementById("selected-teacher").textContent = selectedTeacher;
-  }
-</script>
+    }
+
+    @media (max-width: 600px) {
+      table {
+        width: 100%;
+      }
+
+      th,
+      td {
+        font-size: 14px;
+        padding: 8px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+    }
+  </style>
+  <script>
+    function updateTeacher() {
+      const selectBox = document.getElementById("teacher-select");
+      const selectedTeacher = selectBox.options[selectBox.selectedIndex].text;
+      document.getElementById("selected-teacher").textContent = selectedTeacher;
+    }
+  </script>
 
 <body>
   <div class="teacher-select">
