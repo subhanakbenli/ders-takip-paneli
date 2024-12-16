@@ -16,53 +16,6 @@ Ders Kayıt Sayfası
     text-align: center;
     color: #333;
   }
-  .dropdown-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  .dropdown button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  .dropdown button:hover {
-    background-color: #0056b3;
-  }
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    border-radius: 5px;
-    min-width: 150px;
-  }
-  .dropdown-content a {
-    color: black;
-    padding: 10px;
-    text-decoration: none;
-    display: block;
-    border-bottom: 1px solid #ccc;
-  }
-  .dropdown-content a:hover {
-    background-color: #ddd;
-  }
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  #selected-teacher {
-    margin-left: 20px;
-    font-weight: bold;
-    color: #007bff;
-  }
   table {
     width: 100%;
     border-collapse: collapse;
@@ -88,43 +41,45 @@ Ders Kayıt Sayfası
   button:hover {
     background-color: #0056b3;
   }
-  a {
-    display: block;
-    text-align: center;
-    margin-top: 20px;
-    color: white;
-    text-decoration: none;
-    background-color: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    width: fit-content;
-    margin: 20px auto;
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 5px;
   }
-  a:hover {
+  #submit-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 50px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  #submit-button:hover {
     background-color: #0056b3;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
   }
 </style>
 <body>
-  <div class="form-group mb-3">
-    <label for="teacher" class="form-label">Öğretmen</label>
-    <select id="teacher" name="teacher" class="form-select" required>
-        <option value="">Öğretmen Seçin</option>
-        {% for teacher in teachers %}
-            <option value="{{ teacher.id }}">{{ teacher }}</option>
-        {% endfor %}
-    </select>
-  </div>
 
   <h1>Kayıt Sayfası</h1>
   <form method="post" action="/kaydet/">
     {% csrf_token %}
-    <input
-      type="hidden"
-      id="selected-teacher-input"
-      name="selected_teacher"
-      value=""
-    />
-    <table>
+    <input type="hidden" id="selected-teacher-input" name="selected_teacher" value="" />
+    <div class="form-group mb-3">
+      <label for="teacher" class="form-label">Öğretmen</label>
+      <select id="teacher" name="teacher" class="form-select" required>
+        <option value="">Öğretmen Seçin</option>
+        {% for teacher in teachers %}
+          <option value="{{ teacher.id }}">{{ teacher }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <table id="dynamic-table">
       <thead>
         <tr>
           <th>Sıra No</th>
@@ -137,164 +92,141 @@ Ders Kayıt Sayfası
         <tr>
           <td>1</td>
           <td>Ders Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_1" name="yukleme_miktari_1" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(1)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_1" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>2</td>
           <td>Müdür Yardımcısı Onaylı Ders Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_2" name="yukleme_miktari_2" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(2)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_2" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>3</td>
           <td>Ödevler Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_3" name="yukleme_miktari_3" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(3)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_3" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>4</td>
           <td>Müdür Yardımcısı Onaylı Ödevler Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_4" name="yukleme_miktari_4" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(4)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_4" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>5</td>
           <td>Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_5" name="yukleme_miktari_5" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(5)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_5" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>6</td>
           <td>Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi</td>
-          <td><input type="number" id="yukleme_miktari_6" name="yukleme_miktari_6" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(6)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_6" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>7</td>
           <td>Raporlar</td>
-          <td><input type="number" id="yukleme_miktari_7" name="yukleme_miktari_7" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(7)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_7" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>8</td>
           <td>Müdür Yardımcısı Onaylı Raporlar</td>
-          <td><input type="number" id="yukleme_miktari_8" name="yukleme_miktari_8" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(8)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_8" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>9</td>
           <td>Video</td>
-          <td><input type="number" id="yukleme_miktari_9" name="yukleme_miktari_9" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(9)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_9" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>10</td>
           <td>Excel Dosya Yüklemesi</td>
-          <td><input type="number" id="yukleme_miktari_10" name="yukleme_miktari_10" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(10)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_10" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>11</td>
           <td>Dilekçe Yüklemesi</td>
-          <td><input type="number" id="yukleme_miktari_11" name="yukleme_miktari_11" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(11)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_11" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>12</td>
           <td>Eksiklik Belirtme</td>
-          <td><input type="number" id="yukleme_miktari_12" name="yukleme_miktari_12" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(12)">Kaydet</button>
-          </td>
+          <td><input type="number" name="yukleme_miktari_12" min="0" /></td>
+          <td></td>
         </tr>
         <tr>
           <td>13</td>
           <td>Açıklama</td>
-          <td><input type="number" id="yukleme_miktari_13" name="yukleme_miktari_13" min="0" /></td>
-          <td>
-            <button type="button" onclick="submitRow(13)">Kaydet</button>
+          <td><input type="number" name="yukleme_miktari_13" min="0" /></td>
+          <td></td>
+        </tr>
+        <!-- Dinamik satırlar buraya eklenecek -->
+        <tr>
+          <td colspan="4" style="text-align: center;">
+            <button id="add-row-btn" type="button">Ekle</button>
           </td>
         </tr>
       </tbody>
     </table>
+    <button id="submit-button" type="submit">Kaydet</button>
   </form>
-  <a href="/kaydedilenler/">Kaydedilenler Sayfasına Git</a>
 
   <script>
-    function selectTeacher(teacherName) {
-      // Seçilen öğretmeni göster
-      document.getElementById("selected-teacher").innerText = `Seçilen Öğretmen: ${teacherName}`;
+    // Tabloyu ve "Ekle" butonunu seç
+    const table = document.getElementById("dynamic-table");
+    const addRowButton = document.getElementById("add-row-btn");
 
-      // Öğretmen adını form içinde bir input alanına aktar
-      document.getElementById("selected-teacher-input").value = teacherName;
-    }
+    // "Ekle" butonuna tıklandığında çalışacak fonksiyon
+    addRowButton.addEventListener("click", function () {
+      // Tabloya eklenen tüm satırların sayısını bul
+      const rows = table.querySelectorAll("tbody tr");
+      const lastRowIndex = rows.length - 1; // Son satırın indexi (Ekle butonunun olduğu satır)
 
-    function submitRow(rowId) {
-      // Satırdaki form alanlarını al
-      const yuklemeMiktari = document.querySelector(`#yukleme_miktari_${rowId}`).value;
-      const selectedTeacher = document.getElementById("selected-teacher-input").value;
+      // Yeni sıra numarasını hesapla
+      const newRowNumber = rows.length; // Toplam satır sayısı, yeni sıra numarası olur
 
-      // Verileri POST etmek için bir form oluştur
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = "/kaydet/";
+      // Yeni satır oluştur
+      const newRow = document.createElement("tr");
 
-      // CSRF token ekle
-      const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-      const csrfInput = document.createElement("input");
-      csrfInput.type = "hidden";
-      csrfInput.name = "csrfmiddlewaretoken";
-      csrfInput.value = csrfToken;
-      form.appendChild(csrfInput);
+      // Sıra numarası hücresi
+      const numberCell = document.createElement("td");
+      numberCell.innerText = newRowNumber;
 
-      // Bölüm ID'si ekle
-      const bolumInput = document.createElement("input");
-      bolumInput.type = "hidden";
-      bolumInput.name = "bolum_id";
-      bolumInput.value = rowId;
-      form.appendChild(bolumInput);
+      // Bölüm adı hücresi (manuel giriş için bir input alanı)
+      const nameCell = document.createElement("td");
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.name = `bolum_adi_${newRowNumber}`;
+      nameInput.placeholder = "Bölüm Adı Girin";
+      nameCell.appendChild(nameInput);
 
-      // Yükleme miktarını ekle
-      const miktarInput = document.createElement("input");
-      miktarInput.type = "hidden";
-      miktarInput.name = "yukleme_miktari";
-      miktarInput.value = yuklemeMiktari;
-      form.appendChild(miktarInput);
+      // Yükleme miktarı hücresi (sabit bir giriş alanı)
+      const amountCell = document.createElement("td");
+      const amountInput = document.createElement("input");
+      amountInput.type = "number";
+      amountInput.name = `yukleme_miktari_${newRowNumber}`;
+      amountInput.min = 0;
+      amountCell.appendChild(amountInput);
 
-      // Öğretmen bilgisi ekle
-      const teacherInput = document.createElement("input");
-      teacherInput.type = "hidden";
-      teacherInput.name = "selected_teacher";
-      teacherInput.value = selectedTeacher;
-      form.appendChild(teacherInput);
+      // İşlem hücresi (şu an boş)
+      const actionCell = document.createElement("td");
 
-      // Formu body'ye ekle ve gönder
-      document.body.appendChild(form);
-      form.submit();
-    }
+      // Yeni hücreleri satıra ekle
+      newRow.appendChild(numberCell);
+      newRow.appendChild(nameCell);
+      newRow.appendChild(amountCell);
+      newRow.appendChild(actionCell);
+
+      // "Ekle" butonunu içeren satırdan önce yeni satırı ekle
+      table.querySelector("tbody").insertBefore(newRow, rows[lastRowIndex]);
+    });
   </script>
 </body>
 {% endblock content %}
