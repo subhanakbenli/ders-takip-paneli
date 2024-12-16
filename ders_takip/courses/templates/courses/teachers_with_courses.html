@@ -95,29 +95,83 @@
 </style>
 
 <script>
-    function showCustomModal() {
-        document.getElementById('customModal').style.display = 'block';
+    // Ders Sil Modal Göster
+    function showCustomModal(courseId) {
+        const modal = document.getElementById('customModal');
+        modal.style.display = 'block';
+        modal.querySelector('#confirmCourseDelete').setAttribute('data-course-id', courseId);
     }
 
+    // Ders Sil Modal Gizle
     function hideCustomModal() {
         document.getElementById('customModal').style.display = 'none';
     }
 
+    // Belge Sil Modal Göster
     function showDocumentDeleteModal(documentId) {
         const modal = document.getElementById('documentDeleteModal');
         modal.style.display = 'block';
-        modal.querySelector('#confirmDelete').setAttribute('data-document-id', documentId);
+        modal.querySelector('#confirmDocumentDelete').setAttribute('data-document-id', documentId);
     }
 
+    // Belge Sil Modal Gizle
     function hideDocumentDeleteModal() {
         document.getElementById('documentDeleteModal').style.display = 'none';
     }
 
+    // Ders Silme İsteği Gönder
+    function confirmCourseDelete() {
+        const courseId = document.getElementById('confirmCourseDelete').getAttribute('data-course-id');
+        fetch(`/dersler/ders_sil/${courseId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+        
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Sayfayı yenile
+                } else {
+                    alert('Ders silinirken bir hata oluştu.');
+                }
+            });
+        hideCustomModal();
+    }
+
+    // Belge Silme İsteği Gönder
     function confirmDocumentDelete() {
-        const documentId = document.getElementById('confirmDelete').getAttribute('data-document-id');
-        // Burada belge silme işlemi için gerekli AJAX isteğini gönderin
-        console.log(`Belge siliniyor: ${documentId}`);
+        const documentId = document.getElementById('confirmDocumentDelete').getAttribute('data-document-id');
+        fetch(`/dersler/belge_sil/${documentId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Sayfayı yenile
+                } else {
+                    alert('Belge silinirken bir hata oluştu.');
+                }
+            });
         hideDocumentDeleteModal();
+    }
+
+    // CSRF Token'ı Alma
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 </script>
 
@@ -173,7 +227,7 @@
                                 </div>
                                 <div class="action-buttons">
                                     <button class="btn btn-sm btn-success">Arşivle</button>
-                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal();">Bu dersi sil</button>
+                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal('{{ course.id }}');">Bu dersi sil</button>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +244,7 @@
 <div id="customModal" class="custom-modal">
     <div class="custom-modal-content">
         <h5>Bu dersi silmek istediğinize emin misiniz?</h5>
-        <button class="btn btn-sm btn-success" onclick="hideCustomModal();">Evet</button>
+        <button id="confirmCourseDelete" class="btn btn-sm btn-success" onclick="confirmCourseDelete();">Evet</button>
         <button class="btn btn-sm btn-danger" onclick="hideCustomModal();">Hayır</button>
     </div>
 </div>
@@ -199,9 +253,10 @@
 <div id="documentDeleteModal" class="custom-modal">
     <div class="custom-modal-content">
         <h5>Bu belgeyi silmek istediğinize emin misiniz?</h5>
-        <button id="confirmDelete" class="btn btn-sm btn-success" onclick="confirmDocumentDelete();">Evet</button>
+        <button id="confirmDocumentDelete" class="btn btn-sm btn-success" onclick="confirmDocumentDelete();">Evet</button>
         <button class="btn btn-sm btn-danger" onclick="hideDocumentDeleteModal();">Hayır</button>
     </div>
 </div>
+
 
 {% endblock content %}

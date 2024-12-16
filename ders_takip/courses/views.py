@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Course ,CourseFile  # Veritabanı modeli
 from teacher.models import Teacher  # Öğretmen modeli
 from django.core.paginator import Paginator
-
-
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
 
 def get_default_sections():
     """Varsayılan bölümleri döndürür."""
@@ -87,6 +88,7 @@ def get_teachers_with_courses_and_documents():
 
             documents_data = [
                 {
+                    "id": document.id,
                     "category": document.category,
                     "belge_adi": document.name,
                     "belge_url": document.file.url if document.file else None
@@ -95,6 +97,7 @@ def get_teachers_with_courses_and_documents():
             ]
 
             courses_data.append({
+                "id": course.id,
                 "name": course.name,
                 "statu": course.statu,
                 "description": course.description,
@@ -103,6 +106,7 @@ def get_teachers_with_courses_and_documents():
             })
 
         teachers_data.append({
+            "id": teacher.id,
             "name": teacher.name,
             "surname": teacher.surname,
             "description": teacher.description,
@@ -179,8 +183,24 @@ def show_courses_list(request):
     return render(request, "courses/courses_list.html", context)
 
 
-def delete_course(request, id):
-    course = Course.objects.get(id=id)
-    course.delete()
-    return redirect('show_courses_list')
+@csrf_exempt
+def ders_sil(request, course_id):
+    if request.method == 'POST':
+        try:
+            course = get_object_or_404(Course, id=course_id)
+            course.delete()
+            return JsonResponse({'success': True, 'message': 'Ders başarıyla silindi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
 
+@csrf_exempt
+def belge_sil(request, document_id):
+    if request.method == 'POST':
+        try:
+            document = get_object_or_404(CourseFile, id=document_id)
+            document.delete()
+            return JsonResponse({'success': True, 'message': 'Belge başarıyla silindi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
