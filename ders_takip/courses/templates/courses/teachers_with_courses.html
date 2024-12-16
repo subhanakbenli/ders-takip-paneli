@@ -70,8 +70,6 @@
     .table th, .table td {
         padding: 6px;
     }
-
-    /* Modal stil ayarları */
     .custom-modal {
         display: none;
         position: fixed;
@@ -100,8 +98,26 @@
     function showCustomModal() {
         document.getElementById('customModal').style.display = 'block';
     }
+
     function hideCustomModal() {
         document.getElementById('customModal').style.display = 'none';
+    }
+
+    function showDocumentDeleteModal(documentId) {
+        const modal = document.getElementById('documentDeleteModal');
+        modal.style.display = 'block';
+        modal.querySelector('#confirmDelete').setAttribute('data-document-id', documentId);
+    }
+
+    function hideDocumentDeleteModal() {
+        document.getElementById('documentDeleteModal').style.display = 'none';
+    }
+
+    function confirmDocumentDelete() {
+        const documentId = document.getElementById('confirmDelete').getAttribute('data-document-id');
+        // Burada belge silme işlemi için gerekli AJAX isteğini gönderin
+        console.log(`Belge siliniyor: ${documentId}`);
+        hideDocumentDeleteModal();
     }
 </script>
 
@@ -134,6 +150,7 @@
                                                 <th>Belge Kategorisi</th>
                                                 <th>Belge Adı</th>
                                                 <th>Bağlantı</th>
+                                                <th>İşlem</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -142,10 +159,13 @@
                                                     <td>{{ document.category }}</td>
                                                     <td>{{ document.belge_adi }}</td>
                                                     <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-danger" onclick="showDocumentDeleteModal('{{ document.id }}');">Sil</button>
+                                                    </td>
                                                 </tr>
                                             {% empty %}
                                                 <tr>
-                                                    <td colspan="3" class="text-center">Henüz belge eklenmemiş.</td>
+                                                    <td colspan="4" class="text-center">Henüz belge eklenmemiş.</td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -153,7 +173,7 @@
                                 </div>
                                 <div class="action-buttons">
                                     <button class="btn btn-sm btn-success">Arşivle</button>
-                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal();">Sil</button>
+                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal();">Bu dersi sil</button>
                                 </div>
                             </div>
                         </div>
@@ -166,12 +186,21 @@
     {% endfor %}
 </div>
 
-<!-- Özel Modal -->
+<!-- Ders Sil Modal -->
 <div id="customModal" class="custom-modal">
     <div class="custom-modal-content">
-        <h5>Silmek istediğinize emin misiniz?</h5>
+        <h5>Bu dersi silmek istediğinize emin misiniz?</h5>
         <button class="btn btn-sm btn-success" onclick="hideCustomModal();">Evet</button>
         <button class="btn btn-sm btn-danger" onclick="hideCustomModal();">Hayır</button>
+    </div>
+</div>
+
+<!-- Belge Sil Modal -->
+<div id="documentDeleteModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <h5>Bu belgeyi silmek istediğinize emin misiniz?</h5>
+        <button id="confirmDelete" class="btn btn-sm btn-success" onclick="confirmDocumentDelete();">Evet</button>
+        <button class="btn btn-sm btn-danger" onclick="hideDocumentDeleteModal();">Hayır</button>
     </div>
 </div>
 
