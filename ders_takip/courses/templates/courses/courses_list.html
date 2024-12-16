@@ -124,6 +124,7 @@
             <th><a>Dersi Veren </a></th>
             <th><a>Ders Adı</a></th>
             <th>Durum</th>
+            <th>Durum2</th>
         </tr>
     </thead>
     <tbody>
@@ -132,6 +133,7 @@
                 <td>{{ course.teacher.name }}</td>
                 <td>{{ course.name }}</td>
                 <td>{{ course.statu }}</td>
+                <td>{{ course.description}}</td>
             </tr>
         {% empty %}
             <tr>
