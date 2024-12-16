@@ -10,10 +10,11 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      Menü
+      <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Ders Menüsü -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" id="dersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Ders
@@ -23,6 +24,7 @@
             <li><a class="dropdown-item" href="/dersler/ders_ekle">Ders Ekle</a></li>
           </ul>
         </li>
+        <!-- Öğretmen Menüsü -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" id="ogretmenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Öğretmen
@@ -40,6 +42,24 @@
         </li>
       </ul>
       <ul class="navbar-nav">
+        <!-- Bildirim Butonu -->
+        <div class="notification-wrapper me-3">
+          <button class="btn notification-btn position-relative" onclick="toggleNotifications()">
+            🔔
+            <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ notifications|length }}
+            </span>
+          </button>
+          <div id="notificationPanel" class="notification-panel" style="display: none;">
+            <ul class="list-group">
+              {% for notification in notifications %}
+                <li class="list-group-item">{{ notification }}</li>
+              {% empty %}
+                <li class="list-group-item text-center text-muted">Bildirim yok.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
         {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link btn btn-danger text-white" href="{% url 'register' %}">Üye Ekle</a>
@@ -110,17 +130,60 @@
     background-color: #e74c3c;
   }
 
-  .navbar-toggler {
-    background-color: #1e90ff;
-    border: none;
-    color: white;
-    font-weight: bold;
-    border-radius: 5px;
-    padding: 5px 10px;
-    transition: background-color 0.3s ease;
+  .notification-wrapper {
+    position: relative;
   }
 
-  .navbar-toggler:hover {
-    background-color: #3498db;
+  .notification-btn {
+    
+    color: white;
+    border-radius: 50%;
+    padding: 8px 12px;
+    border: none;
+  }
+
+  .notification-btn:hover {
+    background-color: #e74c3c;
+  }
+
+  .notification-panel {
+    position: absolute;
+    right: 0; /* Sağ tarafa taşındı */
+    top: 50px;
+    width: 250px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1060;
+  }
+
+  .notification-panel .list-group-item {
+    font-size: 0.9rem;
+  }
+
+  #notificationBadge {
+    font-size: 12px;
+    color: white;
+    display: none;
+    padding: 5px 10px;
   }
 </style>
+
+<script>
+  function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  }
+
+  window.onload = function () {
+    const notificationsCount = {{ notifications|length }};
+    const badge = document.getElementById('notificationBadge');
+    if (notificationsCount > 0) {
+      badge.style.display = 'inline-block';
+      badge.textContent = notificationsCount; // Bildirim sayısını göster
+    } else {
+      badge.style.display = 'none';
+    }
+  };
+</script>
