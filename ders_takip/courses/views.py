@@ -6,46 +6,37 @@ from django.core.paginator import Paginator
 
 def add_course(request):
     if request.method == 'POST':
-        # Seçilen öğretmen bilgisi
-        selected_teacher = request.POST.get('selected_teacher')
-        teacher = Teacher.objects.get(name=selected_teacher)
-        # # Tüm formları işliyoruz
-        for key, value in request.POST.items():
-            if key.startswith('yukleme_miktari_'):
-                # Formdan gelen değerleri işliyoruz
-                baslik_id = key.replace('yukleme_miktari_', '')
-                miktar = value or None
-                Course.objects.update_or_create(
-                    baslik=baslik_id,
-                    defaults={
-                        'yukleme_miktari': miktar,
-                        'ogretmen': selected_teacher  # Öğretmen bilgisini kaydet
-                    }
-                )
-        return redirect('kaydedilenler')  # Kaydedilenler sayfasına yönlendirme
-    else:
-        # Başlıkları dinamik olarak oluştur
-        basliklar = [
-            'Ders Belgesi',
-            'Müdür Yardımcısı Onaylı Ders Belgesi',
-            'Ödevler Belgesi',
-            'Müdür Yardımcısı Onaylı Ödevler Belgesi',
-            'Yapılmış Ödevler Belgesi',
-            'Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi',
-            'Raporlar',
-            'Müdür Yardımcısı Onaylı Raporlar',
-            'Video',
-            'Excel Dosya Yüklemesi',
-            'Dilekçe Yüklemesi',
-            'Eksiklik Belirtme',
-            'Açıklama',
-        ]
-        # Ders nesnelerini doldur
-        dersler = []
-        for index, baslik in enumerate(basliklar, start=1):
-            dersler.append({'id': index, 'baslik': baslik})
+        teacher_id = request.POST.get('teacher')
+        teacher = Teacher.objects.get(id=teacher_id)
 
-    return render(request, 'courses/add_course.html', {'dersler': dersler})
+        data = {}
+        for key, value in request.POST.items():
+            if key.startswith('yukleme_miktari_') and value.isdigit():
+                # Bölüm adı inputunu al (örneğin: bolum_adi_1)
+                row_number = key.split('_')[-1]  # Satır numarasını al
+                bolum_adi_key = f'bolum_adi_{row_number}'
+                bolum_adi = request.POST.get(bolum_adi_key, f'Bölüm {row_number}')
+
+                data[bolum_adi] = int(value)
+        print(data)
+        
+        course = Course(
+            name=request.POST.get('lesson_name'),
+            teacher=teacher,
+            description=request.POST.get('description'))
+        course.save()
+        for bolum_adi, yukleme_miktari in data.items():
+            for _ in range(yukleme_miktari):
+                course_file = CourseFile(
+                    course=course,
+                    category=bolum_adi,)
+                course_file.save()    
+
+        return redirect('show_courses_list') 
+
+    else:
+        teachers = Teacher.objects.all()
+        return render(request, 'courses/add_course.html', {'teachers': teachers})
 
 def get_teachers_with_courses_and_documents():
     teachers_data = []
@@ -66,7 +57,7 @@ def get_teachers_with_courses_and_documents():
                 {
                     "category": document.category,
                     "belge_adi": document.name,
-                    "belge_url": document.file.url
+                    "belge_url": document.file.url if document.file else None
                 }
                 for document in documents
             ]
@@ -82,8 +73,6 @@ def get_teachers_with_courses_and_documents():
         teachers_data.append({
             "name": teacher.name,
             "surname": teacher.surname,
-            "telephone": teacher.telephone,
-            "email": teacher.email,
             "description": teacher.description,
             "courses": courses_data
         })
@@ -97,15 +86,14 @@ def show_teacher_with_courses_and_documents(request):
 def get_course_with_documents(course):
     courses_data = []
 
-    # Get all courses
-    # Get documents for each course
+    # Belge verilerini çek
     documents = CourseFile.objects.filter(course=course)
 
     documents_data = [
         {
             "category": document.category,
             "belge_adi": document.name,
-            "belge_url": document.file.url
+            "belge_url": document.file.url if document.file else None
         }
         for document in documents
     ]
@@ -159,5 +147,8 @@ def show_courses_list(request):
     return render(request, "courses/courses_list.html", context)
 
 
-
+def delete_course(request, id):
+    course = Course.objects.get(id=id)
+    course.delete()
+    return redirect('show_courses_list')
 
