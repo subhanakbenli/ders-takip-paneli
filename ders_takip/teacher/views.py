@@ -14,12 +14,10 @@ def add_teacher(request):
         # Formdan gelen veriler
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
         aciklama = request.POST.get('description')
         
         
-        existing_teachers = Teacher.objects.filter(ad=name,soyad=surname,email=email).exists()
+        existing_teachers = Teacher.objects.filter(ad=name,soyad=surname).exists()
 
         if existing_teachers:
             messages.warning(request, "Bu öğretmen zaten kayıtlı.")
@@ -29,8 +27,6 @@ def add_teacher(request):
             teacher = Teacher(
                 ad=name,
                 soyad=surname,
-                telefon=phone,
-                email=email,
                 aciklama=aciklama,
             )
             teacher.save()
@@ -81,5 +77,10 @@ def show_teacher_list(request):
     }
     return render(request, "teacher/teacher_list.html", context)
 
+def delete_teacher(request, id):
+    teacher = get_object_or_404(Teacher, id=id)
+    teacher.delete()
+    messages.success(request, "Öğretmen başarıyla silindi.")
+    return redirect('ogretmen_list')    
 
 

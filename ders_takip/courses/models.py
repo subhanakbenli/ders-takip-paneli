@@ -4,7 +4,7 @@ from teacher.models import Teacher
 class Course(models.Model):
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name="teacher")
     name = models.CharField(max_length=255, verbose_name="name")
-    statu = models.CharField(max_length=255, verbose_name="statu",)
+    statu = models.CharField(max_length=255, verbose_name="statu",null=True, blank=True)
     description = models.TextField(verbose_name="description", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
     is_finish = models.BooleanField(default=False, verbose_name="is_finish")
@@ -14,9 +14,9 @@ class Course(models.Model):
 
 class CourseFile(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="course")
-    category= models.CharField(max_length=255, verbose_name="category")
-    name = models.CharField(max_length=255, verbose_name="file_name")
-    file = models.FileField(upload_to='uploads/', verbose_name="file")
+    category= models.CharField(max_length=255, verbose_name="category",null=True, blank=True)
+    name = models.CharField(max_length=255, verbose_name="file_name",null=True, blank=True)
+    file = models.FileField(upload_to='uploads/', verbose_name="file",null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
 
     def __str__(self):
