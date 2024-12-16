@@ -51,10 +51,10 @@ def show_teacher_detail(request, id):
 @login_required()
 def show_teacher_list(request):
     # add teacher
-    teacher = Teacher(
-        name="John",
-        surname="Doe",
-        telephone="123456789")
+    # teacher = Teacher(
+    #     name="John",
+    #     surname="Doe",
+    #     telephone="123456789")
     # teacher.save()
     per_page = request.GET.get('per_page', 10)
     sort_by = request.GET.get('sort_by', 'name')
