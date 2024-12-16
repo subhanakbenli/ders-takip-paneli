@@ -10,123 +10,169 @@
     .container {
         max-width: 100%;
         margin: auto;
-        padding: 0 15px;
-    }
-    .hover-highlight tbody tr {
-        background-color: white;
-        transition: background-color 0.3s ease;
-    }
-    .hover-highlight tbody tr:hover {
-        background-color: #d1ecf1;
-        cursor: pointer;
+        padding: 0 10px;
     }
     .card-header, .table thead th {
-        background-color:rgb(75, 157, 239);
+        background-color: rgb(97, 98, 99);
         color: white;
+        font-size: 0.9rem;
+        padding: 10px;
     }
-    .card-footer {
-        background-color: #f8f9fa;
+    .teacher-card {
+        margin-bottom: 15px;
+        border: 1px solid rgb(55, 56, 57);
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 10px;
     }
-    .btn-primary {
-        background-color: #0056b3;
-        border-color: #0056b3;
+    .course-card {
+        margin-bottom: 10px;
+        border: 1px solid #6c757d;
+        border-radius: 6px;
+        overflow: hidden;
+        padding: 8px;
     }
-    .container h1 {
-        font-weight: bold;
+    .document-table {
+        margin-top: 8px;
+    }
+    .action-buttons {
+        text-align: right;
+        margin-top: 8px;
+    }
+    .action-buttons .btn {
+        margin-left: 4px;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+    h5 {
+        font-size: 1rem;
+        margin-bottom: 10px;
         color: #333;
     }
-    /* Adjusting the spacing between teacher cards */
-    .teacher-card {
-        margin-bottom: 20px; /* Reduces space between teacher cards */
-        border: 2px solid #007bff; /* Adds a border to distinguish between teachers */
-        border-radius: 10px;
+    h6 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        color: white;
     }
-    .course-card, .document-card {
-        border: 2px solid #007bff; /* Adds border to course and document sections */
-        border-radius: 10px;
-        margin-bottom: 10px; /* Reduces space between courses and documents */
+    p {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
     }
-    .card-body {
-        padding: 5px; /* Reduces padding inside the cards */
-    }
-    .list-group-item {
-        padding: 10px; /* Makes list items more compact */
+    table {
+        font-size: 0.85rem;
     }
     .table th, .table td {
-        padding: 8px; /* Makes the table more compact */
-        vertical-align: middle; /* Centers text vertically */
+        padding: 6px;
     }
-    .table-responsive {
-        margin-top: 15px;
+
+    /* Modal stil ayarları */
+    .custom-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1050;
+    }
+    .custom-modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        text-align: center;
+        margin: 15% auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+    .custom-modal .btn {
+        margin: 10px 5px;
     }
 </style>
 
+<script>
+    function showCustomModal() {
+        document.getElementById('customModal').style.display = 'block';
+    }
+    function hideCustomModal() {
+        document.getElementById('customModal').style.display = 'none';
+    }
+</script>
+
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Öğretmenler ve Dersler</h1>
-    
+    <h1>Öğretmenler ve Dersler</h1>
+
     {% for teacher in teachers %}
-        <div class="card shadow-lg teacher-card">
+        <div class="card teacher-card">
             <div class="card-header text-center">
                 <h4>{{ teacher.name }} {{ teacher.surname }}</h4>
             </div>
             <div class="card-body">
-                <h5 class="mt-4">Dersler:</h5>
-                {% for course in teacher.courses %}
-                    <div class="card shadow-sm course-card">
-                        <div class="card-header">
-                            <h5>{{ course.name }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Tablo: Durum, Açıklama ve Oluşturulma Tarihi -->
-                            <div class="table-responsive">
-                                <table class="table table-bordered shadow">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Durum</th>
-                                            <th>Açıklama</th>
-                                            <th>Oluşturulma Tarihi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ course.statu }}</td>
-                                            <td>{{ course.description }}</td>
-                                            <td>{{ course.created_at }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                {% if teacher.courses %}
+                    <h5>Dersler:</h5>
+                    {% for course in teacher.courses %}
+                        <div class="card course-card">
+                            <div class="card-header">
+                                <h6>{{ course.name }}</h6>
                             </div>
+                            <div class="card-body">
+                                <p><strong>Durum:</strong> {{ course.statu }}</p>
+                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
 
-                            <!-- Tablo: Belge Kategorisi ve Adı -->
-                            <div class="table-responsive mt-3">
-                                <table class="table table-bordered shadow hover-highlight">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Belge Kategorisi</th>
-                                            <th>Belge Adı</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for document in course.files %}
-                                            <tr class="document-card">
-                                                <td>{{ document.category }}</td>
-                                                <td>{{ document.belge_adi }}</td>
-                                                <td><a href="{{ document.belge_url }}" target="_blank">Belgeyi Görüntüle</a></td>
-                                            </tr>
-                                        {% empty %}
+                                <div class="document-table">
+                                    <h6>Belgeler:</h6>
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td colspan="3" class="text-center">Henüz Belge Eklenmemiş</td>
+                                                <th>Belge Kategorisi</th>
+                                                <th>Belge Adı</th>
+                                                <th>Bağlantı</th>
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {% for document in course.files %}
+                                                <tr>
+                                                    <td>{{ document.category }}</td>
+                                                    <td>{{ document.belge_adi }}</td>
+                                                    <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
+                                                </tr>
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="3" class="text-center">Henüz belge eklenmemiş.</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="btn btn-sm btn-success">Arşivle</button>
+                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal();">Sil</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center">Henüz ders eklenmemiş.</p>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
+</div>
+
+<!-- Özel Modal -->
+<div id="customModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <h5>Silmek istediğinize emin misiniz?</h5>
+        <button class="btn btn-sm btn-success" onclick="hideCustomModal();">Evet</button>
+        <button class="btn btn-sm btn-danger" onclick="hideCustomModal();">Hayır</button>
+    </div>
 </div>
 
 {% endblock content %}
