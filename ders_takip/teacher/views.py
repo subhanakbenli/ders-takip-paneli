@@ -17,7 +17,7 @@ def add_teacher(request):
         aciklama = request.POST.get('description')
         
         
-        existing_teachers = Teacher.objects.filter(ad=name,soyad=surname).exists()
+        existing_teachers = Teacher.objects.filter(name=name,surname=surname).exists()
 
         if existing_teachers:
             messages.warning(request, "Bu öğretmen zaten kayıtlı.")
@@ -25,10 +25,10 @@ def add_teacher(request):
         else:
             # Yeni müvekkil kaydı oluştur
             teacher = Teacher(
-                ad=name,
-                soyad=surname,
-                aciklama=aciklama,
-            )
+                name=name,
+                surname=surname,
+                description=aciklama,
+                )
             teacher.save()
             messages.success(request, "Yeni öğretmen başarıyla eklendi.")
             return redirect(request.META.get('HTTP_REFERER', f'/teacher/{teacher.id}'))
