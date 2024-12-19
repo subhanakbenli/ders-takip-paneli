@@ -6,5 +6,9 @@ class Teacher(models.Model):
     name = models.CharField(max_length=255, verbose_name="name")
     surname = models.CharField(max_length=255, verbose_name="surname")
     description = models.TextField(verbose_name="description", blank=True, null=True)
+    telephone = models.CharField(max_length=255, verbose_name="telephone", blank=True, null=True)
+    mail = models.EmailField(max_length=255, verbose_name="mail", blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return self.name + " " + self.surname

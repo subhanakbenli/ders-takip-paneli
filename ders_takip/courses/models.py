@@ -6,8 +6,10 @@ class Course(models.Model):
     name = models.CharField(max_length=255, verbose_name="name")
     statu = models.CharField(max_length=255, verbose_name="statu",null=True, blank=True)
     description = models.TextField(verbose_name="description", blank=True, null=True)
+    start_date = models.CharField(max_length=255, verbose_name="start_date",null=True, blank=True)
+    end_date = models.CharField(max_length=255, verbose_name="end_date",null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
-    is_finish = models.BooleanField(default=False, verbose_name="is_finish")
+    created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return self.name
 
@@ -17,8 +19,9 @@ class CourseFile(models.Model):
     category= models.CharField(max_length=255, verbose_name="category",null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name="file_name",null=True, blank=True)
     file = models.FileField(upload_to='uploads/', verbose_name="file",null=True, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
-
+    created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
     def __str__(self):
         return f"{self.category} - {self.name}"
 
