@@ -371,14 +371,14 @@
                 {% if teacher.courses %}
                     {% for course in teacher.courses %}
                         <div class="card mb-3">
-                            <div class="card-header">
-                                {{ course.name }}
-                            </div>
+                            
                             <div class="card-body">
+                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>  
+                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
                                 <p><strong>Durum:</strong> {{ course.statu }}</p>
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                                
+                                <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date}}</p>
                                 <div>
                                     <h6>Belgeler:</h6>
                                     <table class="table table-bordered">
@@ -387,22 +387,39 @@
                                                 <th>Belge Kategorisi</th>
                                                 <th>Belge Adı</th>
                                                 <th>Bağlantı</th>
+                                                <th>Başlangıç Tarihi</th>
+                                                <th>Bitiş Tarihi</th>
                                                 <th>İşlem</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for document in course.files %}
+                                                {% if document.category and document.belge_adi and document.belge_url %}
                                                 <tr>
                                                     <td>{{ document.category }}</td>
                                                     <td>{{ document.belge_adi }}</td>
                                                     <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
+                                                    <td>{{ document.start_date }}</td>
+                                                    <td>{{ document.end_date }}</td>
                                                     <td>
                                                         <button class="btn btn-sm btn-danger" onclick="showDocumentDeleteModal('{{ document.id }}');">Sil</button>
                                                     </td>
                                                 </tr>
+                                                {% else %}
+                                                <tr>
+                                                    <td>{{ document.category }}</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>{{ document.start_date }}</td>
+                                                    <td>{{ document.end_date }}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-success" onclick="addDocument('{{ course.id }}');">Ekle</button>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
                                             {% empty %}
                                                 <tr>
-                                                    <td colspan="4" class="text-center">Henüz belge eklenmemiş.</td>
+                                                    <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -414,7 +431,6 @@
                                     <button class="btn btn-sm btn-danger" onclick="showCustomModal('{{ course.id }}');">Sil</button>
                                     <button class="btn btn-sm btn-primary" onclick="archiveCourse('{{ course.id }}');">Arşivle</button>                        
                                     <button class="btn btn-sm btn-warning" onclick="showEditModal('{{ course.id }}');">Düzenle</button>
-
                                 </div>
                             </div>
                         </div>
@@ -426,6 +442,7 @@
         {% endfor %}
     </div>
 </div>
+
 
 <!-- Düzenleme Modalı -->
 <div class="modal fade" id="editCourseModal" tabindex="-1" role="dialog" aria-labelledby="editCourseModalLabel" aria-hidden="true">
