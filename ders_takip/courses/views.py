@@ -251,18 +251,12 @@ def get_course_details(request, course_id):
     """
     course = get_object_or_404(Course, id=course_id)
     files_of_course =CourseFile.objects.filter(course=course)
-    if files_of_course:
-        files = [
-            {
-                'id': file.id,
-                'category': file.category,
-                'name': file.name,
-                'file': file.file.url if file.file else None
-            }
-            for file in files_of_course
-        ]
-    else:
-        files = []
+    files = {}
+    for file in files_of_course:
+        try:
+            files[file.category] += 1 
+        except:
+            files[file.category] = 1
     data = {
         'name': course.name,
         'description': course.description,
