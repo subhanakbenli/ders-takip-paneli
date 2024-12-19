@@ -7,6 +7,23 @@
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .btn-confirm {
+        background-color: #28a745; /* Yeşil */
+        color: white;
+        border: none;
+    }
+    .btn-confirm:hover {
+        background-color: #218838;
+    }
+    .btn-cancel {
+        background-color: #dc3545; /* Kırmızı */
+        color: white;
+        border: none;
+    }
+    .btn-cancel:hover {
+        background-color: #c82333;
+    }
+
     .container {
         max-width: 100%;
         margin: auto;
@@ -92,6 +109,64 @@
     .custom-modal .btn {
         margin: 10px 5px;
     }
+    .duzenle-buton {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color:rgb(234, 107, 34); /* Turuncu arka plan */
+        color: #fff; /* Beyaz yazı */
+        text-decoration: none; /* Altı çizgiyi kaldırır */
+        border-radius: 5px; /* Kenarları yuvarlar */
+        font-size: 16px;
+        transition: background-color 0.3s; /* Hover animasyonu */
+    }
+    .duzenle-buton:hover {
+        background-color:rgb(175, 100, 8); /* Hover'da koyu turuncu */
+    }
+    .teacher-select-container {
+        position: relative;
+        width: 100%;
+    }
+    .search-bar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        display: none;
+    }
+    .teacher-options {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .teacher-options button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        border: none;
+        background: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+    .teacher-options button:hover {
+        background-color: #f1f1f1;
+    }
+    .action-buttons .btn-danger {
+        background-color: #dc3545; /* Kırmızı */
+        border: none;
+    }
+    .action-buttons .btn-primary {
+        background-color: #007bff; /* Mavi */
+        border: none;
+    }
+    .action-buttons .btn-warning {
+        background-color: #ffc107; /* Turuncu */
+        border: none;
+        color: #fff;
+    }
 </style>
 
 <script>
@@ -173,30 +248,138 @@
         }
         return cookieValue;
     }
+
+    function toggleTeacherDropdown() {
+        const dropdown = document.getElementById('teacherDropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function filterTeachers() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const teacherButtons = document.querySelectorAll('.teacher-options button');
+
+        teacherButtons.forEach(button => {
+            if (button.textContent.toLowerCase().includes(query)) {
+                button.style.display = 'block';
+            } else {
+                button.style.display = 'none';
+            }
+        });
+    }
+
+    function selectTeacher(teacherId) {
+        toggleTeacherDropdown();
+        showTeacherDetails(teacherId);
+    }
+
+    function showTeacherDetails(teacherId) {
+        const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
+        const allDetails = document.querySelectorAll('.teacher-details');
+
+        allDetails.forEach(detail => {
+            detail.style.display = 'none';
+        });
+
+        if (teacherDetails) {
+            teacherDetails.style.display = 'block';
+        }
+    }
+
+    function archiveCourse(courseId) {
+        if (confirm("Bu dersi arşivlemek istediğinize emin misiniz?")) {
+            fetch(`/dersler/arsivle/${courseId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Ders başarıyla arşivlendi.');
+                    window.location.reload();
+                } else {
+                    alert('Ders arşivlenirken bir hata oluştu.');
+                }
+            });
+        }
+    }
+
+    function editCourse(courseId) {
+        window.location.href = `/dersler/duzenle/${courseId}/`;
+    }
+
+    // Sayfa yüklendiğinde tüm detayları gizle
+    document.addEventListener('DOMContentLoaded', function() {
+        const allDetails = document.querySelectorAll('.teacher-details');
+        allDetails.forEach(detail => {
+            detail.style.display = 'none';
+        });
+    });
+    function showEditModal(courseId) {
+    console.log("Düzenleme modalı açılıyor. Course ID:", courseId); // Debug log
+
+    // API'den mevcut veriyi al
+    fetch(`/dersler/ders_bilgileri/${courseId}/`)
+        .then(response => {
+            if (!response.ok) {
+                console.error("API'den beklenmeyen cevap alındı:", response); // Hata logu
+                throw new Error('API isteği başarısız oldu.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("API'den gelen veri:", data); // Debug log
+
+            // Modal formunu doldur
+            document.getElementById('courseName').value = data.name || '';
+            document.getElementById('courseDescription').value = data.description || '';
+            document.getElementById('courseStatus').value = data.statu || '';
+
+            // Form action URL'sini ayarla
+            document.getElementById('editCourseForm').action = `/dersler/duzenle/${courseId}/`;
+
+            // Modal'ı aç
+            console.log("Modal açılıyor...");
+            $('#editCourseModal').modal('show');
+        })
+        .catch(error => {
+            console.error('Modal açılırken hata oluştu:', error); // Hata logu
+            alert('Bir hata oluştu, lütfen tekrar deneyiniz.'); // Kullanıcıya hata mesajı göster
+        });
+
+}
 </script>
 
 <div class="container mt-5">
-    <h1>Öğretmenler ve Dersler</h1>
+    <h1 class="text-center">Öğretmenler ve Dersler</h1>
 
-    {% for teacher in teachers %}
-        <div class="card teacher-card">
-            <div class="card-header text-center">
-                <h4>{{ teacher.name }} {{ teacher.surname }}</h4>
+    <div class="teacher-select-container">
+        <button class="form-control" onclick="toggleTeacherDropdown()">Öğretmen Seçiniz</button>
+        <div id="teacherDropdown" class="search-bar">
+            <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="filterTeachers()">
+            <div class="teacher-options">
+                {% for teacher in teachers %}
+                    <button onclick="selectTeacher('{{ teacher.id }}')">{{ teacher.name }} {{ teacher.surname }}</button>
+                {% endfor %}
             </div>
-            <div class="card-body">
+        </div>
+    </div>
+
+    <div id="teacherDetailsContainer">
+        {% for teacher in teachers %}
+            <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
                 {% if teacher.courses %}
-                    <h5>Dersler:</h5>
                     {% for course in teacher.courses %}
-                        <div class="card course-card">
+                        <div class="card mb-3">
                             <div class="card-header">
-                                <h6>{{ course.name }}</h6>
+                                {{ course.name }}
                             </div>
                             <div class="card-body">
                                 <p><strong>Durum:</strong> {{ course.statu }}</p>
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-
-                                <div class="document-table">
+                                
+                                <div>
                                     <h6>Belgeler:</h6>
                                     <table class="table table-bordered">
                                         <thead>
@@ -225,38 +408,75 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <!-- Yeni Eklenen İşlem Butonları -->
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-success">Arşivle</button>
-                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal('{{ course.id }}');">Bu dersi sil</button>
+                                    <button class="btn btn-sm btn-danger" onclick="showCustomModal('{{ course.id }}');">Sil</button>
+                                    <button class="btn btn-sm btn-primary" onclick="archiveCourse('{{ course.id }}');">Arşivle</button>                        
+                                    <button class="btn btn-sm btn-warning" onclick="showEditModal('{{ course.id }}');">Düzenle</button>
+
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
-                    <p class="text-center">Henüz ders eklenmemiş.</p>
+                    <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
                 {% endif %}
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 
-<!-- Ders Sil Modal -->
+<!-- Düzenleme Modalı -->
+<div class="modal fade" id="editCourseModal" tabindex="-1" role="dialog" aria-labelledby="editCourseModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCourseModalLabel">Ders Düzenle</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="editCourseForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="courseName">Ders Adı</label>
+            <input type="text" class="form-control" id="courseName" name="courseName" required>
+          </div>
+          <div class="form-group">
+            <label for="courseDescription">Açıklama</label>
+            <textarea class="form-control" id="courseDescription" name="courseDescription" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="courseStatus">Durum</label>
+            <select class="form-control" id="courseStatus" name="courseStatus" required>
+              <option value="Aktif">Aktif</option>
+              <option value="Pasif">Pasif</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+          <button type="submit" class="btn btn-primary">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Silme Onay Modalı -->
 <div id="customModal" class="custom-modal">
     <div class="custom-modal-content">
-        <h5>Bu dersi silmek istediğinize emin misiniz?</h5>
-        <button id="confirmCourseDelete" class="btn btn-sm btn-success" onclick="confirmCourseDelete();">Evet</button>
-        <button class="btn btn-sm btn-danger" onclick="hideCustomModal();">Hayır</button>
+        <p>Bu dersi silmek istediğinize emin misiniz?</p>
+        <button id="confirmCourseDelete" class="btn btn-confirm" onclick="confirmCourseDelete();">Evet</button>
+        <button class="btn btn-cancel" onclick="hideCustomModal();">Hayır</button>
     </div>
 </div>
 
-<!-- Belge Sil Modal -->
-<div id="documentDeleteModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <h5>Bu belgeyi silmek istediğinize emin misiniz?</h5>
-        <button id="confirmDocumentDelete" class="btn btn-sm btn-success" onclick="confirmDocumentDelete();">Evet</button>
-        <button class="btn btn-sm btn-danger" onclick="hideDocumentDeleteModal();">Hayır</button>
-    </div>
-</div>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
 {% endblock content %}
