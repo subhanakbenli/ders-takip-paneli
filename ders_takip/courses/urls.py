@@ -8,5 +8,6 @@ urlpatterns = [
     path("ogretmen_ve_dersleri", views.show_teacher_with_courses_and_documents, name="show_teacher_with_courses_and_documents"),
     path('ders_sil/<int:course_id>/', views.ders_sil, name='ders_sil'),
     path('belge_sil/<int:document_id>/', views.belge_sil, name='belge_sil'),
+    path('<int:id>/change-statu/<str:statu>/', views.update_course_statu, name='update_course_statu'),
     # path('kaydedilenler/', views.kaydedilenler, name='kaydedilenler'),
 ]

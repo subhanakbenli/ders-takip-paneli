@@ -14,8 +14,12 @@ def add_teacher(request):
         # Formdan gelen veriler
         name = request.POST.get('first_name')
         surname = request.POST.get('last_name')
+        title = request.POST.get('title')
+        mail = request.POST.get('mail')
+        telephone = request.POST.get('phone')
+        telephone2 = request.POST.get('phone2')
+        adress = request.POST.get('address')
         aciklama = request.POST.get('description')
-        
         
         existing_teachers = Teacher.objects.filter(name=name,surname=surname).exists()
 
@@ -27,7 +31,14 @@ def add_teacher(request):
             teacher = Teacher(
                 name=name,
                 surname=surname,
+                title=title,
+                mail=mail,
+                telephone=telephone,
+                telephone2=telephone2,
+                adress=adress,
                 description=aciklama,
+                created_by=request.user
+                
                 )
             teacher.save()
             messages.success(request, "Yeni öğretmen başarıyla eklendi.")

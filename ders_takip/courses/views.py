@@ -69,9 +69,7 @@ def add_course(request):
             "sections": get_default_sections()
         })
 
-
-
-def get_teachers_with_courses_and_documents():
+def get_teachers_with_courses_and_documents(status=None):
     teachers_data = []
 
     # Get all teachers
@@ -79,7 +77,10 @@ def get_teachers_with_courses_and_documents():
 
     for teacher in teachers:
         # Get courses for each teacher
-        courses = Course.objects.filter(teacher=teacher)
+        if status:
+            courses = Course.objects.filter(teacher=teacher, statu=status)
+        else:
+            courses = Course.objects.filter(teacher=teacher)
         
         courses_data = []
         for course in courses:
@@ -155,12 +156,12 @@ def show_course_detail(request, id):
 
 def show_courses_list(request):
     # ders ekle
-    dersi_veren = Teacher.objects.all().first()
-    # Course.objects.create(
-    #         name="Matematik 2.sınıf",
-    #         statu="Aktif",
-    #         teacher=dersi_veren,
-    #     )
+    # dersi_veren = Teacher.objects.all().first()
+    # # Course.objects.create(
+    # #         name="Matematik 2.sınıf",
+    # #         statu="Aktif",
+    # #         teacher=dersi_veren,
+    # #     )
     per_page = request.GET.get('per_page', 10)
     sort_by = request.GET.get('sort_by', 'name')
     sort_order = request.GET.get('sort_order', 'asc')
@@ -182,7 +183,6 @@ def show_courses_list(request):
     }
     return render(request, "courses/courses_list.html", context)
 
-
 @csrf_exempt
 def ders_sil(request, course_id):
     if request.method == 'POST':
@@ -201,6 +201,41 @@ def belge_sil(request, document_id):
             document = get_object_or_404(CourseFile, id=document_id)
             document.delete()
             return JsonResponse({'success': True, 'message': 'Belge başarıyla silindi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+
+def update_course_statu(request, id, statu):
+    if request.method != 'POST':
+        try:
+            course = get_object_or_404(Course, id=id)
+            course.statu = statu
+            course.save()
+            return JsonResponse({'success': True, 'message': 'Ders durumu başarıyla güncellendi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+
+def update_course_files(request, id):
+    if request.method == 'POST':
+        try:
+            course = get_object_or_404(Course, id=id)
+            data = request.POST
+            for key, value in data.items():
+                if key.startswith('uploads') and value.isdigit():
+                    row_data = key.split('[')[1].split(']')[0]
+                    label_key = f"uploads[{row_data}][label]"
+                    label = request.POST.get(label_key, f"Bölüm {row_data}")
+
+                    course_files = CourseFile.objects.filter(course=course, category=label)
+                    if course_files.count() < int(value):
+                        for _ in range(int(value) - course_files.count()):
+                            CourseFile.objects.create(course=course, category=label)
+                    elif course_files.count() > int(value):
+                        for _ in range(course_files.count() - int(value)):
+                            course_files.last().delete()
+
+            return JsonResponse({'success': True, 'message': 'Belgeler başarıyla güncellendi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})

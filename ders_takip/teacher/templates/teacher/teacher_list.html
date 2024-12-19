@@ -120,19 +120,21 @@
 <table border="1">
     <thead>
         <tr>
-            <th><a href="?sort_by=name&sort_order={% if sort_by == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Ad</a></th>
-            <th><a href="?sort_by=surname&sort_order={% if sort_by == 'surname' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Soyad</a></th>
+            <th><a href="?sort_by=name&sort_order={% if sort_by == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Ad Soyad</a></th>
+            <th><a href="?sort_by=surname&sort_order={% if sort_by == 'surname' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Unvan</a></th>
             <th>Telefon</th>
+            <th>Telefon2</th>
             <th>Email</th>
         </tr>
     </thead>
     <tbody>
         {% for teacher in page_obj %}
             <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
-                <td>{{ teacher.name }}</td>
-                <td>{{ teacher.surname }}</td>
+                <td>{{ teacher  }}</td>
+                <td>{{ teacher.title }}</td>
                 <td>{{ teacher.telephone }}</td>
-                <td>{{ teacher.email }}</td>
+                <td>{{ teacher.telephone2 }}</td>
+                <td>{{ teacher.mail }}</td>
             </tr>
         {% empty %}
             <tr>
