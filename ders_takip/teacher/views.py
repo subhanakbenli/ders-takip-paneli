@@ -6,6 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import redirect
 from .models import Teacher
 from courses.models import Course
+from django.template.loader import render_to_string
+
 
 @login_required()
 def add_teacher(request):
@@ -94,4 +96,24 @@ def delete_teacher(request, id):
     messages.success(request, "Öğretmen başarıyla silindi.")
     return redirect('ogretmen_list')    
 
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+from django.template.loader import get_template
+def render_to_pdf(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ogretmenler_listesi.pdf"'
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('PDF oluşturulamadı', content_type='text/plain')
+    return response
+
+def ogretmenler_listesi_pdf(request):
+    ogretmenler = [
+        {'isim': 'Ahmet Yılmaz', 'branş': 'Matematik'},
+        {'isim': 'Ayşe Demir', 'branş': 'Fizik'},
+    ]
+    context = {'ogretmenler': ogretmenler}
+    return render_to_pdf('pdf/teacher_list.html', context)
 

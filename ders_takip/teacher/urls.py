@@ -7,4 +7,5 @@ urlpatterns = [
     path("<int:id>", views.show_teacher_detail,name='ogretmen_sayfasi'),
     path("ogretmen_list/", views.show_teacher_list, name="ogretmen_list"),
     path("ogretmen_sil/<int:id>", views.delete_teacher, name="ogretmen_sil"),
+    path('ogretmenler-listesi-pdf/', views.ogretmenler_listesi_pdf, name='ogretmenler_listesi_pdf'),
 ]

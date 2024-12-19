@@ -9,5 +9,8 @@ urlpatterns = [
     path('ders_sil/<int:course_id>/', views.ders_sil, name='ders_sil'),
     path('belge_sil/<int:document_id>/', views.belge_sil, name='belge_sil'),
     path('<int:id>/change-statu/<str:statu>/', views.update_course_statu, name='update_course_statu'),
+    # path('ders_duzenle/<int:id>/', views.update_course, name='update_course'),
     # path('kaydedilenler/', views.kaydedilenler, name='kaydedilenler'),
+    path('duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
+    path('ders_bilgileri/<int:course_id>/', views.get_course_details, name='get_course_details'),
 ]

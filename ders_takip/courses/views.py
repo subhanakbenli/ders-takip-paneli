@@ -239,3 +239,49 @@ def update_course_files(request, id):
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import Course  # Modelinizi buraya ekleyin
+
+def get_course_details(request, course_id):
+    """
+    API endpoint to fetch course details.
+    """
+    course = get_object_or_404(Course, id=course_id)
+    files_of_course =CourseFile.objects.filter(course=course)
+    if files_of_course:
+        files = [
+            {
+                'id': file.id,
+                'category': file.category,
+                'name': file.name,
+                'file': file.file.url if file.file else None
+            }
+            for file in files_of_course
+        ]
+    else:
+        files = []
+    data = {
+        'name': course.name,
+        'description': course.description,
+        'statu': course.statu,  # Status alanını modelde tanımladığınız isme göre düzenleyin
+        'files': files
+    }
+    print(data)
+    return JsonResponse(data)
+
+def edit_course(request, course_id):
+    """
+    View to handle course edit.
+    """
+    course = get_object_or_404(Course, id=course_id)
+    if request.method == 'POST':
+        course.name = request.POST.get('courseName', course.name)
+        course.description = request.POST.get('courseDescription', course.description)
+        course.status = request.POST.get('courseStatus', course.status)  # Modeldeki status alanına göre
+        course.save()
+        return redirect('some_page')  # Düzenleme sonrası yönlendirmek istediğiniz sayfa
+    
+    return render(request, 'edit_course.html', {'course': course})
