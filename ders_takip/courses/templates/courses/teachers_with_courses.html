@@ -7,6 +7,93 @@
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+/* Ders seçimi dropdown içeriği */
+    #courseDropdown .course-options button {
+        background-color:rgb(193, 189, 189); /* Açık gri arka plan */
+        color: #333; /* Koyu gri yazı */
+        border: none; /* Kenarlıkları kaldır */
+        padding: 8px 12px; /* Buton iç boşlukları */
+        text-align: left; /* Metni sola hizala */
+        width: 100%; /* Buton genişliği */
+        border-radius: 4px; /* Köşeleri yuvarla */
+        transition: background-color 0.3s; /* Hover animasyonu */
+    }
+
+    /* Hover efekti */
+    #courseDropdown .course-options button:hover {
+        background-color: #ddd; /* Daha koyu gri */
+        color: #000; /* Siyah yazı */
+    }
+
+    .teacher-options {
+        background-color:rgb(228, 229, 231); /* Hafif gri arka plan */
+        border-radius: 4px; /* Köşeleri yuvarlat */
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+    }
+    .teacher-search-bar input {
+        background-color:rgb(222, 225, 227);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    /* Öğretmen seçme butonu görünümü */
+    .teacher-select-container button {
+        background-color:rgb(70, 71, 72); 
+        color: white; /* Beyaz yazı */
+        font-weight: bold;
+        border: 1px solidrgb(9, 9, 9);
+        border-radius: 5px;
+        padding: 5px;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center; /* Seçilen metni sola hizala */
+    }
+
+    /* Hover efekti */
+    .teacher-select-container button:hover {
+        background-color:rgb(103, 105, 106); /* Daha koyu mavi */
+        color: #fff;
+    }
+
+    /* Dropdown içeriği görünümü */
+    .teacher-search-bar {
+        max-height: 200px; /* Maksimum yükseklik */
+        overflow-y: auto; /* Taşan içeriği kaydır */
+        background-color:rgb(100, 101, 103); /* Açık gri arka plan */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    /* Dropdown butonları görünümü */
+    .teacher-options button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 12px;
+        background-color: #fff; /* Beyaz arka plan */
+        color: #333; /* Koyu gri yazı */
+        border: none;
+        border-radius: 3px;
+        transition: background-color 0.3s;
+    }
+
+    /* Dropdown buton hover efekti */
+    .teacher-options button:hover {
+        background-color: #e9ecef; /* Açık gri */
+        color:rgb(19, 19, 20); /* Mavi yazı */
+    }
+
+    .teacher-select-container button {
+        white-space: nowrap; /* Metin kaymasını önler */
+        overflow: hidden;    /* Taşan metni gizler */
+        text-overflow: ellipsis; /* Metni üç noktayla kısaltır */
+        width: 100%;         /* Butonun genişliğini korur */
+    }
+
     .search-bar {
         position: absolute;
         top: 100%;
@@ -291,14 +378,22 @@
             }
         });
     }
+    
+
     // Öğretmen seçme fonksiyonu
-    function selectTeacher(teacherId) {
+    
+    function selectTeacher(teacherId, teacherName) {
+        // Dropdown'ı kapat
         toggleTeacherDropdown();
+
+        // Seçilen öğretmenin adını butonun metni olarak yaz
+        const teacherButton = document.querySelector('.teacher-select-container button');
+        teacherButton.textContent = teacherName;
 
         // Öğretmen detaylarını göster
         showTeacherDetails(teacherId);
 
-        // Ders dropdown menüsünü doldur ve göster
+        // Ders dropdown menüsünü sıfırla ve göster
         const courseDropdownContainer = document.getElementById('courseDropdownContainer');
         const courseOptions = document.querySelector('.course-options');
 
@@ -328,6 +423,20 @@
         courseDropdownContainer.style.display = 'block';
     }
 
+    // Öğretmen seçimi butonlarına öğretmen ismini parametre olarak gönderme
+    function addTeacherButtons() {
+        const teacherButtons = document.querySelectorAll('.teacher-options button');
+        teacherButtons.forEach(button => {
+            const teacherId = button.getAttribute('onclick').match(/\d+/)[0];
+            const teacherName = button.textContent;
+            button.setAttribute('onclick', `selectTeacher(${teacherId}, '${teacherName}')`);
+        });
+    }
+
+    // Sayfa yüklendiğinde butonlara öğretmen isimlerini ekle
+    document.addEventListener('DOMContentLoaded', function () {
+        addTeacherButtons();
+    });
 
     // Öğretmen detaylarını gösterme fonksiyonu
     function showTeacherDetails(teacherId) {
@@ -444,7 +553,12 @@
         // Ders dropdown'ını göster
         courseDropdownContainer.style.display = 'block';
     }
-
+    // Çarpı veya kapat butonuna basıldığında modal'ı kapatma
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+        button.addEventListener('click', function () {
+            $('#editCourseModal').modal('hide'); // Bootstrap modal'ı kapatır
+        });
+    });
 
 }
 </script>
@@ -461,17 +575,17 @@
                     <button onclick="selectTeacher('{{ teacher.id }}')">{{ teacher.name }} {{ teacher.surname }}</button>
                 {% endfor %}
             </div>
-        </div>
+    </div>
         
         <!-- Ders Seçim Dropdown -->
-        <div id="courseDropdownContainer" style="display: none; margin-top: 10px;">
-            <button class="form-control" onclick="toggleCourseDropdown()">Ders Seçiniz</button>
-            <div id="courseDropdown" class="search-bar" style="display: none;">
-                <div class="course-options">
+    <div id="courseDropdownContainer" style="display: none; margin-top: 10px;">
+        <button class="form-control" onclick="toggleCourseDropdown()">Ders Seçiniz</button>
+        <div id="courseDropdown" class="search-bar" style="display: none;">
+            <div class="course-options">
                     <!-- Ders seçenekleri buraya JavaScript ile eklenecek -->
-                </div>
             </div>
         </div>
+    </div>
     </div>
     
 
@@ -520,11 +634,13 @@
                                                 <tr>
                                                     <td>{{ document.category }}</td>
                                                     <td></td>
-                                                    <td></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-success" onclick="addDocument('{{ course.id }}');">Ekle</button>
+                                                    </td>
                                                     <td>{{ document.start_date }}</td>
                                                     <td>{{ document.end_date }}</td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-success" onclick="addDocument('{{ course.id }}');">Ekle</button>
+                                                        
                                                     </td>
                                                 </tr>
                                                 {% endif %}
