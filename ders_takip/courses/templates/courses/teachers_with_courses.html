@@ -7,6 +7,23 @@
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .search-bar {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        display: none; /* Başlangıçta gizli */
+    }
+    .teacher-select-container {
+        position: relative;
+        width: 100%;
+    }
+
     .btn-confirm {
         background-color: #28a745; /* Yeşil */
         color: white;
@@ -26,8 +43,8 @@
 
     .container {
         max-width: 100%;
-        margin: auto;
-        padding: 0 10px;
+        margin: 0px;
+        padding: 0px;
     }
     .card-header, .table thead th {
         background-color: rgb(97, 98, 99);
@@ -122,11 +139,8 @@
     .duzenle-buton:hover {
         background-color:rgb(175, 100, 8); /* Hover'da koyu turuncu */
     }
-    .teacher-select-container {
-        position: relative;
-        width: 100%;
-    }
-    .search-bar {
+
+    .teacher-search-bar {
         position: absolute;
         top: 100%;
         left: 0;
@@ -248,12 +262,23 @@
         }
         return cookieValue;
     }
-
+    // Dropdown açma ve kapatma fonksiyonu
     function toggleTeacherDropdown() {
         const dropdown = document.getElementById('teacherDropdown');
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     }
+    // Dropdown açma ve kapatma fonksiyonu
+    function toggleCourseDropdown() {
+        const dropdown = document.getElementById('courseDropdown');
+        if (dropdown.style.display === 'block') {
+            dropdown.style.display = 'none';
+        } else {
+            dropdown.style.display = 'block';
+        }
+    }
 
+
+     // Öğretmen arama fonksiyonu
     function filterTeachers() {
         const query = document.getElementById('searchInput').value.toLowerCase();
         const teacherButtons = document.querySelectorAll('.teacher-options button');
@@ -266,12 +291,45 @@
             }
         });
     }
-
+    // Öğretmen seçme fonksiyonu
     function selectTeacher(teacherId) {
         toggleTeacherDropdown();
+
+        // Öğretmen detaylarını göster
         showTeacherDetails(teacherId);
+
+        // Ders dropdown menüsünü doldur ve göster
+        const courseDropdownContainer = document.getElementById('courseDropdownContainer');
+        const courseOptions = document.querySelector('.course-options');
+
+        // Eski dersleri temizle
+        courseOptions.innerHTML = '';
+
+        // Öğretmene ait dersleri bul ve listele
+        const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
+        if (!teacherDetails) {
+            console.error('Seçilen öğretmen detayları bulunamadı.');
+            return;
+        }
+
+        const courses = teacherDetails.querySelectorAll('.card-body p');
+        courses.forEach(course => {
+            if (course.textContent.includes("Ders Adı:")) {
+                const courseName = course.textContent.replace("Ders Adı: ", "").trim();
+                const courseButton = document.createElement('button');
+                courseButton.textContent = courseName;
+                courseButton.className = 'btn btn-light w-100 mb-2';
+                courseButton.onclick = () => alert(`Seçilen ders: ${courseName}`);
+                courseOptions.appendChild(courseButton);
+            }
+        });
+
+        // Ders dropdown'ını göster
+        courseDropdownContainer.style.display = 'block';
     }
 
+
+    // Öğretmen detaylarını gösterme fonksiyonu
     function showTeacherDetails(teacherId) {
         const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
         const allDetails = document.querySelectorAll('.teacher-details');
@@ -346,16 +404,57 @@
             console.error('Modal açılırken hata oluştu:', error); // Hata logu
             alert('Bir hata oluştu, lütfen tekrar deneyiniz.'); // Kullanıcıya hata mesajı göster
         });
+    
+
+    // Öğretmene ait dersleri getirme ve gösterme
+    function selectTeacher(teacherId) {
+        toggleTeacherDropdown();
+
+        // Seçilen öğretmen detaylarını göster
+        showTeacherDetails(teacherId);
+
+        // Ders seçim dropdown'ını göster ve dersleri ekle
+        const courseDropdownContainer = document.getElementById('courseDropdownContainer');
+        const courseOptions = document.querySelector('.course-options');
+
+        // Eski dersleri temizle
+        courseOptions.innerHTML = '';
+
+        // Seçilen öğretmene ait dersleri dinamik olarak ekle
+        const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
+        const courses = teacherDetails.querySelectorAll('.card-body p strong:contains("Ders Adı:")');
+
+        courses.forEach((course, index) => {
+            const courseName = course.parentElement.textContent.replace("Ders Adı: ", "").trim();
+            const courseButton = document.createElement('button');
+            courseButton.textContent = courseName;
+            courseButton.setAttribute('data-course-id', courseId); // ID yerine gerçek course ID kullanılabilir
+            courseButton.onclick = () => {
+                const courseId = courseButton.getAttribute('data-course-id'); // Ders ID'sini al
+                if (courseId) {
+                    window.location.href = `/dersler/detay/${courseId}/`; // Ders detay sayfasına yönlendir
+                } else {
+                    alert('Ders ID bulunamadı!');
+                }
+            }
+            courseButton.className = 'btn btn-light w-100 mb-2';
+            courseOptions.appendChild(courseButton);
+        });
+
+        // Ders dropdown'ını göster
+        courseDropdownContainer.style.display = 'block';
+    }
+
 
 }
 </script>
 
-<div class="container mt-5">
+<div class="container mt-1">
     <h1 class="text-center">Öğretmenler ve Dersler</h1>
-
+     <!-- Öğretmen Seçim Dropdown -->
     <div class="teacher-select-container">
         <button class="form-control" onclick="toggleTeacherDropdown()">Öğretmen Seçiniz</button>
-        <div id="teacherDropdown" class="search-bar">
+        <div id="teacherDropdown" class="teacher-search-bar">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="filterTeachers()">
             <div class="teacher-options">
                 {% for teacher in teachers %}
@@ -363,8 +462,20 @@
                 {% endfor %}
             </div>
         </div>
+        
+        <!-- Ders Seçim Dropdown -->
+        <div id="courseDropdownContainer" style="display: none; margin-top: 10px;">
+            <button class="form-control" onclick="toggleCourseDropdown()">Ders Seçiniz</button>
+            <div id="courseDropdown" class="search-bar" style="display: none;">
+                <div class="course-options">
+                    <!-- Ders seçenekleri buraya JavaScript ile eklenecek -->
+                </div>
+            </div>
+        </div>
     </div>
+    
 
+    <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
             <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
