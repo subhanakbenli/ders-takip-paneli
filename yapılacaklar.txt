@@ -1,3 +1,19 @@
+Hamza:
+    Ders Ekleme Sayfasında başlagıç yılı e bitiş yılı yanyana gösterilecek
+    Ders ekleme sayfasında Ders Adı Öğretmen Seçiminden sonra kkonulacak
+    DErs Ekleme sayfasındav navbardaki hata giderilecek 
+
+    Ders Listesi Sayfasında Sütünlardan Biri Durum Olacak Diğeri Başlangıç yılı diğeri de bitiş yılı olacak (Durum2 yani açıklama sütnunu kaldır)
+    Ders Detay Sayfasında Yukardaki gereksiz boşluk giderilecek
+    
+    Ders Detay sayfasında ders ile ilgili aldığımız birgiler (başlangıç bitiş açıklam vb ) gösterilecek
+    ders detay sayfasında da buton olacak ve popup ile ders düzenlenebilecek 
+    Ders detay sayfasında da arşiive al butonu sil buyonu vb olacak 
+    Ders Detay sayfasında da deadline işlemi yapıalcak aynı kaydedilenler mantığında 
+Bunları Sen yaptıktan sorna zaten bu sayfalar üzerinde yapmman gerekenler yüzde 90 bitmiş olacak ben backendi yaptığımda da zaten frontendle birleştirirken tekrar kontrol etmiş oluruz
+
+
+
 ders düzenleme sayfası eklenecek 
 ders listesi sayfasında bunun yılı gösterilecek
 ders ekle sayfasında dersin dönemi  eklenecek
