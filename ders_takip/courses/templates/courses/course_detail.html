@@ -50,11 +50,18 @@ Ders Detayı
     .action-buttons {
         position: fixed;
         bottom: 20px; /* Butonları sayfanın altından 20px yukarıda sabitle */
-        right: 20px; /* Butonları sağdan 20px içeride sabitle */
+        right: 20px; /* Butonları sağ tarafta sabitle */
         z-index: 1050;
         display: flex;
+        flex-direction: column; /* Butonları dikey olarak yerleştir */
         gap: 10px; /* Butonlar arasında boşluk bırak */
+        align-items: center; /* Aynı hizaya getir */
         animation: slide-up 0.5s ease-out;
+    }
+
+    .action-buttons .btn {
+        width: 120px; /* Buton genişliği eşit */
+        height: 40px; /* Buton yüksekliği eşit */
     }
 
     .table-responsive {
@@ -78,10 +85,12 @@ Ders Detayı
     .btn-info {
         background-color: #17a2b8;
         border-color: #17a2b8;
+        margin-right: 1px;
     }
     .btn-danger {
         background-color: #dc3545;
         border-color: #dc3545;
+        margin-right: 10px;
     }
     .badge-warning {
         background-color: #ffc107;
@@ -89,6 +98,7 @@ Ders Detayı
         font-size: 12px;
         padding: 5px 10px;
         border-radius: 5px;
+        margin-right: 1px;
     }
 </style>
 
@@ -147,9 +157,9 @@ Ders Detayı
 </div>
 
 <div class="action-buttons">
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>    
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCourseModal">Düzenle</button>
-    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>  
 </div>
 
 <!-- Arşiv Onayı Modalı -->
