@@ -6,14 +6,64 @@ Ders Kayıt Sayfası
 
 {% block content %}
 <style>
+
+  .navbar {
+    position: fixed; /* Sayfanın en üstüne sabitlemek için */
+    top: 0; /* Üstten boşluk bırakmaz */
+    left: 0; /* Soldan boşluk bırakmaz */
+    width: 100%; /* Tam genişlikte olmasını sağlar */
+    z-index: 1000; /* Diğer içeriklerin altında kalmaması için */
+    padding: 7px;
+    
+  }
+  input, select, button {
+    padding: 10px; /* İçerik ile kenarlar arasındaki boşluk */
+    border: 1px solid #ddd; /* Kenarlık rengi */
+    border-radius: 5px; /* Kenarlıkları yuvarlatır */
+    box-sizing: border-box; /* Padding'in genişlik hesabına dahil edilmesini sağlar */
+    font-size: 1rem; /* Yazı boyutunu ayarlar */
+  }
+  input:focus, select:focus, button:focus {
+    border-color: #007bff; /* Tıklanan elemanın kenarlık rengini değiştirir */
+    outline: none; /* Varsayılan odak çizgisini kaldırır */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Odaklandığında hafif bir mavi gölge ekler */
+  }
+  label {
+    display: block; /* Label'ları blok öğe yapar (alt alta dizilir) */
+    font-weight: bold; /* Kalın yazı tipi */
+    margin-bottom: 5px; /* Label ve input arasındaki boşluk */
+  }
+
+  form {
+    max-width: 1200px; /* Formun genişliğini sınırlar */
+    margin: 0 auto; /* Ortalaması için üst ve alt 0, sağ ve sol auto */
+    background: #fff; /* Form arka plan rengi */
+    padding: 20px; /* İçerik ile kenarlar arasındaki boşluk */
+    border-radius: 10px; /* Köşeleri yuvarlatır */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif bir gölge ekler */
+  }
+  .form-group-container {
+    display: flex;
+    gap: 20px; /* İki alan arasındaki boşluğu ayarlar */
+    flex-wrap: wrap; /* Ekran küçükse alanların alt alta gelmesini sağlar */
+  }
+
+  .form-group {
+    flex: 1; /* Alanların eşit genişlikte olmasını sağlar */
+  }
+
   body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     padding: 20px;
   }
   h1 {
-    text-align: center;
-    color: #333;
+    text-align: center; /* Başlığın ortalanmasını sağlar */
+    color: #444; /* Başlık rengi */
+    font-size: 2rem; /* Başlık boyutu */
+    margin: 0px; /* Başlık ve altındaki içerik arası boşluk */
+    padding: 30px;
+    margin-top: 20px;
   }
   table {
     width: 100%;
@@ -78,17 +128,21 @@ Ders Kayıt Sayfası
       </select>
     </div>
     <div class="form-group mb-3">
-      <label for="start-year" class="form-label">Başlangıç Yılı</label>
-      <input id="start-year" type="number" name="start_year" class="form-control" min="1900" max="2100" placeholder="Yıl girin" required />
-    </div>
-    <div class="form-group mb-3">
-      <label for="end-year" class="form-label">Bitiş Yılı</label>
-      <input id="end-year" type="number" name="end_year" class="form-control" min="1900" max="2100" placeholder="Yıl girin" required />
-    </div>
-    <div class="form-group mb-3">
       <label for="lesson-name" class="form-label">Ders Adı</label>
       <input id="lesson-name" type="text" name="lesson_name" class="form-control" placeholder="Ders adını girin" required />
     </div>
+    <div class="form-group-container d-flex">
+      <div class="form-group mb-3 me-3">
+        <label for="start-year" class="form-label">Başlangıç Yılı</label>
+        <input id="start-year" type="number" name="start_year" class="form-control" min="1900" max="2100" placeholder="Yıl girin" required />
+      </div>
+      <div class="form-group mb-3">
+        <label for="end-year" class="form-label">Bitiş Yılı</label>
+        <input id="end-year" type="number" name="end_year" class="form-control" min="1900" max="2100" placeholder="Yıl girin" required />
+      </div>
+  </div>
+
+    
     <div class="form-group mb-3">
       <label for="description" class="form-label">Açıklama</label>
       <input id="description" type="text" name="description" class="form-control" placeholder="Ders açıklamasını girin" />
