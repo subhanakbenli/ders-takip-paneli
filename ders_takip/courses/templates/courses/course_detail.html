@@ -8,7 +8,7 @@ Ders Detayı
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
     .container {
-        max-width: 100%;
+        max-width: 92%;
         margin: auto;
         padding: 0 15px;
     }
@@ -21,6 +21,7 @@ Ders Detayı
         cursor: pointer;
     }
     .card-header, .table thead th {
+        font-size: 15px;
         background-color: #007bff;
         color: white;
     }
@@ -32,20 +33,75 @@ Ders Detayı
         border-color: #0056b3;
     }
     .container h1 {
-        font-weight: bold;
+        font-weight: 650;
+        font-size: 1.8rem;
         color: #333;
+        margin-bottom: 20px;
+    }
+    .view-link {
+        color: #007bff;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    .view-link:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+    .action-buttons {
+        position: fixed;
+        bottom: 20px; /* Butonları sayfanın altından 20px yukarıda sabitle */
+        right: 20px; /* Butonları sağdan 20px içeride sabitle */
+        z-index: 1050;
+        display: flex;
+        gap: 10px; /* Butonlar arasında boşluk bırak */
+        animation: slide-up 0.5s ease-out;
+    }
+
+    .table-responsive {
+        margin-bottom: 80px; /* Tablo ile butonlar arasında boşluk oluştur */
+    }
+
+    @keyframes slide-up {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    .btn:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    .badge-warning {
+        background-color: #ffc107;
+        color: #212529;
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 5px;
     }
 </style>
 
 <div class="container mt-5">
     <h1 class="text-center mb-4">Ders İsmi: {{ course.0.name }}</h1>
-    
+
     <div class="card shadow-lg">
         <div class="card-header text-center">
             <h4>Ders Bilgileri</h4>
         </div>
         <div class="card-body">
             <ul class="list-group">
+                <li class="list-group-item"><strong>Öğretmen Adı:</strong> {{ teacher.name }}</li>
                 <li class="list-group-item"><strong>Durum:</strong> {{ course.0.statu }}</li>
                 <li class="list-group-item"><strong>Açıklama:</strong> {{ course.0.description }}</li>
                 <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.0.created_at }}</li>
@@ -59,18 +115,29 @@ Ders Detayı
                         <th>Belge Kategorisi</th>
                         <th>Belge Adı</th>
                         <th>Belge URL</th>
+                        <th>Başlangıç-Bitiş Tarihi</th>
+                        <th>Açıklama</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for document in course.0.files %}
                         <tr>
                             <td>{{ document.category }}</td>
-                            <td>{{ document.belge_adi }}</td>
-                            <td><a href="{{ document.belge_url }}" target="_blank">Belgeyi Görüntüle</a></td>
+                            <td>{{ document.belge_adi|default:"Henüz Belge Eklenmedi" }}</td>
+                            <td><a href="{{ document.belge_url }}" class="view-link" target="_blank">Belgeyi Görüntüle</a></td>
+                            <td>
+                                {{ document.start_date }} - {{ document.end_date }}
+                                {% with document.end_date|date:"Y-m-d" as bitis_tarihi %}
+                                    {% if bitis_tarihi|date:"U"|floatformat:0|add:"-now|date:'U'"|divisibleby:86400 <= 5 and bitis_tarihi|date:"U"|floatformat:0|add:"-now|date:'U'"|divisibleby:86400 > 0 %}
+                                        <span class="badge badge-warning ml-2">5 Gün Kaldı</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>{{ document.description }}</td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="3" class="text-center">Henüz Belge Eklenmemiş</td>
+                            <td colspan="5" class="text-center">Henüz Belge Eklenmemiş</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -78,4 +145,85 @@ Ders Detayı
         </div>
     </div>
 </div>
+
+<div class="action-buttons">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCourseModal">Düzenle</button>
+    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>
+</div>
+
+<!-- Arşiv Onayı Modalı -->
+<div class="modal fade" id="archiveConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="archiveConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="archiveConfirmationModalLabel">Dersi Arşivle</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bu dersi arşivlemek istediğinize emin misiniz? Bu işlem geri alınamaz.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-success" onclick="confirmArchiveCourse('{{ course.0.id }}')">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Silme Onayı Modalı -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Dersi Sil</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Kapat">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Bu dersi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
+                <button type="button" class="btn btn-success" onclick="confirmDeleteCourse('{{ course.0.id }}')">Evet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script>
+    function confirmArchiveCourse(courseId) {
+        console.log('Ders Arşivleniyor:', courseId);
+        $('#archiveConfirmationModal').modal('hide');
+    }
+
+    function confirmDeleteCourse(courseId) {
+        console.log('Ders Siliniyor:', courseId);
+
+        // AJAX request to delete the course
+        $.ajax({
+            url: `/courses/delete/${courseId}/`,
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert('Ders başarıyla silindi.');
+                window.location.href = '/courses/';
+            },
+            error: function(error) {
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+        });
+
+        $('#deleteConfirmationModal').modal('hide');
+    }
+</script>
+
 {% endblock content %}
