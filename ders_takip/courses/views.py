@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Course ,CourseFile  # Veritabanı modeli
 from teacher.models import Teacher  # Öğretmen modeli
 from django.core.paginator import Paginator
-from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
 
 def get_default_sections():
     """Varsayılan bölümleri döndürür."""
@@ -22,6 +22,8 @@ def get_default_sections():
         "Dilekçe Yüklemesi",
         "Eksiklik Belirtme",
     ]
+
+INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
 def add_course(request):
     if request.method == 'POST':
@@ -184,37 +186,52 @@ def show_courses_list(request):
     return render(request, "courses/courses_list.html", context)
 
 @csrf_exempt
-def ders_sil(request, course_id):
+def delete_course(request, id):
     if request.method == 'POST':
         try:
-            course = get_object_or_404(Course, id=course_id)
+            course = get_object_or_404(Course, id=id)
             course.delete()
             return JsonResponse({'success': True, 'message': 'Ders başarıyla silindi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
 @csrf_exempt
-def belge_sil(request, document_id):
+def delete_file(request, id):
+    print("delete_file",id)
     if request.method == 'POST':
         try:
-            document = get_object_or_404(CourseFile, id=document_id)
+            document = get_object_or_404(CourseFile, id=id)
             document.delete()
             return JsonResponse({'success': True, 'message': 'Belge başarıyla silindi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
-def update_course_statu(request, id, statu):
+def add_file(request, id):
+    if request.method == 'POST':
+        try:
+            course = get_object_or_404(Course, id=id)
+            category = request.POST.get('category')
+            document = CourseFile(course=course, category=category)
+            document.save()
+            return JsonResponse({'success': True, 'message': 'Belge başarıyla eklendi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
+
+
+
+def update_course_statu(request, id):
     if request.method != 'POST':
         try:
             course = get_object_or_404(Course, id=id)
-            course.statu = statu
+            course.statu = "Arşivlendi" if course.statu != "Arşivlendi" else "Aktif"
             course.save()
             return JsonResponse({'success': True, 'message': 'Ders durumu başarıyla güncellendi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
 def update_course_files(request, id):
     if request.method == 'POST':
@@ -238,18 +255,16 @@ def update_course_files(request, id):
             return JsonResponse({'success': True, 'message': 'Belgeler başarıyla güncellendi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
 
-from django.shortcuts import get_object_or_404, redirect
-from django.http import JsonResponse
-from .models import Course  # Modelinizi buraya ekleyin
 
-def get_course_details(request, course_id):
+
+def get_course_details(request, id):
     """
     API endpoint to fetch course details.
     """
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Course, id=id)
     files_of_course =CourseFile.objects.filter(course=course)
     files = {}
     for file in files_of_course:
@@ -266,11 +281,11 @@ def get_course_details(request, course_id):
     print(data)
     return JsonResponse(data)
 
-def edit_course(request, course_id):
+def edit_course(request, id):
     """
     View to handle course edit.
     """
-    course = get_object_or_404(Course, id=course_id)
+    course = get_object_or_404(Course, id=id)
     if request.method == 'POST':
         course.name = request.POST.get('courseName', course.name)
         course.description = request.POST.get('courseDescription', course.description)

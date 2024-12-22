@@ -126,8 +126,14 @@ LOGIN_URL = '/account/login/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+# Statik dosya URL'si
+STATIC_URL = '/static/'
 
-STATIC_URL = 'static/'
+# Statik dosyalar için ek klasörler
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

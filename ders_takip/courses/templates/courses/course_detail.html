@@ -208,7 +208,7 @@ Ders Detayı
 
         // AJAX request to delete the course
         $.ajax({
-            url: `/courses/delete/${courseId}/`,
+            url: `/courses/ders_sil/${courseId}/`,
             type: 'POST',
             headers: {
                 'X-CSRFToken': '{{ csrf_token }}'

@@ -102,9 +102,9 @@ from django.template.loader import get_template
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
-    response = HttpResponse(content_type='application/pdf')
+    response = HttpResponse(content_type='application/pdf; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="ogretmenler_listesi.pdf"'
-    pisa_status = pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response, encoding='utf-8')
     if pisa_status.err:
         return HttpResponse('PDF oluşturulamadı', content_type='text/plain')
     return response
