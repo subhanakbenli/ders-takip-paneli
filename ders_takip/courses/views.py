@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
+import json
 
 def get_default_sections():
     """Varsayılan bölümleri döndürür."""
@@ -122,6 +123,10 @@ def show_teacher_with_courses_and_documents(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'courses/teachers_with_courses.html', {'teachers': teachers_data})
 
+def deneme_arsiv(request):
+    teachers_data = get_teachers_with_courses_and_documents()
+    return render(request, 'courses/deneme_arsiv.html', {'teachers': teachers_data})
+
 def get_course_with_documents(course):
     courses_data = []
 
@@ -208,18 +213,10 @@ def delete_file(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
-def add_file(request, id):
-    if request.method == 'POST':
-        try:
-            course = get_object_or_404(Course, id=id)
-            category = request.POST.get('category')
-            document = CourseFile(course=course, category=category)
-            document.save()
-            return JsonResponse({'success': True, 'message': 'Belge başarıyla eklendi.'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
+from django.core.files.storage import default_storage
 
+def add_file(request, id):
+    print("dosya eklendi")
 
 
 def update_course_statu(request, id):
@@ -260,10 +257,7 @@ def update_course_files(request, id):
 
 
 
-def get_course_details(request, id):
-    """
-    API endpoint to fetch course details.
-    """
+def get_course_details(id):
     course = get_object_or_404(Course, id=id)
     files_of_course =CourseFile.objects.filter(course=course)
     files = {}
@@ -272,25 +266,54 @@ def get_course_details(request, id):
             files[file.category] += 1 
         except:
             files[file.category] = 1
-    data = {
-        'name': course.name,
-        'description': course.description,
-        'statu': course.statu,  # Status alanını modelde tanımladığınız isme göre düzenleyin
-        'files': files
-    }
-    print(data)
-    return JsonResponse(data)
+    return files
 
-def edit_course(request, id):
-    """
-    View to handle course edit.
-    """
-    course = get_object_or_404(Course, id=id)
-    if request.method == 'POST':
-        course.name = request.POST.get('courseName', course.name)
-        course.description = request.POST.get('courseDescription', course.description)
-        course.status = request.POST.get('courseStatus', course.status)  # Modeldeki status alanına göre
-        course.save()
-        return redirect('some_page')  # Düzenleme sonrası yönlendirmek istediğiniz sayfa
+
+
+def edit_course(request, course_id):
+    # İlgili dersi getir
+    course = get_object_or_404(Course, id=course_id)
+    teachers = Teacher.objects.all()  # Tüm öğretmenleri getirin
+    files = get_course_details(course_id)
     
-    return render(request, 'edit_course.html', {'course': course})
+    # Varsayılan bölümleri kontrol ederek eksik olanları 0 ile tamamla
+    default_sections = get_default_sections()
+    for section in default_sections:
+        if section not in files:
+            files[section] = 0
+    
+    if request.method == "POST":
+        # Formdan gelen verileri kaydet
+        course.name = request.POST.get("lesson_name")
+        course.start_year = request.POST.get("start_year")
+        course.end_year = request.POST.get("end_year")
+        course.description = request.POST.get("description")
+        teacher_id = request.POST.get("teacher")
+        course.teacher = get_object_or_404(Teacher, id=teacher_id)
+        course.save()
+        return redirect("teachers_with_courses.html")
+    
+    return render(request, "courses/edit_course.html", {
+        "teachers": teachers,
+        "course": course,
+        "files": files,
+    })
+
+
+
+# İndirme işlemleri
+@csrf_exempt
+def send_selected_documents(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            documents = data.get('documents', [])
+            
+            # Belgeleri işleme
+            for document in documents:
+                print(f"Belge URL: {document['documentUrl']}")
+
+            return JsonResponse({'message': 'Belgeler başarıyla alındı!'}, status=200)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Geçersiz istek.'}, status=405)

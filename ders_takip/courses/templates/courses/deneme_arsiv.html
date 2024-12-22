@@ -7,24 +7,6 @@
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-    #select-all {
-        cursor: pointer;
-        transform: scale(1.2); /* Checkbox'ı biraz büyütün */
-        margin: 2px; /* Varsayılan boşluğu sıfırlayın */
-        padding: 2px;
-    }
-    .btn-success {
-        background-color: #28a745; /* Yeşil */
-        color: white;
-        border: none;
-        font-size: 0.8rem;
-        padding: 5px 10px;
-        margin-left: 4px; /* Butonlar arasında boşluk */
-    }
-
-    .btn-success:hover {
-        background-color: #218838; /* Daha koyu yeşil */
-    }
 
 /* Ders seçimi dropdown içeriği */
     #courseDropdown .course-options button {
@@ -347,76 +329,6 @@
     }
 </style>
 <script>
-
-    //indir butonu için
-    async function sendSelectedDocuments() {
-        // Seçili olan checkbox'ları bul
-        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedCheckboxes.length === 0) {
-            alert('Lütfen göndermek için belgeleri seçin.');
-            return;
-        }
-
-        // Seçili belgelerin URL'lerini topla
-        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => ({
-            documentUrl: checkbox.getAttribute('data-document-url')
-        }));
-
-        // Backend'e POST isteği gönder
-        try {
-            const response = await fetch('/dersler/api/send-selected-documents/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': CSRFManager.getToken('csrftoken') // CSRF token ekleyin
-                },
-                body: JSON.stringify({ documents: selectedDocuments }) // Veriyi JSON olarak gönder
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                alert('Belgeler başarıyla gönderildi: ' + result.message);
-            } else {
-                alert('Belgeler gönderilemedi. Lütfen tekrar deneyin.');
-            }
-        } catch (error) {
-            console.error('Hata oluştu:', error);
-            alert('Belgeler gönderilirken bir hata oluştu.');
-        }
-    }
-
-    
-
-    // checkboxlar için
-    function downloadSelectedDocuments() {
-        const selectedDocuments = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedDocuments.length === 0) {
-            alert('Lütfen indirilecek belgeleri seçin.');
-            return;
-        }
-
-        selectedDocuments.forEach(checkbox => {
-            const documentUrl = checkbox.getAttribute('data-document-url');
-            const link = document.createElement('a');
-            link.href = documentUrl;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        alert('Seçilen belgeler indiriliyor...');
-    }
-    //Tümünü seç checkbox
-    function toggleAllCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.document-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = source.checked;
-        });
-    }
-
-</script>
-<script>
     function toggleDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
         dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
@@ -732,9 +644,6 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>
-                                                    <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)">Tümünü seç
-                                                </th>
                                                 <th>Belge Kategorisi</th>
                                                 <th>Belge Adı</th>
                                                 <th>Bağlantı</th>
@@ -747,9 +656,6 @@
                                             {% for document in course.files %}
                                                 {% if document.category and document.belge_adi and document.belge_url %}
                                                     <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                        </td>
                                                         <td>{{ document.category }}</td>
                                                         <td>{{ document.belge_adi }}</td>
                                                         <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
@@ -761,9 +667,6 @@
                                                     </tr>
                                                 {% else %}
                                                     <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                        </td>
                                                         <td>{{ document.category }}</td>
                                                         <td></td>
                                                         <td>
@@ -787,8 +690,7 @@
                                 <div class="action-buttons">
                                     <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
                                     <button class="btn btn-sm btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
-                                    <button class="btn btn-sm btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn btn-sm btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                                    <button class="btn btn-sm btn-warning">Düzenle</button>
                                 </div>
                             </div>
                         </div>

@@ -1,10 +1,11 @@
 Hamza:
-    Ders Ekleme Sayfasında başlagıç yılı e bitiş yılı yanyana gösterilecek
-    Ders ekleme sayfasında Ders Adı Öğretmen Seçiminden sonra kkonulacak
-    DErs Ekleme sayfasındav navbardaki hata giderilecek 
+    Bilidirimler ana sayfaya taşınacak!
 
-    Ders Listesi Sayfasında Sütünlardan Biri Durum Olacak Diğeri Başlangıç yılı diğeri de bitiş yılı olacak (Durum2 yani açıklama sütnunu kaldır)
-    Ders Detay Sayfasında Yukardaki gereksiz boşluk giderilecek
+
+
+
+
+
     
     Ders Detay sayfasında ders ile ilgili aldığımız birgiler (başlangıç bitiş açıklam vb ) gösterilecek
     ders detay sayfasında da buton olacak ve popup ile ders düzenlenebilecek 
