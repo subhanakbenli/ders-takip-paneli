@@ -317,3 +317,29 @@ def send_selected_documents(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Geçersiz istek.'}, status=405)
+
+
+
+@csrf_exempt
+def save_document_details(request, document_id):
+    """
+    Belirtilen belgeye ait türü, dilekçeyi ve dilekçe yazıldı mı bilgisini günceller.
+    """
+    if request.method == 'POST':
+        try:
+            # Gelen JSON verisini ayrıştır
+            data = json.loads(request.body)
+            document = get_object_or_404(CourseFile, id=document_id)
+
+            # Alanları güncelle
+            document.type = data.get('type', document.type)
+            document.petition = data.get('petition', document.petition)
+            document.written = data.get('written', document.written)
+
+            # Değişiklikleri kaydet
+            document.save()
+
+            return JsonResponse({'success': True, 'message': 'Belge bilgileri başarıyla güncellendi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})

@@ -149,6 +149,7 @@
 
     .container {
         max-width: 100%;
+        min-width: 98%;
         margin: 0px;
         padding: 0px;
     }
@@ -739,8 +740,13 @@
                                                 <th>Belge Adı</th>
                                                 <th>Bağlantı</th>
                                                 <th>Başlangıç Tarihi</th>
-                                                <th>Bitiş Tarihi</th>
+                                                <th>Kalan Gün </th>
+                                                <th>Yükleme Tarihi</th>
+                                                <th>Türü</th>
+                                                <th>Dilekçe</th>
+                                                <th>Dilekçe Eklendi mi?</th>
                                                 <th>İşlem</th>
+                                                <th>Arşive Al</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -755,9 +761,14 @@
                                                         <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
                                                         <td>{{ document.start_date }}</td>
                                                         <td>{{ document.end_date }}</td>
+                                                        <td>Yükleme Tarihi Gelecek </td>
+                                                        <td>Türü</td>
+                                                        <td>Dilekçe Adı</td>
+                                                        <td>Boolean</td>
                                                         <td>
                                                             <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
                                                         </td>
+                                                        <td>Arşive al butonu</td>
                                                     </tr>
                                                 {% else %}
                                                     <tr>
@@ -771,7 +782,13 @@
                                                         </td>
                                                         <td>{{ document.start_date }}</td>
                                                         <td>{{ document.end_date }}</td>
-                                                        <td></td>
+                                                        <td>Yükleme Tarihi Gelecek </td>
+                                                        <td>Türü</td>
+                                                        <td>Dilekçe Adı</td>
+                                                        <td>Checkbox gelecek</td>
+                                                        <td>Kaydet Butonu</td>
+                                                        <td>Arşive al butonu</td>
+                                                        
                                                     </tr>
                                                 {% endif %}
                                             {% empty %}
