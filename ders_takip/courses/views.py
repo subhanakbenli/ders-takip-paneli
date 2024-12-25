@@ -114,7 +114,7 @@ def get_course_details(id):
     return files
 
 
-
+@login_required
 def add_course_view(request):
     if request.method == 'POST':
         # Öğretmen seçimini al
@@ -162,7 +162,7 @@ def add_course_view(request):
         })
 
 
-
+@login_required
 def course_detail_view(request, id):
     course = Course.objects.get(id=id)
     course_data = get_course_with_documents(course)
@@ -172,6 +172,7 @@ def course_detail_view(request, id):
 
     return render(request, 'courses/course_detail.html', {'course': course_data})
 
+@login_required
 def courses_list_view(request):
     per_page = request.GET.get('per_page', 10)
     sort_by = request.GET.get('sort_by', 'name')
@@ -207,6 +208,7 @@ def delete_course_view(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
+@login_required
 @csrf_exempt
 def delete_file_view(request, id):
     print("delete_file",id)
@@ -219,6 +221,7 @@ def delete_file_view(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
+@login_required
 def update_course_statu(request, id):
     if request.method != 'POST':
         try:
@@ -230,6 +233,7 @@ def update_course_statu(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
+@login_required
 def update_course_files(request, id):
     if request.method == 'POST':
         try:
@@ -429,13 +433,19 @@ def save_erp(request, id):
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
-def arsive_al(request,id):
+def statu_change(request,id,statu,isCourse=False):
     try:
-        related_courseFile = get_object_or_404(CourseFile, id=id)
+        if isCourse:
+            # Dersi veritabanından al veya 404 hatası döndür
+            related = get_object_or_404(Course, id=id)
+            
+            # Arşivleme işlemi - modelinize göre uyarlayın
+        else:
+            related = get_object_or_404(CourseFile, id=id)
         
         # Arşivleme işlemi - modelinize göre uyarlayın
-        related_courseFile.is_archived = True  # veya sizin arşivleme mantığınıza göre
-        related_courseFile.save()
+        related.statu = statu
+        related.save()
         
         return JsonResponse({
             'success': True,

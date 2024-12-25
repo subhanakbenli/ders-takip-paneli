@@ -35,7 +35,7 @@ class CourseFile(models.Model):
     category = models.CharField(max_length=255, verbose_name="category", null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name="file_name", null=True, blank=True)
     type = models.CharField(max_length=255, verbose_name="type", null=True, blank=True)
-    statu = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu", null=True, blank=True)
+    statu = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu", default="aktif")
     
 
     is_uploaded = models.BooleanField(default=False)
@@ -73,9 +73,9 @@ class CourseFileVersion(models.Model):
 
 @receiver(pre_save, sender=Course)
 def update_course_files_statu(sender, instance, **kwargs):
-    if instance.pk:  # Only run on updates
+    if instance.pk:  # Sadece mevcut nesneler için çalıştır
         previous_instance = Course.objects.get(pk=instance.pk)
-        if previous_instance.statu != instance.statu and instance.statu in ["iptal", "arsiv"]:
-            instance.coursefile_set.filter(statu="aktif").update(statu=instance.statu)
-
-
+        # Eğer `statu` değiştiyse
+        if previous_instance.statu != instance.statu:
+            # `CourseFile` nesnelerinin `statu` alanını güncelle
+            instance.coursefile_set.filter(statu=previous_instance.statu).update(statu=instance.statu)

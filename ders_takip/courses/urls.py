@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('kaydet_pano/<int:id>/', views.save_pano, name='save_pano'),
     path('kaydet_erp/<int:id>/', views.save_erp, name='save_erp'),
-    path('arsive_al/<int:id>/', views.arsive_al, name='arsive_al'),
-    path('arsivle_erp/<int:id>/', views.arsive_al, name='arsivle_erp'),
+    path('durum_degis/<int:id>/<str:statu>/', views.statu_change, name='statu_change'),
+    path('durum_degis/<int:id>/<str:statu>/<str:isCourse>/', views.statu_change, name='statu_change_with_course'),
+
 ]
