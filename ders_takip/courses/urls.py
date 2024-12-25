@@ -6,9 +6,6 @@ urlpatterns = [
     path('ders_ekle', views.add_course_view, name='add_course'),
     path("ders_listesi", views.courses_list_view, name="courses_list"),
     path("<int:id>", views.course_detail_view, name="course_detail"),
-    path("pano", views.pano_view, name="pano"),
-    path('pano_ozet/', views.pano_ozet_view, name='pano_ozet'),
-    path("arsiv/", views.arsiv_view, name="arsiv"),
     
     path('ders_sil/<int:id>/', views.delete_course_view, name='delete_course'),
     path('ders_arsivle/<int:id>/', views.update_course_statu, name='update_course_statu'),
@@ -18,9 +15,8 @@ urlpatterns = [
     
     path('ders_duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
 
-    path('api/send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
+    path('send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
 
-    path('erp/', views.erp_view, name='erp'),
     path('kaydet_pano/<int:id>/', views.save_pano, name='save_pano'),
     path('kaydet_erp/<int:id>/', views.save_erp, name='save_erp'),
     path('arsive_al/<int:id>/', views.arsive_al, name='arsive_al'),

@@ -1,7 +1,141 @@
 from django.shortcuts import render
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from courses.models import Course, CourseFile, Teacher
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+
+
+def get_teachers_with_courses_and_documents(status=None):
+    teachers_data = []
+
+    # Get all teachers
+    teachers = Teacher.objects.all()
+
+    for teacher in teachers:
+        # Get courses for each teacher
+        if status:
+            courses = Course.objects.filter(teacher=teacher, statu=status)
+        else:
+            courses = Course.objects.filter(teacher=teacher)
+        
+        courses_data = []
+        for course in courses:
+            # Get documents for each course
+            documents = CourseFile.objects.filter(course=course)
+
+            documents_data = [
+                {
+                    "id": document.id,
+                    "category": document.category,
+                    "belge_adi": document.name,
+                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
+                }
+                for document in documents
+            ]
+
+            courses_data.append({
+                "id": course.id,
+                "name": course.name,
+                "statu": course.statu,
+                "description": course.description,
+                "created_at": course.created_at,
+                "documents": documents_data
+            })
+
+        teachers_data.append({
+            "id": teacher.id,
+            "name": teacher.name,
+            "surname": teacher.surname,
+            "description": teacher.description,
+            "courses": courses_data
+        })
+
+    return teachers_data
+
+
+def pano_view(request):
+    teachers_data = get_teachers_with_courses_and_documents()
+    print(teachers_data)
+    return render(request, 'pages/pano.html', {'teachers': teachers_data})
+
+def pano_ozet_view(request):
+    teachers = get_teachers_with_courses_and_documents()
+    return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
+
+
+def arsiv_view(request):
+    teachers_data = get_teachers_with_courses_and_documents()
+    return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
+def erp_view(request):
+    # Dummy Öğretmen Verileri Oluştur
+    teachers_data = [
+        {
+            "id": 1,
+            "name": "Ahmet",
+            "surname": "Yılmaz",
+            "description": "Matematik öğretmeni",
+            "courses": [
+                {
+                    "id": 101,
+                    "name": "Matematik 101",
+                    "statu": "Aktif",
+                    "description": "Başlangıç seviyesi matematik dersi",
+                    "created_at": "2024-12-01",
+                    "start_date": "2024-01-01",
+                    "files": [
+                        {
+                            "category": "Ders Belgesi",
+                            "belge_adi": "Matematik Konuları.pdf",
+                            "belge_url": "/media/Matematik_Konulari.pdf",
+                        }
+                    ],
+                }
+            ],
+        },
+        {
+            "id": 2,
+            "name": "Mehmet",
+            "surname": "Demir",
+            "description": "Fizik öğretmeni",
+            "courses": [],
+        },
+    ]
+
+    # Dummy Ders Listesi
+    per_page = request.GET.get('per_page', 10)
+    course_list = [
+        {
+            "id": 101,
+            "name": "Matematik 101",
+            "teacher": "Ahmet Yılmaz",
+            "statu": "Aktif",
+        },
+        {
+            "id": 102,
+            "name": "Fizik 101",
+            "teacher": "Mehmet Demir",
+            "statu": "Pasif",
+        },
+    ]
+    
+    paginator = Paginator(course_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,  # Geçici öğretmen verileri
+        'teachers_data': teachers_data,
+        'page_obj': page_obj,  # Geçici ders listesi
+    }
+    return render(request, 'pages/erp.html', context)
+
+
+
+
+
 
 
 def index(request):
