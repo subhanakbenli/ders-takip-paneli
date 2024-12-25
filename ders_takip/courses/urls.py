@@ -6,7 +6,7 @@ urlpatterns = [
     path('ders_ekle', views.add_course, name='add_course'),
     path("ders_listesi", views.show_courses_list, name="show_courses_list"),
     path("<int:id>", views.show_course_detail,name='show_course_detail'),
-    path("ogretmen_ve_dersleri", views.show_teacher_with_courses_and_documents, name="show_teacher_with_courses_and_documents"),
+    path("pano", views.show_teacher_with_courses_and_documents, name="show_teacher_with_courses_and_documents"),
     path("deneme_arsiv", views.deneme_arsiv, name="deneme_arsiv"),
     
     path('ders_sil/<int:id>/', views.delete_course, name='delete_course'),
@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
 
     path('erp/', views.erp_page, name='erp_page'),
-
+    path('kaydet/<int:id>/', views.kaydet, name='kaydet'),
+    path('arsive_al/<int:id>/', views.arsive_al, name='arsive_al'),
 ]
