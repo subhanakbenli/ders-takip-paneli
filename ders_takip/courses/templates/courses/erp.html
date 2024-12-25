@@ -402,6 +402,10 @@ ERP Takip
     }
 </style>
 
+
+
+
+
     {% comment %} erp durum dropdown {% endcomment %}
 <script>
     function filterByStatus(status) {
@@ -781,6 +785,92 @@ ERP Takip
     }
 </script>
 
+
+<script>
+    async function sendRequest(url, method, formData = null) {
+        try {
+            // CSRF token'ı al
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    // JSON yanıt beklediğimizi belirt
+                    'Accept': 'application/json',
+                }
+            };
+    
+            // Eğer formData varsa ekle
+            if (formData) {
+                options.body = formData;
+            }
+    
+            const response = await fetch(url, options);
+            
+            // Yanıt türünü kontrol et
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Sunucudan beklenmeyen yanıt türü geldi');
+            }
+    
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || "Sunucu hatası oluştu");
+            }
+    
+            return data;
+        } catch (error) {
+            console.error('İstek hatası:', error);
+            alert(error.message);
+            return null;
+        }
+    }
+    
+    async function saveDocument(documentId) {
+        try {
+            const form = document.getElementById(`document-form-${documentId}`);
+            if (!form) {
+                throw new Error('Form bulunamadı');
+            }
+    
+            // Form verilerini topla
+            const formData = new FormData(form);
+            
+            // İsteği gönder
+            const data = await sendRequest(`/dersler/kaydet_erp/${documentId}/`, 'POST', formData);
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla kaydedildi');
+                // Başarılı kayıt sonrası UI güncellemesi yapılabilir
+            }
+        } catch (error) {
+            console.error('Kaydetme hatası:', error);
+            alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    
+    async function archiveDocument(documentId) {
+        try {
+            const data = await sendRequest(`/dersler/arsivle_erp/${documentId}/`, 'POST');
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla arşivlendi');
+                // UI'den satırı kaldır
+                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        } catch (error) {
+            console.error('Arşivleme hatası:', error);
+            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+</script>
+
+
 <div class="container mt-1">
     <h1 class="text-center">ERP Takip</h1>
 
@@ -845,16 +935,19 @@ ERP Takip
                                                 <th>Verilen Not</th>
                                                 <th>Güncelleme Tarihi</th>
                                                 <th>Açıklama</th>
-<<<<<<< Updated upstream
                                                 <th>Kaydet</th>
                                                 <th>Arşivle</th>
-=======
-                                                <th>İşlem</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for document in course.files %}
-                                                {% if document.category and document.belge_adi and document.belge_url %}
+                                                
+                                                {% if document.id %}
+                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
+                                                {% else %}
+                                                    <form id="document-form-unknown" action="#" method="post">
+                                                {% endif %}
+                                                    {% csrf_token %}
                                                     <tr>
                                                         <td>
                                                             <input type="checkbox" class="document-checkbox" >
@@ -923,86 +1016,19 @@ ERP Takip
                                                             <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
                                                         </td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-primary">Arşivle</button>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
                                                         </td>
 
                                                     </tr>
-                                                {% else %}
-                                                      <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" >
-                                                        </td>
-                                                        <td>Yükleme alanı</td>
-                                                        <td>asdasf</td>
-                                                        <td>{{document.upload_date}}</td>
-                                                        <td>{{ document.warning_date }}</td>
-                                                        <td>{{ document.warning }}</td>
-                                                        <td>
-                                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?" />
-                                                        </td>
-                                                        <td>
-                                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="etkinlik_no" placeholder="Etkinlik No:" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="etkinlik_tarihi" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="sinif" placeholder="Sınıf:" />
-                                                        </td>
-                                                         <td>
-                                                            <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" />
-                                                        </td>
-                                                        <td>Sisteme giriş tarihi</td>
-                                                        <td>
-                                                            <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="egitim_olusturma_tarihi" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="katilimci_tarihi" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="egitim_kayit_no" placeholder="Eğitim kayıt no yazın" />
-                                                        </td>
-                                                         <td>
-                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="kodu" placeholder="Kod yazın" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="guncelleme_tarihi" />
-                                                        </td>
-                                                        <td>
-                                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-primary">Arşivle</button>
-                                                        </td>
-
-                                                </tr>
-                                            </form>
-                                            {% empty %}
-                                                <tr>
-                                                    <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>
-                                                </tr>
-                                            {% endfor %}
+                                                </form>
+                                                
+                                                    <tr>
+                                                        <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>
+                                                    </tr>
+                                                {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
