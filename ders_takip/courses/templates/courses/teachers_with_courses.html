@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Öğretmen ve Ders Bilgileri
+Pano
 {% endblock title %}
 
 {% block content %}
@@ -16,11 +16,11 @@
         font-weight: bold;
         color: white;
     }
-    
+
     .status-icon.success {
         background-color:rgb(5, 236, 143); /* Yeşil */
     }
-    
+
     .status-icon.error {
         background-color:rgb(93, 54, 18); /* Kırmızı */
     }
@@ -230,7 +230,7 @@
     .table th, .table td {
         padding: 6px;
     }
-    
+
     .duzenle-buton {
         display: inline-block;
         padding: 10px 20px;
@@ -364,7 +364,6 @@
         opacity: 1; /* Modal görünür hale gelir */
     }
 </style>
-
 <script>
 
     //indir butonu için
@@ -717,6 +716,91 @@
 </script>
 
 <script>
+    async function sendRequest(url, method, formData = null) {
+        try {
+            // CSRF token'ı al
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    // JSON yanıt beklediğimizi belirt
+                    'Accept': 'application/json',
+                }
+            };
+    
+            // Eğer formData varsa ekle
+            if (formData) {
+                options.body = formData;
+            }
+    
+            const response = await fetch(url, options);
+            
+            // Yanıt türünü kontrol et
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Sunucudan beklenmeyen yanıt türü geldi');
+            }
+    
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || "Sunucu hatası oluştu");
+            }
+    
+            return data;
+        } catch (error) {
+            console.error('İstek hatası:', error);
+            alert(error.message);
+            return null;
+        }
+    }
+    
+    async function saveDocument(documentId) {
+        try {
+            const form = document.getElementById(`document-form-${documentId}`);
+            if (!form) {
+                throw new Error('Form bulunamadı');
+            }
+    
+            // Form verilerini topla
+            const formData = new FormData(form);
+            
+            // İsteği gönder
+            const data = await sendRequest(`/dersler/kaydet/${documentId}/`, 'POST', formData);
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla kaydedildi');
+                // Başarılı kayıt sonrası UI güncellemesi yapılabilir
+            }
+        } catch (error) {
+            console.error('Kaydetme hatası:', error);
+            alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    
+    async function archiveDocument(documentId) {
+        try {
+            const data = await sendRequest(`/dersler/arsive_al/${documentId}/`, 'POST');
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla arşivlendi');
+                // UI'den satırı kaldır
+                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        } catch (error) {
+            console.error('Arşivleme hatası:', error);
+            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+</script>
+
+
+<script>
     function selectAllTeachers(teachers) {
         const teacherIds = [];
         teachers.forEach(teacher => {
@@ -725,9 +809,9 @@
         
     }
 </script>
-script
+
 <div class="container mt-1">
-    <h1 class="text-center">Öğretmenler ve Dersler</h1>
+    <h1 class="text-center">Pano</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
     <div class="teacher-select-container">
@@ -757,62 +841,84 @@ script
                             <p><strong>Açıklama:</strong> {{ course.description }}</p>
                             <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                             <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
-        
+                            
                             <!-- Documents Table -->
-                            <div>
-                                <h6>Belgeler:</h6>
-                                <form id="document-form-{{ document.id }}" action="{% url 'kaydet' document.id %}" method="post">
-                                    {% csrf_token %}
-                                    <tr>
-                                        <td>
-                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                        </td>
-                                        <td>{{ document.category }}</td>
-                                        <td>{{ document.belge_adi|default:'' }}</td>
-                                        <td>
-                                            {% if document.belge_adi and document.belge_url %}
-                                                <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
-                                            {% else %}
-                                                <button class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
-                                        </td>
-                                        <td>
-                                            <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
-                                        </td>
-                                        <td>Yükleme Tarihi Gelecek</td>
-                                        <td>
-                                            <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
-                                        </td>
-                                        <td>
-                                            <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
-                                        </td>
-                                        <td>
-                                            {% if document.is_uploaded %}
-                                                <span class="status-icon success">✔️ Yüklendi</span>
-                                            {% else %}
-                                                <span class="status-icon error">❌ Yüklenmedi</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
-                                        </td>
-                                    </tr>
-                                </form>
+                            <h6>Belgeler:</h6>
+                            {% if course.documents %}
+                                <table class="table table-bordered table-responsive text-wrap">
+                                    <thead>
+                                        <tr>
+                                            <th>Seç</th>
+                                            <th>Kategori</th>
+                                            <th>Belge Adı</th>
+                                            <th>İşlemler</th>
+                                            <th>Başlangıç Tarihi</th>
+                                            <th>Bitiş Tarihi</th>
+                                            <th>Türü</th>
+                                            <th>Dilekçe</th>
+                                            <th>Durum</th>
+                                            <th>Kaydet</th>
+                                            <th>Arşive Al</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for document in course.documents %}
+                                            <form id="document-form-{{ document.id }}" action="{% url 'kaydet' document.id %}" method="post">
+                                                {% csrf_token %}
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                    </td>
+                                                    <td>{{ document.category }}</td>
+                                                    <td>{{ document.belge_adi|default:'' }}</td>
+                                                    <td>
+                                                        {% if document.belge_adi and document.belge_url %}
+                                                            <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
+                                                        {% else %}
+                                                            <button class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
+                                                    </td>
+                                                    <td>
+                                                        {% if document.is_uploaded %}
+                                                            <span class="status-icon success">✔️ Yüklendi</span>
+                                                        {% else %}
+                                                            <span class="status-icon error">❌ Yüklenmedi</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
+                                                    </td>
+                                                </tr>
+                                            </form>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                                 
-                            </div>
-        
+                            {% else %}
+                                <p>Bu derse ait belge bulunmamaktadır.</p>
+                            {% endif %}
                             <!-- Action Buttons -->
                             <div class="action-buttons">
                                 <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
                                 <button class="btn btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
                                 <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                 <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -821,8 +927,8 @@ script
                 <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
             {% endif %}
         </div>
-        
         {% endfor %}
+
     </div>
 </div>
 

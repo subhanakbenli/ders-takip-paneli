@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 import json
-
+from django.views.decorators.http import require_http_methods
 INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
 def get_default_sections():
@@ -95,7 +95,7 @@ def get_teachers_with_courses_and_documents(status=None):
                     "id": document.id,
                     "category": document.category,
                     "belge_adi": document.name,
-                    "belge_url": document.file.url if document.file else None
+                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
                 }
                 for document in documents
             ]
@@ -106,7 +106,7 @@ def get_teachers_with_courses_and_documents(status=None):
                 "statu": course.statu,
                 "description": course.description,
                 "created_at": course.created_at,
-                "files": documents_data
+                "documents": documents_data
             })
 
         teachers_data.append({
@@ -345,6 +345,70 @@ def save_document_details(request, document_id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
 
+
+@require_http_methods(["POST"])
+def kaydet(request, id):
+    try:
+        # Belgeyi veritabanından al veya 404 hatası döndür
+        related_courseFile = get_object_or_404(CourseFile, id=id)
+        
+        # Form verilerini al
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        turu = request.POST.get('turu')
+        dilekce_name = request.POST.get('dilekce_name')
+        
+        # Belge bilgilerini güncelle
+        if start_date:
+            related_courseFile.start_date = start_date
+        if end_date:
+            related_courseFile.end_date = end_date
+        if turu:
+            related_courseFile.type = turu
+        if dilekce_name:
+            related_courseFile.dilekce_name = dilekce_name
+            
+        # Değişiklikleri kaydet
+        # related_courseFile.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Belge başarıyla güncellendi',
+            'data': {
+                'id': related_courseFile.id,
+                'start_date': related_courseFile.start_date,
+                'end_date': related_courseFile.end_date,
+                'turu': related_courseFile.type,
+                'dilekce_name': related_courseFile.dilekce_name,
+                'is_uploaded': related_courseFile.is_uploaded if hasattr(related_courseFile, 'is_uploaded') else False
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+@require_http_methods(["POST"])
+def arsive_al(request, related_courseFile_id):
+    try:
+        related_courseFile = get_object_or_404(CourseFile, id=related_courseFile_id)
+        
+        # Arşivleme işlemi - modelinize göre uyarlayın
+        related_courseFile.is_archived = True  # veya sizin arşivleme mantığınıza göre
+        related_courseFile.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Belge başarıyla arşivlendi'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
 
 
 # erp sayfası için
