@@ -9,6 +9,7 @@ ERP Takip
 <style>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     .dropdown {
         position: absolute;
         top: 10px;
@@ -39,6 +40,10 @@ ERP Takip
         width: 100%; /* Tablonun genişliğini ayarlar */
         border-collapse: collapse; /* Çizgilerin düzgün görünmesi için */
     }
+=======
+    
+    
+>>>>>>> Stashed changes
 =======
     
     
@@ -783,6 +788,7 @@ ERP Takip
 </script>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <div class="dropdown">
     <button
         class="btn btn-secondary dropdown-toggle"
@@ -801,6 +807,8 @@ ERP Takip
     </div>
 </div>
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <script>
@@ -887,6 +895,9 @@ ERP Takip
     }
 </script>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -932,9 +943,13 @@ ERP Takip
                                                 </th>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                                                 <th>Yükleme Alanı 1</th>
                                                 <th>Yükleme Alanı 2</th>
                                                 <th>Yükleme Alanı 3</th>
+=======
+                                                <th class="clipboard-column">Yükleme Alanı</th>
+>>>>>>> Stashed changes
 =======
                                                 <th class="clipboard-column">Yükleme Alanı</th>
 >>>>>>> Stashed changes
@@ -972,6 +987,9 @@ ERP Takip
                                                 <th>İşlem</th>
                                                 <th>Arşive Al</th>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -979,6 +997,7 @@ ERP Takip
                                         </thead>
                                         <tbody>
                                             {% for document in course.files %}
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
                                                 {% if document.category and document.belge_adi and document.belge_url %}
@@ -1063,6 +1082,9 @@ ERP Takip
 =======
                                             <form id="document-form-{{ document.id|default:'' }}" action="{% url 'save_erp' document.id|default:0 %}" method="post">
 >>>>>>> Stashed changes
+=======
+                                            <form id="document-form-{{ document.id|default:'' }}" action="{% url 'save_erp' document.id|default:0 %}" method="post">
+>>>>>>> Stashed changes
 
                                                 {% csrf_token %}
                                                 <tr>
@@ -1109,6 +1131,7 @@ ERP Takip
                                                         <input type="text" name="sehir" placeholder="Şehir:" />
                                                     </td>
                                                         <td>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
                                                             <input type="checkbox" class="document-checkbox" >
@@ -1216,6 +1239,24 @@ ERP Takip
                                                     </td>
                                                         <td>
 >>>>>>> Stashed changes
+=======
+                                                        <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" />
+                                                    </td>
+                                                    <td>Sisteme giriş tarihi</td>
+                                                    <td>
+                                                        <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="egitim_olusturma_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="katilimci_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="egitim_kayit_no" placeholder="Eğitim kayıt no yazın" />
+                                                    </td>
+                                                        <td>
+>>>>>>> Stashed changes
                                                         <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"></textarea>
                                                     </td>
                                                     <td>
@@ -1240,6 +1281,9 @@ ERP Takip
                                                         <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
                                                     </td>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

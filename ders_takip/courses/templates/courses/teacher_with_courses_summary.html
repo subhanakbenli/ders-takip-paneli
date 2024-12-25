@@ -863,7 +863,7 @@ Pano Özet
                                     </thead>
                                     <tbody>
                                         {% for document in course.documents %}
-                                            <form id="document-form-{{ document.id }}" action="{% url 'kaydet' document.id %}" method="post">
+                                            <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
                                                 {% csrf_token %}
                                                 <tr>
                                                     <td>

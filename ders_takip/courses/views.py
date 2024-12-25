@@ -515,8 +515,8 @@ def erp_page(request):
 
 
 def pano_ozet(request):
-    teachers = Teacher.objects.prefetch_related('courses__documents')
-    return render(request, 'teacher_with_courses_summary.html', {'teachers': teachers})
+    teachers = get_teachers_with_courses_and_documents()
+    return render(request, 'courses/teacher_with_courses_summary.html', {'teachers': teachers})
 
 
 
