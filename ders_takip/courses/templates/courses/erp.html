@@ -7,6 +7,28 @@ ERP Takip
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .dropdown {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+    }
+    .container {
+        max-width: 100%;
+        margin: 0px;
+        padding: 0px;
+    }
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .card {
+        margin-bottom: 10px;
+    }
+    .table th, .table td {
+        padding: 6px;
+    }
     .table-container {
         overflow-x: auto; /* Yatay kaydırma ekler */
         white-space: nowrap; /* İçeriğin satır altına kaymasını engeller */
@@ -355,6 +377,34 @@ ERP Takip
         opacity: 1; /* Modal görünür hale gelir */
     }
 </style>
+
+    {% comment %} erp durum dropdown {% endcomment %}
+<script>
+    function filterByStatus(status) {
+        const teacherDetails = document.querySelectorAll('.teacher-details');
+        teacherDetails.forEach(teacher => {
+            let hasVisibleCourse = false;
+            
+            const courses = teacher.querySelectorAll('.course-card');
+            courses.forEach(course => {
+                const courseStatus = course.querySelector('.course-status');
+                if (courseStatus) {
+                    const text = courseStatus.textContent.trim();
+                    if (status === 'Tümü' || text === status) {
+                        course.style.display = 'block';
+                        hasVisibleCourse = true;
+                    } else {
+                        course.style.display = 'none';
+                    }
+                }
+            });
+
+            teacher.style.display = hasVisibleCourse ? 'block' : 'none';
+        });
+    }
+</script>
+
+
 <script>
 
     //indir butonu için
@@ -467,6 +517,8 @@ ERP Takip
         },
     };
     
+
+
 
     // CSRF Token Alma
     const CSRFManager = {
@@ -704,6 +756,23 @@ ERP Takip
         ModalManager.hide('documentAddModal');
     }
 </script>
+<div class="dropdown">
+    <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="statusDropdownButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false">
+        Durum
+    </button>
+    <div class="dropdown-menu" aria-labelledby="statusDropdownButton">
+        <button class="dropdown-item" onclick="filterByStatus('Tümü')">Tümü</button>
+        <button class="dropdown-item" onclick="filterByStatus('Aktif')">Aktif</button>
+        <button class="dropdown-item" onclick="filterByStatus('İptal')">İptal</button>
+        <button class="dropdown-item" onclick="filterByStatus('Arşiv')">Arşiv</button>
+    </div>
+</div>
 
 <div class="container mt-1">
     <h1 class="text-center">ERP Takip</h1>
@@ -744,7 +813,9 @@ ERP Takip
                                                 <th>
                                                     <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)">İndirilsin mi?
                                                 </th>
-                                                <th>Yükleme Alanı</th>
+                                                <th>Yükleme Alanı 1</th>
+                                                <th>Yükleme Alanı 2</th>
+                                                <th>Yükleme Alanı 3</th>
                                                 <th>Etkinlik Tarihi</th>
                                                 <th>Yükleme Tarihi</th>
                                                 <th>Uyarı Tarihi</th>
@@ -769,7 +840,8 @@ ERP Takip
                                                 <th>Verilen Not</th>
                                                 <th>Güncelleme Tarihi</th>
                                                 <th>Açıklama</th>
-                                                <th>İşlem</th>
+                                                <th>Kaydet</th>
+                                                <th>Arşivle</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -779,7 +851,9 @@ ERP Takip
                                                         <td>
                                                             <input type="checkbox" class="document-checkbox" >
                                                         </td>
-                                                        <td>Yükleme alanı</td>
+                                                        <td><button>yükle</button></td>
+                                                        <td><button>yükle</button></td>
+                                                        <td><button>yükle</button></td>
                                                         <td>asdasf</td>
                                                         <td>{{document.upload_date}}</td>
                                                         <td>{{ document.warning_date }}</td>
@@ -843,6 +917,9 @@ ERP Takip
                                                             <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
                                                         </td>
                                                         <td>
+                                                            <button class="btn btn-sm btn-success" onclick="sendSelectedDocuments()">Kaydet</button>
+                                                        </td>
+                                                        <td>
                                                             <button class="btn btn-sm btn-primary">Arşivle</button>
                                                         </td>
 
@@ -852,7 +929,9 @@ ERP Takip
                                                         <td>
                                                             <input type="checkbox" class="document-checkbox" >
                                                         </td>
-                                                        <td>Yükleme alanı</td>
+                                                        <td><button>yükle</button></td>
+                                                        <td><button>yükle</button></td>
+                                                        <td><button>yükle</button></td>
                                                         <td>asdasf</td>
                                                         <td>{{document.upload_date}}</td>
                                                         <td>{{ document.warning_date }}</td>
@@ -911,6 +990,9 @@ ERP Takip
                                                         </td>
                                                         <td>
                                                             <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-success" onclick="sendSelectedDocuments()">Kaydet</button>
                                                         </td>
                                                         <td>
                                                             <button class="btn btn-sm btn-primary">Arşivle</button>
