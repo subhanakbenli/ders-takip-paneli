@@ -402,8 +402,42 @@ ERP Takip
     }
 </style>
 
+<script>
+    function addDocument(courseId) {
+        // Modal içinde formu aç
+        document.getElementById('courseId').value = courseId;
+        ModalManager.show('documentAddModal');
+    }
 
+     //form verilerini göndermek için
+    async function submitDocumentForm() {
+        const formData = new FormData(document.getElementById('addDocumentForm'));
+        const courseId = document.getElementById('courseId').value;
 
+        try {
+            const response = await fetch(`/belge_ekle/${courseId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': CSRFManager.getToken('csrftoken'),
+                },
+                body: formData,
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert(result.message);
+                window.location.reload();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Dosya eklenirken hata oluştu:', error);
+            alert('Bir hata oluştu.');
+        }
+
+        ModalManager.hide('documentAddModal');
+    }
+</script>
 
 
     {% comment %} erp durum dropdown {% endcomment %}
@@ -435,42 +469,7 @@ ERP Takip
 
 <script>
 
-    //indir butonu için
-    async function sendSelectedDocuments() {
-        // Seçili olan checkbox'ları bul
-        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedCheckboxes.length === 0) {
-            alert('Lütfen göndermek için belgeleri seçin.');
-            return;
-        }
-
-        // Seçili belgelerin URL'lerini topla
-        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => ({
-            documentUrl: checkbox.getAttribute('data-document-url')
-        }));
-
-        // Backend'e POST isteği gönder
-        try {
-            const response = await fetch('/dersler/api/send-selected-documents/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': CSRFManager.getToken('csrftoken') // CSRF token ekleyin
-                },
-                body: JSON.stringify({ documents: selectedDocuments }) // Veriyi JSON olarak gönder
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                alert('Belgeler başarıyla gönderildi: ' + result.message);
-            } else {
-                alert('Belgeler gönderilemedi. Lütfen tekrar deneyin.');
-            }
-        } catch (error) {
-            console.error('Hata oluştu:', error);
-            alert('Belgeler gönderilirken bir hata oluştu.');
-        }
-    }
+    
 
     
 
@@ -1038,7 +1037,7 @@ ERP Takip
                                     <button class="btn btn-sm btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">İptal</button>
                                     <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
                                     <button class="btn btn-sm btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
-                                    <button class="btn btn-sm btn-success" onclick="sendSelectedDocuments()">Ekle</button>
+                                    <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                 </div>
                             </div>
                         </div>
