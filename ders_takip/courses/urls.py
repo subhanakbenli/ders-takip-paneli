@@ -14,7 +14,7 @@ urlpatterns = [
     path('belge_ekle/<int:id>/', views.add_file, name='add_file'),
     
     path('ders_duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
-
+    
     path('send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
 
     path('kaydet_pano/<int:id>/', views.save_pano, name='save_pano'),

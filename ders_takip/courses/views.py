@@ -197,19 +197,6 @@ def courses_list_view(request):
 
 @login_required
 @csrf_exempt
-@require_http_methods(["POST"])
-def delete_course_view(request, id):
-    if request.method == 'POST':
-        try:
-            course = get_object_or_404(Course, id=id)
-            course.delete()
-            return JsonResponse({'success': True, 'message': 'Ders başarıyla silindi.'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
-
-@login_required
-@csrf_exempt
 def delete_file_view(request, id):
     print("delete_file",id)
     if request.method == 'POST':
@@ -257,7 +244,6 @@ def update_course_files(request, id):
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
-
 
 @login_required
 def edit_course(request, course_id):
@@ -322,6 +308,21 @@ def add_file(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
 
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_course_view(request, id):
+    if request.method == 'POST':
+        try:
+            course = get_object_or_404(Course, id=id)
+            course.delete()
+            return JsonResponse({'success': True, 'message': 'Ders başarıyla silindi.'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
+    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
 @login_required
 @csrf_exempt

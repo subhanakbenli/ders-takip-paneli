@@ -39,8 +39,10 @@ class CourseFile(models.Model):
     
 
     is_uploaded = models.BooleanField(default=False)
+    
     dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
     dilekce_is_uploaded = models.BooleanField(default=False)
+    
     current_version = models.OneToOneField(
         'CourseFileVersion',
         on_delete=models.SET_NULL,
