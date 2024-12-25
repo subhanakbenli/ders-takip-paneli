@@ -521,3 +521,35 @@ def pano_ozet(request):
 
 
 
+# def pano_ozet(request):
+#     # Filtreleme ve sıralama parametrelerini al
+#     per_page = int(request.GET.get('per_page', 10))
+#     sort_by = request.GET.get('sort_by', 'id')
+#     sort_order = request.GET.get('sort_order', 'asc')
+#     order = '' if sort_order == 'asc' else '-'
+
+#     # Tüm dersleri al ve sıralama uygula
+#     courses = Course.objects.select_related('teacher').prefetch_related('documents').all()
+#     courses = courses.order_by(f"{order}{sort_by}")
+
+#     # Sayfalama uygula
+#     paginator = Paginator(courses, per_page)
+#     page_number = request.GET.get('page', 1)
+#     page_obj = paginator.get_page(page_number)
+
+#     # Öğretmenleri veritabanından çek ve dersleri ilişkilendir
+#     teachers = Teacher.objects.prefetch_related('courses__documents').all()
+
+#     # Şablona aktarılacak veri bağlamını hazırla
+#     context = {
+#         'page_obj': page_obj,
+#         'teachers': teachers,
+#         'per_page': per_page,
+#         'sort_by': sort_by,
+#         'sort_order': sort_order,
+#     }
+
+#     return render(request, 'teacher_with_courses_summary.html', context)
+
+
+
