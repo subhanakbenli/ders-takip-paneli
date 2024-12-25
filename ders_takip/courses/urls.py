@@ -18,4 +18,7 @@ urlpatterns = [
     path('ders_duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
 
     path('api/send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
+
+    path('erp/', views.erp_page, name='erp_page'),
+
 ]

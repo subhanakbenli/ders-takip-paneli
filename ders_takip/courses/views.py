@@ -343,3 +343,92 @@ def save_document_details(request, document_id):
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+
+
+
+# erp sayfası için
+# def erp_page(request):
+#     # Öğretmenler ve dersler
+#     teachers_data = get_teachers_with_courses_and_documents()
+
+#     # Ders Listesi için sayfalama
+#     per_page = request.GET.get('per_page', 10)
+#     course_list = Course.objects.all().order_by('name')
+#     paginator = Paginator(course_list, per_page)
+#     page_number = request.GET.get('page')
+#     page_obj = paginator.get_page(page_number)
+
+#     context = {
+#         'teachers': Teacher.objects.all(),
+#         'teachers_data': teachers_data,
+#         'page_obj': page_obj,
+#     }
+#     return render(request, 'courses/erp.html', context)
+
+def erp_page(request):
+    # Dummy Öğretmen Verileri Oluştur
+    teachers_data = [
+        {
+            "id": 1,
+            "name": "Ahmet",
+            "surname": "Yılmaz",
+            "description": "Matematik öğretmeni",
+            "courses": [
+                {
+                    "id": 101,
+                    "name": "Matematik 101",
+                    "statu": "Aktif",
+                    "description": "Başlangıç seviyesi matematik dersi",
+                    "created_at": "2024-12-01",
+                    "start_date": "2024-01-01",
+                    "files": [
+                        {
+                            "category": "Ders Belgesi",
+                            "belge_adi": "Matematik Konuları.pdf",
+                            "belge_url": "/media/Matematik_Konulari.pdf",
+                        }
+                    ],
+                }
+            ],
+        },
+        {
+            "id": 2,
+            "name": "Mehmet",
+            "surname": "Demir",
+            "description": "Fizik öğretmeni",
+            "courses": [],
+        },
+    ]
+
+    # Dummy Ders Listesi
+    per_page = request.GET.get('per_page', 10)
+    course_list = [
+        {
+            "id": 101,
+            "name": "Matematik 101",
+            "teacher": "Ahmet Yılmaz",
+            "statu": "Aktif",
+        },
+        {
+            "id": 102,
+            "name": "Fizik 101",
+            "teacher": "Mehmet Demir",
+            "statu": "Pasif",
+        },
+    ]
+    
+    paginator = Paginator(course_list, per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,  # Geçici öğretmen verileri
+        'teachers_data': teachers_data,
+        'page_obj': page_obj,  # Geçici ders listesi
+    }
+    return render(request, 'courses/erp.html', context)
+
+
+
+
