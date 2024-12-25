@@ -130,10 +130,6 @@ LOGIN_URL = '/account/login/'
 STATIC_URL = '/static/'
 
 # Statik dosyalar için ek klasörler
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.http import JsonResponse
 import json
 
+INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
+
 def get_default_sections():
     """Varsayılan bölümleri döndürür."""
     return [
@@ -23,8 +25,6 @@ def get_default_sections():
         "Dilekçe Yüklemesi",
         "Eksiklik Belirtme",
     ]
-
-INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
 def add_course(request):
     if request.method == 'POST':
@@ -121,6 +121,7 @@ def get_teachers_with_courses_and_documents(status=None):
 
 def show_teacher_with_courses_and_documents(request):
     teachers_data = get_teachers_with_courses_and_documents()
+    print(teachers_data)
     return render(request, 'courses/teachers_with_courses.html', {'teachers': teachers_data})
 
 def deneme_arsiv(request):

@@ -7,6 +7,23 @@
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .status-icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+    }
+    
+    .status-icon.success {
+        background-color:rgb(5, 236, 143); /* Yeşil */
+    }
+    
+    .status-icon.error {
+        background-color:rgb(93, 54, 18); /* Kırmızı */
+    }
     #select-all {
         cursor: pointer;
         transform: scale(1.2); /* Checkbox'ı biraz büyütün */
@@ -26,7 +43,7 @@
         background-color: #218838; /* Daha koyu yeşil */
     }
 
-/* Ders seçimi dropdown içeriği */
+    /* Ders seçimi dropdown içeriği */
     #courseDropdown .course-options button {
         background-color:rgb(193, 189, 189); /* Açık gri arka plan */
         color: #333; /* Koyu gri yazı */
@@ -347,6 +364,7 @@
         opacity: 1; /* Modal görünür hale gelir */
     }
 </style>
+
 <script>
 
     //indir butonu için
@@ -520,9 +538,10 @@
 
         select: (teacherId, teacherName) => {
             DropdownManager.toggle('teacherDropdown');
-
+            console.log("asdasd")
             const teacherButton = document.querySelector('.teacher-select-container button');
             teacherButton.textContent = teacherName;
+            console.log(teacherName);
 
             TeacherManager.showDetails(teacherId);
         },
@@ -697,6 +716,16 @@
     }
 </script>
 
+<script>
+    function selectAllTeachers(teachers) {
+        const teacherIds = [];
+        teachers.forEach(teacher => {
+            teacherIds.push(teacher.id);
+        });
+        
+    }
+</script>
+script
 <div class="container mt-1">
     <h1 class="text-center">Öğretmenler ve Dersler</h1>
 
@@ -706,7 +735,7 @@
         <div id="teacherDropdown" class="teacher-search-bar">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="TeacherManager.filter()">
             <div class="teacher-options">
-              <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Tüm Öğretmenler</button>
+              <button class="form-control" onclick="TeacherManager.select('all', 'teacher.name  teacher.surname')">Tüm Öğretmler</button>
                 {% for teacher in teachers %}
                     <button onclick="TeacherManager.select('{{ teacher.id }}', '{{ teacher.name }} {{ teacher.surname }}')">{{ teacher.name }} {{ teacher.surname }}</button>
                 {% endfor %}
@@ -717,103 +746,82 @@
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
-            <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
-                {% if teacher.courses %}
-                    {% for course in teacher.courses %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
-                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                                <p><strong>Durum:</strong> {{ course.statu }}</p>
-                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
-                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                                <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
-                                <div>
-                                    <h6>Belgeler:</h6>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)">Tümünü seç
-                                                </th>
-                                                <th>Belge Kategorisi</th>
-                                                <th>Belge Adı</th>
-                                                <th>Bağlantı</th>
-                                                <th>Başlangıç Tarihi</th>
-                                                <th>Kalan Gün </th>
-                                                <th>Yükleme Tarihi</th>
-                                                <th>Türü</th>
-                                                <th>Dilekçe</th>
-                                                <th>Dilekçe Eklendi mi?</th>
-                                                <th>İşlem</th>
-                                                <th>Arşive Al</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for document in course.files %}
-                                                {% if document.category and document.belge_adi and document.belge_url %}
-                                                    <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                        </td>
-                                                        <td>{{ document.category }}</td>
-                                                        <td>{{ document.belge_adi }}</td>
-                                                        <td><a href="{{ document.belge_url }}" target="_blank">Görüntüle</a></td>
-                                                        <td>{{ document.start_date }}</td>
-                                                        <td>{{ document.end_date }}</td>
-                                                        <td>Yükleme Tarihi Gelecek </td>
-                                                        <td>Türü</td>
-                                                        <td>Dilekçe Adı</td>
-                                                        <td>Boolean</td>
-                                                        <td>
-                                                            <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
-                                                        </td>
-                                                        <td>Arşive al butonu</td>
-                                                    </tr>
-                                                {% else %}
-                                                    <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                        </td>
-                                                        <td>{{ document.category }}</td>
-                                                        <td></td>
-                                                        <td>
-                                                            <button class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button>
-                                                        </td>
-                                                        <td>{{ document.start_date }}</td>
-                                                        <td>{{ document.end_date }}</td>
-                                                        <td>Yükleme Tarihi Gelecek </td>
-                                                        <td>Türü</td>
-                                                        <td>Dilekçe Adı</td>
-                                                        <td>Checkbox gelecek</td>
-                                                        <td>Kaydet Butonu</td>
-                                                        <td>Arşive al butonu</td>
-                                                        
-                                                    </tr>
-                                                {% endif %}
-                                            {% empty %}
-                                                <tr>
-                                                    <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <!-- İşlem Butonları -->
-                                <div class="action-buttons">
-                                    <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
-                                    <button class="btn btn-sm btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
-                                    <button class="btn btn-sm btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn btn-sm btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                </div>
+        <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
+            {% if teacher.courses %}
+                {% for course in teacher.courses %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+                            <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                            <p><strong>Durum:</strong> {{ course.statu }}</p>
+                            <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                            <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                            <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
+        
+                            <!-- Documents Table -->
+                            <div>
+                                <h6>Belgeler:</h6>
+                                <form id="document-form-{{ document.id }}" action="{% url 'kaydet' document.id %}" method="post">
+                                    {% csrf_token %}
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                        </td>
+                                        <td>{{ document.category }}</td>
+                                        <td>{{ document.belge_adi|default:'' }}</td>
+                                        <td>
+                                            {% if document.belge_adi and document.belge_url %}
+                                                <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
+                                            {% else %}
+                                                <button class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                        </td>
+                                        <td>
+                                            <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                        </td>
+                                        <td>Yükleme Tarihi Gelecek</td>
+                                        <td>
+                                            <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
+                                        </td>
+                                        <td>
+                                            {% if document.is_uploaded %}
+                                                <span class="status-icon success">✔️ Yüklendi</span>
+                                            {% else %}
+                                                <span class="status-icon error">❌ Yüklenmedi</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
+                                        </td>
+                                    </tr>
+                                </form>
+                                
+                            </div>
+        
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
+                                <button class="btn btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
+                                <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
-                {% endif %}
-            </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
+            {% endif %}
+        </div>
+        
         {% endfor %}
     </div>
 </div>
