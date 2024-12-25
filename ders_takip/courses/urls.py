@@ -3,24 +3,24 @@ from . import views
 from courses.views import send_selected_documents
 
 urlpatterns = [
-    path('ders_ekle', views.add_course, name='add_course'),
-    path("ders_listesi", views.show_courses_list, name="show_courses_list"),
-    path("<int:id>", views.show_course_detail,name='show_course_detail'),
-    path("pano", views.show_teacher_with_courses_and_documents, name="show_teacher_with_courses_and_documents"),
-    path('pano_ozet/', views.pano_ozet, name='pano_ozet'),
-    path("deneme_arsiv", views.deneme_arsiv, name="deneme_arsiv"),
+    path('ders_ekle', views.add_course_view, name='add_course'),
+    path("ders_listesi", views.courses_list_view, name="courses_list"),
+    path("<int:id>", views.course_detail_view, name="course_detail"),
+    path("pano", views.pano_view, name="pano"),
+    path('pano_ozet/', views.pano_ozet_view, name='pano_ozet'),
+    path("arsiv/", views.arsiv_view, name="arsiv"),
     
-    path('ders_sil/<int:id>/', views.delete_course, name='delete_course'),
+    path('ders_sil/<int:id>/', views.delete_course_view, name='delete_course'),
     path('ders_arsivle/<int:id>/', views.update_course_statu, name='update_course_statu'),
     
-    path('belge_sil/<int:id>/', views.delete_file, name='delete_file'),
+    path('belge_sil/<int:id>/', views.delete_file_view, name='delete_file'),
     path('belge_ekle/<int:id>/', views.add_file, name='add_file'),
     
     path('ders_duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
 
     path('api/send-selected-documents/', views.send_selected_documents, name='send_selected_documents'),
 
-    path('erp/', views.erp_page, name='erp_page'),
+    path('erp/', views.erp_view, name='erp'),
     path('kaydet_pano/<int:id>/', views.save_pano, name='save_pano'),
     path('kaydet_erp/<int:id>/', views.save_erp, name='save_erp'),
     path('arsive_al/<int:id>/', views.arsive_al, name='arsive_al'),
