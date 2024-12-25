@@ -7,6 +7,7 @@ ERP Takip
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+<<<<<<< Updated upstream
     .dropdown {
         position: absolute;
         top: 10px;
@@ -37,6 +38,10 @@ ERP Takip
         width: 100%; /* Tablonun genişliğini ayarlar */
         border-collapse: collapse; /* Çizgilerin düzgün görünmesi için */
     }
+=======
+    
+    
+>>>>>>> Stashed changes
     #select-all {
         cursor: pointer;
         transform: scale(1.2); /* Checkbox'ı biraz büyütün */
@@ -56,7 +61,7 @@ ERP Takip
         background-color: #218838; /* Daha koyu yeşil */
     }
 
-/* Ders seçimi dropdown içeriği */
+    /* Ders seçimi dropdown içeriği */
     #courseDropdown .course-options button {
         background-color:rgb(193, 189, 189); /* Açık gri arka plan */
         color: #333; /* Koyu gri yazı */
@@ -186,8 +191,8 @@ ERP Takip
     .card-header, .table thead th {
         background-color: rgb(97, 98, 99);
         color: white;
-        font-size: 0.9rem;
-        padding: 10px;
+        font-size: 0.85rem;
+        padding: 5px;
     }
     .teacher-card {
         margin-bottom: 15px;
@@ -238,10 +243,25 @@ ERP Takip
         margin-bottom: 6px;
     }
     table {
-        font-size: 0.85rem;
+        font-size: 0.80rem;
+        width: 100%; /* Tablonun genişliğini ayarlar */
+        border-collapse: collapse; /* Çizgilerin düzgün görünmesi için */
     }
     .table th, .table td {
-        padding: 6px;
+        padding: 3px;
+    }
+    .table-container {
+        overflow-x: auto; /* Yatay kaydırma ekler */
+        white-space: nowrap; /* İçeriğin satır altına kaymasını engeller */
+    }
+    /* Panoya gönderilen sütunları ayırt etmek için */
+    .clipboard-column {
+        background-color: #d1ecf1; /* Hafif mavi ton */
+    }
+
+    .clipboard-column input, 
+    .clipboard-column textarea {
+        background-color: #f0f8ff; /* Daha açık ton */
     }
     
     .duzenle-buton {
@@ -267,7 +287,7 @@ ERP Takip
         background-color: #fff;
         border: 1px solid #ccc;
         border-radius: 4px;
-        padding: 10px;
+        padding: 3px;
         display: none;
     }
     .teacher-options {
@@ -316,7 +336,7 @@ ERP Takip
     /* Modal İçeriği */
     .custom-modal-content {
         background: #fff;
-        padding: 20px;
+        padding: 10px;
         border-radius: 8px;
         width: 350px;
         max-width: 90%; /* Ekran boyutuna göre uyum sağlar */
@@ -756,6 +776,7 @@ ERP Takip
         ModalManager.hide('documentAddModal');
     }
 </script>
+<<<<<<< Updated upstream
 <div class="dropdown">
     <button
         class="btn btn-secondary dropdown-toggle"
@@ -773,6 +794,91 @@ ERP Takip
         <button class="dropdown-item" onclick="filterByStatus('Arşiv')">Arşiv</button>
     </div>
 </div>
+=======
+<script>
+    async function sendRequest(url, method, formData = null) {
+        try {
+            // CSRF token'ı al
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    // JSON yanıt beklediğimizi belirt
+                    'Accept': 'application/json',
+                }
+            };
+    
+            // Eğer formData varsa ekle
+            if (formData) {
+                options.body = formData;
+            }
+    
+            const response = await fetch(url, options);
+            
+            // Yanıt türünü kontrol et
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Sunucudan beklenmeyen yanıt türü geldi');
+            }
+    
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || "Sunucu hatası oluştu");
+            }
+    
+            return data;
+        } catch (error) {
+            console.error('İstek hatası:', error);
+            alert(error.message);
+            return null;
+        }
+    }
+    
+    async function saveDocument(documentId) {
+        try {
+            const form = document.getElementById(`document-form-${documentId}`);
+            if (!form) {
+                throw new Error('Form bulunamadı');
+            }
+    
+            // Form verilerini topla
+            const formData = new FormData(form);
+            
+            // İsteği gönder
+            const data = await sendRequest(`/dersler/kaydet_erp/${documentId}/`, 'POST', formData);
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla kaydedildi');
+                // Başarılı kayıt sonrası UI güncellemesi yapılabilir
+            }
+        } catch (error) {
+            console.error('Kaydetme hatası:', error);
+            alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    
+    async function archiveDocument(documentId) {
+        try {
+            const data = await sendRequest(`/dersler/arsivle_erp/${documentId}/`, 'POST');
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla arşivlendi');
+                // UI'den satırı kaldır
+                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
+                if (row) {
+                    row.remove();
+                }
+            }
+        } catch (error) {
+            console.error('Arşivleme hatası:', error);
+            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+</script>
+>>>>>>> Stashed changes
 
 <div class="container mt-1">
     <h1 class="text-center">ERP Takip</h1>
@@ -813,12 +919,16 @@ ERP Takip
                                                 <th>
                                                     <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)">İndirilsin mi?
                                                 </th>
+<<<<<<< Updated upstream
                                                 <th>Yükleme Alanı 1</th>
                                                 <th>Yükleme Alanı 2</th>
                                                 <th>Yükleme Alanı 3</th>
+=======
+                                                <th class="clipboard-column">Yükleme Alanı</th>
+>>>>>>> Stashed changes
                                                 <th>Etkinlik Tarihi</th>
                                                 <th>Yükleme Tarihi</th>
-                                                <th>Uyarı Tarihi</th>
+                                                <th>Bitiş Tarihi</th>
                                                 <th>Uyarı</th>
                                                 <th>Türü</th>
                                                 <th>Dilekçe Yazıldı mı?</th>
@@ -840,12 +950,18 @@ ERP Takip
                                                 <th>Verilen Not</th>
                                                 <th>Güncelleme Tarihi</th>
                                                 <th>Açıklama</th>
+<<<<<<< Updated upstream
                                                 <th>Kaydet</th>
                                                 <th>Arşivle</th>
+=======
+                                                <th>İşlem</th>
+                                                <th>Arşive Al</th>
+>>>>>>> Stashed changes
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for document in course.files %}
+<<<<<<< Updated upstream
                                                 {% if document.category and document.belge_adi and document.belge_url %}
                                                     <tr>
                                                         <td>
@@ -922,11 +1038,56 @@ ERP Takip
                                                         <td>
                                                             <button class="btn btn-sm btn-primary">Arşivle</button>
                                                         </td>
+=======
+                                            <form id="document-form-{{ document.id|default:'' }}" action="{% url 'save_erp' document.id|default:0 %}" method="post">
+>>>>>>> Stashed changes
 
-                                                    </tr>
-                                                {% else %}
-                                                      <tr>
+                                                {% csrf_token %}
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="document-checkbox" >
+                                                    </td>
+                                                    <td>Yükleme alanı</td>
+                                                    <td>
+                                                        <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="upload_date" class="form-control" value="{{ document.upload_date }}">
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                    </td>
+                                                    <td>{{ document.warning }}</td>
+                                                    <td>
+                                                        <input type="text" name="type" placeholder="Türü yazın" />
+                                                    </td>
+                                                    <td>
+                                                        {% if document.dilekce_is_uploaded %}
+                                                            <span class="status-icon success">✔️</span>
+                                                        {% else %}
+                                                            <span class="status-icon error">❌</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <textarea type = "text" name="description" placeholder="Açıklama yazın"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="etkinlik_no" placeholder="Etkinlik No:" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="etkinlik_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="sinif" placeholder="Sınıf:" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="sehir" placeholder="Şehir:" />
+                                                    </td>
                                                         <td>
+<<<<<<< Updated upstream
                                                             <input type="checkbox" class="document-checkbox" >
                                                         </td>
                                                         <td><button>yükle</button></td>
@@ -997,9 +1158,50 @@ ERP Takip
                                                         <td>
                                                             <button class="btn btn-sm btn-primary">Arşivle</button>
                                                         </td>
+=======
+                                                        <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" />
+                                                    </td>
+                                                    <td>Sisteme giriş tarihi</td>
+                                                    <td>
+                                                        <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="egitim_olusturma_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="katilimci_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="egitim_kayit_no" placeholder="Eğitim kayıt no yazın" />
+                                                    </td>
+                                                        <td>
+                                                        <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="kodu" placeholder="Kod yazın" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1" />
+                                                    </td>
+                                                    <td>
+                                                        <input type="date" name="guncelleme_tarihi" />
+                                                    </td>
+                                                    <td>
+                                                        <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
+                                                    </td>
+>>>>>>> Stashed changes
 
-                                                    </tr>
-                                                {% endif %}
+                                                </tr>
+                                            </form>
                                             {% empty %}
                                                 <tr>
                                                     <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>

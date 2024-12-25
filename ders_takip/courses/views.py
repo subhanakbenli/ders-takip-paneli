@@ -347,7 +347,7 @@ def save_document_details(request, document_id):
 
 
 @require_http_methods(["POST"])
-def kaydet(request, id):
+def save_pano(request, id):
     try:
         # Belgeyi veritabanından al veya 404 hatası döndür
         related_courseFile = get_object_or_404(CourseFile, id=id)
@@ -391,9 +391,25 @@ def kaydet(request, id):
         }, status=400)
 
 @require_http_methods(["POST"])
-def arsive_al(request, related_courseFile_id):
+def save_erp(request, id):
     try:
-        related_courseFile = get_object_or_404(CourseFile, id=related_courseFile_id)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Belge başarıyla güncellendi',
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+
+@require_http_methods(["POST"])
+def arsive_al(request,id):
+    try:
+        related_courseFile = get_object_or_404(CourseFile, id=id)
         
         # Arşivleme işlemi - modelinize göre uyarlayın
         related_courseFile.is_archived = True  # veya sizin arşivleme mantığınıza göre
