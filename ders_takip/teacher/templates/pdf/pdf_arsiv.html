@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ teacher.name }} Ders Arşivi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e90ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e90ff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ teacher.name }} Ders Arşivi</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Proje</th>
+                <th>Yükleme Alanı</th>
+                <th>Etkinlik Tarihi</th>
+                <th>Yükleme Tarihi</th>
+                <th>ERP Açıklama</th>
+                <th>ERP Kodu</th>
+                <th>Not</th>
+                <th>Dilekçe</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_data %}
+                <tr>
+                    <td>{{ row.proje }}</td>
+                    <td>{{ row.panoya.yukleme_alani|default:'' }}</td>
+                    <td>{{ row.panoya.etkinlik_tarihi|default:'' }}</td>
+                    <td>{{ row.panoya.yukleme_tarihi|default:'' }}</td>
+                    <td>{{ row.erp.aciklama|default:'' }}</td>
+                    <td>{{ row.erp.kodu|default:'' }}</td>
+                    <td>{{ row.erp.not|default:'' }}</td>
+                    <td>{{ row.erp.dilekce|default:'' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

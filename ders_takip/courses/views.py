@@ -93,6 +93,7 @@ def get_course_with_documents(course):
     ]
 
     courses_data.append({
+        "id": course.id,
         "name": course.name,
         "statu": course.statu,
         "description": course.description,

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Öğretmen Detayı</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Öğretmen: {{ teacher.name }} {{ teacher.surname }}</h1>
+
+    <ul>
+        <li><strong>Telefon:</strong> {{ teacher.telephone }}</li>
+        <li><strong>Email:</strong> {{ teacher.email }}</li>
+    </ul>
+
+    <h2>Verdiği Dersler</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ders Adı</th>
+                <th>Ders Açıklaması</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ders in ogretmen_dersleri %}
+                <tr>
+                    <td>{{ ders.name }}</td>
+                    <td>{{ ders.description }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center;">Henüz ders yok.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course.name }}</title>
+</head>
+<body>
+    <h1>{{ course.name }}</h1>
+    <p><strong>Öğretmen:</strong> {{ teacher.name }}</p>
+    <p><strong>Durum:</strong> {{ course.statu }}</p>
+    <p><strong>Açıklama:</strong> {{ course.description }}</p>
+    <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+
+    <h2>Belgeler</h2>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Belge Kategorisi</th>
+                <th>Belge Adı</th>
+                <th>Başlangıç-Bitiş Tarihi</th>
+                <th>Açıklama</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for document in documents %}
+                <tr>
+                    <td>{{ document.category }}</td>
+                    <td>{{ document.belge_adi|default:"Belge Eklenmedi" }}</td>
+                    <td>{{ document.start_date }} - {{ document.end_date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">Henüz belge eklenmemiş.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -5,8 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import redirect
 from .models import Teacher
-from courses.models import Course
+from courses.models import Course,CourseFile
 from django.template.loader import render_to_string
+
+
 
 
 @login_required()
@@ -117,4 +119,91 @@ def ogretmenler_listesi_pdf(request):
     context = {'ogretmenler': ogretmenler}
     return render_to_pdf('pdf/teacher_list.html', context)
 
+def get_course_with_documents(course):
+    # Belge verilerini çek
+    documents = CourseFile.objects.filter(course=course)
+
+    documents_data = [
+        {
+            "category": document.category,
+            "belge_adi": document.name,
+            "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
+        }
+        for document in documents
+    ]
+
+    return documents_data
+
+
+def generate_pdf(request, course_id):
+    # Course objesini al
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Template’e gönderilecek context verisi
+    context = {
+        'course': course,
+        'teacher': course.teacher,
+        'documents': get_course_with_documents(course=course)
+    }
+    
+    # PDF olarak render et
+    return render_to_pdf('pdf/pdf_template.html', context)
+
+
+# öğretmen detay sayfası pdf
+def teacher_pdf(request, teacher_id):
+    # Öğretmeni al
+    teacher = get_object_or_404(Teacher, id=teacher_id)
+
+    # Öğretmenin derslerini al
+    # ogretmen_dersleri = teacher.course_set.all()  # Teacher modelinizin ders ilişkisine göre düzenleyin
+
+    # Şablona gönderilecek veriler
+    context = {
+        'teacher': teacher,
+        # 'ogretmen_dersleri': ogretmen_dersleri,
+    }
+
+    # PDF'yi render et
+    return render_to_pdf('pdf/pdf_teacher_detail.html', context)
+
+def pdf_pano(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    # documents = course.documents.all()  # Dersin belgelerini alın
+
+    context = {
+        'course': course,
+        # 'documents': documents
+    }
+
+    return render_to_pdf('pdf/pdf_pano.html', context)
+
+
+def pano_ozet_pdf(request, course_id):
+    # İlgili kursu al
+    course = get_object_or_404(Course, id=course_id)
+    context = {
+        'course': course,
+        # 'documents': course.documents.all()  # Kursun belgeleri
+    }
+    return render_to_pdf('pano_ozet_pdf.html', context)
+
+def pdf_arsiv(request, teacher_id):
+    teacher = get_object_or_404(Teacher, id=teacher_id)
+    # table_data = teacher.get_table_data()  # Öğretmen verilerini alın 
+
+    context = {
+        'teacher': teacher,
+        # 'table_data': table_data
+    }
+
+    return render_to_pdf('pdf/pdf_arsiv.html', context)
+
+def erp_pdf(request, teacher_id):
+    teacher = get_object_or_404(Teacher, id=teacher_id)
+    context = {
+        "teacher": teacher,
+        "courses": teacher.courses.all(),  # Varsayılan olarak öğretmenin tüm kurslarını gönder
+    }
+    return render_to_pdf("pdf/erp_pdf.html", context)
 

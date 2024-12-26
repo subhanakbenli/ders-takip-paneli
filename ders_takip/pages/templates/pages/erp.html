@@ -10,6 +10,21 @@ ERP Takip
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+    .btn-pdf {
+        background-color: #28a745; /* Yeşil */
+        color: white;
+        border: none;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: right;
+        margin-bottom: 20px
+    }
+
+    .btn-pdf:hover {
+        background-color: #218838; /* Daha koyu yeşil */
+        cursor: pointer;
+    }
     .dropdown {
         position: absolute;
         top: 10px;
@@ -402,8 +417,17 @@ ERP Takip
     }
 </style>
 
-
-   
+{% comment %} pdf {% endcomment %}
+<script>
+    function downloadPDF(teacherId) {
+        if (!teacherId) {
+            alert("Lütfen bir öğretmen seçin!");
+            return;
+        }
+        const url = `/ogretmen/${teacherId}/erp_pdf/`; // İlgili path'e yönlendirme
+        window.location.href = url;
+    }
+</script>
 
 <script>
     function addDocument(courseId) {
@@ -1101,6 +1125,7 @@ ERP Takip
                                     <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
                                     <button class="btn btn-warning" onclick="archiveCourse({{course.id}},'arsiv','True')">Arşivle</button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                    <button class="btn-pdf" onclick="downloadPDF('{{ teacher.id }}')">PDF İndir</button>
                                 </div>
                             </div>
                         </div>

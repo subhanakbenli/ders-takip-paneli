@@ -812,6 +812,20 @@ Pano
     }
 </script>
 
+
+{% comment %} pdf {% endcomment %}
+<script>
+    function downloadPDF(courseId) {
+        if (!courseId) {
+            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
+            return;
+        }
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
+    }
+</script>
+
+
 <div class="container mt-1">
     <h1 class="text-center">Pano</h1>
 
@@ -923,6 +937,9 @@ Pano
                                 <button class="btn btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
                                 <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                 <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                                 <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
+
+
                             </div>
                             </div>
                         </div>

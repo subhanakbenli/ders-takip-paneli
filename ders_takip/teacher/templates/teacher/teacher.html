@@ -35,7 +35,38 @@
         font-weight: bold;
         color: #333;
     }
+     .btn-pdf-download {
+        position: fixed; /* Sabit bir konumda duracak */
+        bottom: 20px; /* Sayfanın altından 20px yukarıda */
+        right: 20px; /* Sayfanın sağından 20px içeride */
+        padding: 10px 20px;
+        background-color: #28a745; /* Yeşil renk */
+        color: white;
+        border: none;
+        border-radius: 50px; /* Yuvarlak köşeler */
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hafif gölge efekti */
+        z-index: 1000; /* Diğer elemanların üstünde görünecek */
+        transition: background-color 0.3s, transform 0.3s; /* Hover ve büyütme efekti */
+    }
+
+    .btn-pdf-download:hover {
+        background-color: #218838; /* Daha koyu yeşil */
+        transform: scale(1.05); /* Hafif büyütme efekti */
+    }
 </style>
+
+
+{% comment %} pdf için {% endcomment %}
+<script>
+    function downloadPDF(teacherId) {
+        window.location.href = `/ogretmen/${teacherId}/teacher_pdf/`;
+    }
+</script>
+
+
 
 <div class="container mt-5">
     <h1 class="text-center mb-4">Öğretmen İsmi: {{ teacher.name }} {{ teacher.surname }}</h1>
@@ -73,6 +104,8 @@
                 </tbody>
             </table>
         </div>
+        
+        <<button class="btn-pdf-download" onclick="downloadPDF({{ teacher.id }})">PDF İndir</button>
 
         {% comment %} <div class="card-footer text-center">
             <a href="{% url 'download_client_docx' client.id %}" class="btn btn-secondary">Word İndir</a>

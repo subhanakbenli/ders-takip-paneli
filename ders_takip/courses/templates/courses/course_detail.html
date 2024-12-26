@@ -7,6 +7,18 @@ Ders Detayı
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+        transform: scale(1.05);
+        transition: transform 0.2s ease-in-out;
+    }
+
     .container {
         max-width: 92%;
         margin: auto;
@@ -102,6 +114,20 @@ Ders Detayı
     }
 </style>
 
+{% comment %} pdf işlemleri {% endcomment %}
+<script>
+  function downloadPDF(courseId) {
+        if (!courseId) {
+            alert("Ders ID'si bulunamadı.");
+            return;
+        }
+        window.location.href = `/ogretmen/${courseId}/generate_pdf/`;
+    }
+
+</script>
+
+
+
 <div class="container mt-5">
     <h1 class="text-center mb-4">Ders İsmi: {{ course.0.name }}</h1>
 
@@ -157,6 +183,7 @@ Ders Detayı
 </div>
 
 <div class="action-buttons">
+    <button type="button" class="btn btn-success" onclick="downloadPDF({{ course.0.id }})">PDF İndir</button>
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>    
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCourseModal">Düzenle</button>
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>  

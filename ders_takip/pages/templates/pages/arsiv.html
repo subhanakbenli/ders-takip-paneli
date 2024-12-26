@@ -148,24 +148,39 @@
       }
     }
   </style>
-  <script>
-    function updateTeacher() {
-      const selectBox = document.getElementById("teacher-select");
-      const selectedTeacher = selectBox.options[selectBox.selectedIndex].text;
-      const header = document.getElementById("header");
-      const table = document.getElementById("table-container");
-      const message = document.getElementById("message");
+{% comment %} pdf {% endcomment %}
 
-      if (selectBox.value) {
-        header.textContent = `${selectedTeacher} Öğretmenin Ders Detayı`;
-        table.classList.remove("hidden");
-        message.classList.add("hidden");
-      } else {
-        header.textContent = "";
-        table.classList.add("hidden");
-        message.classList.remove("hidden");
-      }
+<script>
+    function downloadPDF(teacherId) {
+        if (!teacherId) {
+            alert("Lütfen bir öğretmen seçin!");
+            return;
+        }
+        const url = `/ogretmen/${teacherId}/pdf_arsiv/`; // İlgili path'e yönlendirme
+        window.location.href = url;
     }
+</script>
+
+
+
+<script>
+  function updateTeacher() {
+    const selectBox = document.getElementById("teacher-select");
+    const selectedTeacher = selectBox.options[selectBox.selectedIndex].text;
+    const header = document.getElementById("header");
+    const table = document.getElementById("table-container");
+    const message = document.getElementById("message");
+
+    if (selectBox.value) {
+      header.textContent = `${selectedTeacher} Öğretmenin Ders Detayı`;
+      table.classList.remove("hidden");
+      message.classList.add("hidden");
+    } else {
+      header.textContent = "";
+      table.classList.add("hidden");
+      message.classList.remove("hidden");
+    }
+  }
   </script>
 </head>
 <body>
@@ -220,6 +235,7 @@
       </tbody>
     </table>
     <div class="button-container">
+      <button id="pdf" onclick="downloadPDF()">PDF İndir</button>
       <button id="arsiv">Yükle</button>
       <button id="sil">Sil</button>
     </div>

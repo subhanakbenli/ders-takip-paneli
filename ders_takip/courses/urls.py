@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from courses.views import send_selected_documents
+from django.urls import path, include
 
 urlpatterns = [
     path('ders_ekle', views.add_course_view, name='add_course'),
@@ -21,4 +22,5 @@ urlpatterns = [
     path('kaydet_erp/<int:id>/', views.save_erp, name='save_erp'),
     path('durum_degis/<int:id>/<str:statu>/<str:isCourse>/', views.statu_change, name='statu_change_with_course'),
     path('durum_degis/<int:id>/<str:statu>/', views.statu_change, name='statu_change'),
+    
 ]
