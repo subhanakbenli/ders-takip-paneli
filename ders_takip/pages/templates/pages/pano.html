@@ -528,34 +528,36 @@ Pano
 
     // Öğretmen İşlemleri
     const TeacherManager = {
-        filter: () => {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.teacher-options button').forEach(button => {
-                button.style.display = button.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        },
-
         select: (teacherId, teacherName) => {
-            DropdownManager.toggle('teacherDropdown');
-            console.log("asdasd")
             const teacherButton = document.querySelector('.teacher-select-container button');
-            teacherButton.textContent = teacherName;
-            console.log(teacherName);
+            if (teacherButton) {
+                teacherButton.textContent = teacherName; // Seçilen öğretmenin adı butona yazılır
+            }
 
-            TeacherManager.showDetails(teacherId);
-        },
+            if (teacherId === 'all') {
+                // Tüm öğretmen detaylarını göster
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'block';
+                });
+            } else {
+                // Sadece seçilen öğretmenin detaylarını göster
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+                const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
+                if (teacherDetails) {
+                    teacherDetails.style.display = 'block';
+                }
+            }
 
-        showDetails: (teacherId) => {
-            document.querySelectorAll('.teacher-details').forEach(detail => {
-                detail.style.display = 'none';
-            });
-
-            const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
-            if (teacherDetails) {
-                teacherDetails.style.display = 'block';
+            // Dropdown menüyü kapat
+            const dropdown = document.getElementById('teacherDropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
             }
         },
     };
+
     
    // Ders İşlemleri
     const CourseManager = {
@@ -819,13 +821,16 @@ Pano
         <div id="teacherDropdown" class="teacher-search-bar">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="TeacherManager.filter()">
             <div class="teacher-options">
-              <button class="form-control" onclick="TeacherManager.select('all', 'teacher.name  teacher.surname')">Tüm Öğretmler</button>
+                <button onclick="TeacherManager.select('all', 'Tüm Öğretmenler')">Tüm Öğretmenler</button>
                 {% for teacher in teachers %}
-                    <button onclick="TeacherManager.select('{{ teacher.id }}', '{{ teacher.name }} {{ teacher.surname }}')">{{ teacher.name }} {{ teacher.surname }}</button>
+                    <button onclick="TeacherManager.select('{{ teacher.id }}', '{{ teacher.name }} {{ teacher.surname }}')">
+                        {{ teacher.name }} {{ teacher.surname }}
+                    </button>
                 {% endfor %}
             </div>
         </div>
     </div>
+
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">

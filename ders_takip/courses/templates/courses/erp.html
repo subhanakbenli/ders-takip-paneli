@@ -851,23 +851,34 @@ ERP Takip
         }
     }
     
-    async function archiveDocument(documentId) {
+    async function archiveCourse(courseId) {
         try {
-            const data = await sendRequest(`/dersler/arsivle_erp/${documentId}/`, 'POST');
-            
-            if (data && data.success) {  // success kontrolü ekledik
-                alert(data.message || 'Belge başarıyla arşivlendi');
-                // UI'den satırı kaldır
-                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
-                if (row) {
-                    row.remove();
-                }
+            const response = await fetch(`/durum_degis/${courseId}/iptal/True/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Accept': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP hata kodu: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert(data.error || 'Bir hata oluştu.');
             }
         } catch (error) {
-            console.error('Arşivleme hatası:', error);
-            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+            console.error('Kurs arşivlenemedi:', error);
+            alert('Arşivleme sırasında bir hata oluştu: ' + error.message);
         }
     }
+
+
+
 </script>
 
 

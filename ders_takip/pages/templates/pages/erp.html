@@ -402,6 +402,9 @@ ERP Takip
     }
 </style>
 
+
+   
+
 <script>
     function addDocument(courseId) {
         // Modal içinde formu aç
@@ -869,6 +872,65 @@ ERP Takip
     }
 </script>
 
+<script>
+    // CSRF Token Helper
+    const getCsrfToken = () => {
+        const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+        const csrfCookie = cookies.find(cookie => cookie.startsWith('csrftoken='));
+        return csrfCookie ? decodeURIComponent(csrfCookie.split('=')[1]) : '';
+    };
+
+    // Durum Değiştirme Fonksiyonu
+    async function changeStatus(id, status) {
+        const url = `/durum_degis/${id}/${status}/`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message || 'Durum başarıyla değiştirildi!');
+                location.reload(); // Gerekirse sayfayı yenile
+            } else {
+                throw new Error(data.error || 'Durum değiştirilemedi.');
+            }
+        } catch (error) {
+            console.error('Durum değiştirilemedi:', error);
+            alert('Bir hata oluştu: ' + error.message);
+        }
+    }
+
+    // Arşivleme Fonksiyonu
+    async function archiveCourse(id,statu,iscourse) {
+        const url = `/durum_degis/${id}/${statu}/${iscourse}/`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message || 'Kurs başarıyla arşivlendi!');
+                location.reload(); // Gerekirse sayfayı yenile
+            } else {
+                throw new Error(data.error || 'Kurs arşivlenemedi.');
+            }
+        } catch (error) {
+            console.error('Kurs arşivlenemedi:', error);
+            alert('Bir hata oluştu: ' + error.message);
+        }
+    }
+</script>
+
 
 <div class="container mt-1">
     <h1 class="text-center">ERP Takip</h1>
@@ -1034,9 +1096,10 @@ ERP Takip
 
                                 <!-- İşlem Butonları -->
                                 <div class="action-buttons">
-                                    <button class="btn btn-sm btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">İptal</button>
+                                    <button class="btn btn-warning" onclick="archiveCourse({{course.id}},'iptal','True')">İptal</button>
+                                    {% comment %} <a href="{% url 'statu_change' id=101 statu='İptal' %}" class="btn btn-primary">İptal</a> {% endcomment %}
                                     <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
-                                    <button class="btn btn-sm btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
+                                    <button class="btn btn-warning" onclick="archiveCourse({{course.id}},'arsiv','True')">Arşivle</button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                 </div>
                             </div>

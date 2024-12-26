@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from courses.models import Course, CourseFile, Teacher
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
 # Create your views here.
 
 
@@ -70,38 +73,7 @@ def arsiv_view(request):
     return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
 def erp_view(request):
     # Dummy Öğretmen Verileri Oluştur
-    teachers_data = [
-        {
-            "id": 1,
-            "name": "Ahmet",
-            "surname": "Yılmaz",
-            "description": "Matematik öğretmeni",
-            "courses": [
-                {
-                    "id": 101,
-                    "name": "Matematik 101",
-                    "statu": "Aktif",
-                    "description": "Başlangıç seviyesi matematik dersi",
-                    "created_at": "2024-12-01",
-                    "start_date": "2024-01-01",
-                    "files": [
-                        {
-                            "category": "Ders Belgesi",
-                            "belge_adi": "Matematik Konuları.pdf",
-                            "belge_url": "/media/Matematik_Konulari.pdf",
-                        }
-                    ],
-                }
-            ],
-        },
-        {
-            "id": 2,
-            "name": "Mehmet",
-            "surname": "Demir",
-            "description": "Fizik öğretmeni",
-            "courses": [],
-        },
-    ]
+    teachers_data= get_teachers_with_courses_and_documents()
 
     # Dummy Ders Listesi
     per_page = request.GET.get('per_page', 10)
@@ -172,3 +144,7 @@ def arsiv_view(request):
         "table_data": table_data,
     }
     return render(request, "pages/arsiv.html", context)
+
+
+
+

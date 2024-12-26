@@ -436,6 +436,7 @@ def save_erp(request, id):
 @require_http_methods(["POST"])
 def statu_change(request,id,statu,isCourse=False):
     try:
+        print("çalıştı")
         if isCourse:
             # Dersi veritabanından al veya 404 hatası döndür
             related = get_object_or_404(Course, id=id)
