@@ -87,7 +87,7 @@ def get_course_with_documents(course):
         {
             "category": document.category,
             "belge_adi": document.name,
-            "belge_url": document.file.url if document.file else None
+            "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
         }
         for document in documents
     ]

@@ -1,3 +1,21 @@
+drop down içeriği düzeltilecek  (pano da  çalışmıyor erpde çalışıyor)
+Bütün butonlar çalışır hale gelecek 
+dosya ekleme işlemi frontendden backende bitirilecek  
+
+erp sayfası :
+    belgele gözükmüyor kontrol et 
+    iptal arşivle çalışmıyor 
+    butonlar çalışır hale getirilecek 
+    dropdownda tüm öğretmenler seçilemiyor 
+
+
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Hamza:
     Bilidirimler ana sayfaya taşınacak!
 

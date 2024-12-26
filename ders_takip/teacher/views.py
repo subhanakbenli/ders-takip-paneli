@@ -117,3 +117,4 @@ def ogretmenler_listesi_pdf(request):
     context = {'ogretmenler': ogretmenler}
     return render_to_pdf('pdf/teacher_list.html', context)
 
+
