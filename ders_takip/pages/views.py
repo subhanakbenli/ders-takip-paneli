@@ -72,35 +72,10 @@ def arsiv_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
 def erp_view(request):
-    # Dummy Öğretmen Verileri Oluştur
     teachers_data= get_teachers_with_courses_and_documents()
-
-    # Dummy Ders Listesi
-    per_page = request.GET.get('per_page', 10)
-    course_list = [
-        {
-            "id": 101,
-            "name": "Matematik 101",
-            "teacher": "Ahmet Yılmaz",
-            "statu": "Aktif",
-        },
-        {
-            "id": 102,
-            "name": "Fizik 101",
-            "teacher": "Mehmet Demir",
-            "statu": "Pasif",
-        },
-    ]
-    
-    paginator = Paginator(course_list, per_page)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
     # Şablona gönderilecek veri
     context = {
         'teachers': teachers_data,  # Geçici öğretmen verileri
-        'teachers_data': teachers_data,
-        'page_obj': page_obj,  # Geçici ders listesi
     }
     return render(request, 'pages/erp.html', context)
 

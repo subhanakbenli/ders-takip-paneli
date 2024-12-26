@@ -1006,7 +1006,7 @@ ERP Takip
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for document in course.files %}
+                                            {% for document in course.documents %}
                                                 
                                                 {% if document.id %}
                                                     <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
@@ -1019,7 +1019,6 @@ ERP Takip
                                                             <input type="checkbox" class="document-checkbox" >
                                                         </td>
                                                         <td>Yükleme alanı</td>
-                                                        <td>asdasf</td>
                                                         <td>{{document.upload_date}}</td>
                                                         <td>{{ document.warning_date }}</td>
                                                         <td>{{ document.warning }}</td>
@@ -1090,11 +1089,13 @@ ERP Takip
 
                                                     </tr>
                                                 </form>
-                                                
+                                                {% empty %}
                                                     <tr>
-                                                        <td colspan="6" class="text-center">Henüz belge eklenmemiş.</td>
+                                                        <td colspan="3">Henüz belge eklenmemiş.</td>
                                                     </tr>
                                                 {% endfor %}
+                                            
+
                                         </tbody>
                                     </table>
                                 </div>
