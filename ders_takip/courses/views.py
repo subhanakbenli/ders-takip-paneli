@@ -395,7 +395,8 @@ def save_pano(request, id):
             
         # Değişiklikleri kaydet
         # related_courseFile.save()
-        
+        print(id)
+        print(start_date, end_date, turu, dilekce_name)
         return JsonResponse({
             'success': True,
             'message': 'Belge başarıyla güncellendi',
@@ -435,10 +436,10 @@ def save_erp(request, id):
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
-def statu_change(request,id,statu,isCourse=False):
+def statu_change(request,id,statu,isCourse="true"):
     try:
         print("çalıştı")
-        if isCourse:
+        if isCourse=="true":
             # Dersi veritabanından al veya 404 hatası döndür
             related = get_object_or_404(Course, id=id)
             

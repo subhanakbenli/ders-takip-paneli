@@ -7,6 +7,16 @@ Pano
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .table-container {
+        overflow-x: auto;
+        white-space: nowrap;
+        width: 100%;
+        margin-bottom: 0.9rem;
+    }
+    
+    .table {
+        margin-bottom: 0;  /* Container içindeki tablonun alt margin'ini kaldırır */
+    }
     .status-icon {
         display: inline-flex;
         align-items: center;
@@ -34,7 +44,7 @@ Pano
         background-color: #28a745; /* Yeşil */
         color: white;
         border: none;
-        font-size: 0.8rem;
+        font-size: 0.75;
         padding: 5px 10px;
         margin-left: 4px; /* Butonlar arasında boşluk */
     }
@@ -173,7 +183,7 @@ Pano
     .card-header, .table thead th {
         background-color: rgb(97, 98, 99);
         color: white;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         padding: 10px;
     }
     .teacher-card {
@@ -191,6 +201,7 @@ Pano
         padding: 8px;
     }
     .document-table {
+        
         margin-top: 8px;
     }
     .action-buttons {
@@ -202,30 +213,33 @@ Pano
     .action-buttons .btn {
         margin-left: 4px;
         padding: 5px 10px;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
     h1 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         margin-bottom: 20px;
         color: #333;
         text-align: center;
     }
     h5 {
-        font-size: 1rem;
+        font-size: 9rem;
         margin-bottom: 10px;
         color: #333;
     }
     h6 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-bottom: 8px;
         color: white;
     }
     p {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         margin-bottom: 6px;
     }
     table {
-        font-size: 0.85rem;
+        font-size: 0.80rem;
+        overflow-x: auto;
+        width: 100%;
+        
     }
     .table th, .table td {
         padding: 6px;
@@ -315,7 +329,7 @@ Pano
 
     /* Modal Başlık ve Mesaj */
     .custom-modal-content p {
-        font-size: 1.2rem;
+        font-size: 1.05rem;
         color: #333;
         margin-bottom: 20px;
         line-height: 1.5;
@@ -326,7 +340,7 @@ Pano
         width: 100%;
         padding: 12px;
         border-radius: 4px;
-        font-size: 1rem;
+        font-size: 0.9rem;
         cursor: pointer;
         border: none;
         transition: background-color 0.3s;
@@ -365,46 +379,6 @@ Pano
     }
 </style>
 <script>
-
-    //indir butonu için
-    async function sendSelectedDocuments() {
-        // Seçili olan checkbox'ları bul
-        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedCheckboxes.length === 0) {
-            alert('Lütfen göndermek için belgeleri seçin.');
-            return;
-        }
-
-        // Seçili belgelerin URL'lerini topla
-        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => ({
-            documentUrl: checkbox.getAttribute('data-document-url')
-        }));
-
-        // Backend'e POST isteği gönder
-        try {
-            const response = await fetch('/dersler/api/send-selected-documents/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': CSRFManager.getToken('csrftoken') // CSRF token ekleyin
-                },
-                body: JSON.stringify({ documents: selectedDocuments }) // Veriyi JSON olarak gönder
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                alert('Belgeler başarıyla gönderildi: ' + result.message);
-            } else {
-                alert('Belgeler gönderilemedi. Lütfen tekrar deneyin.');
-            }
-        } catch (error) {
-            console.error('Hata oluştu:', error);
-            alert('Belgeler gönderilirken bir hata oluştu.');
-        }
-    }
-
-    
-
     // checkboxlar için
     function downloadSelectedDocuments() {
         const selectedDocuments = document.querySelectorAll('.document-checkbox:checked');
@@ -432,14 +406,8 @@ Pano
             checkbox.checked = source.checked;
         });
     }
+</script>
 
-</script>
-<script>
-    function toggleDropdown(dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-</script>
 <script>
     
     // Modal İşlemleri
@@ -476,7 +444,6 @@ Pano
         },
     };
     
-
     // CSRF Token Alma
     const CSRFManager = {
         getToken: (name) => {
@@ -485,7 +452,6 @@ Pano
             return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
         },
     };
-
     // Fetch İstekleri
     const FetchManager = {
         post: async (url, onSuccess, onError) => {
@@ -503,28 +469,8 @@ Pano
             }
         },
     };
+    
 
-    // Belge Silme
-    function confirmDocumentDelete() {
-        const documentId = document.getElementById('confirmDocumentDelete').getAttribute('data-document-id');
-        FetchManager.post(
-            `/dersler/belge_sil/${documentId}/`,
-            () => {
-                alert('Belge başarıyla silindi.');
-                window.location.reload();
-            },
-            () => alert('Belge silinirken bir hata oluştu.')
-        );
-        ModalManager.hide('documentDeleteModal');
-    }
-
-    // Dropdown İşlemleri
-    const DropdownManager = {
-        toggle: (dropdownId) => {
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        },
-    };
 
     // Öğretmen İşlemleri
     const TeacherManager = {
@@ -624,60 +570,6 @@ Pano
         }
     };
 
-    // Sayfa Yükleme İşlemleri
-    document.addEventListener('DOMContentLoaded', () => {
-        // Öğretmen seçenekleri için onclick olaylarını ayarla
-        document.querySelectorAll('.teacher-options button').forEach(button => {
-            const teacherId = button.getAttribute('onclick').match(/\d+/)[0];
-            const teacherName = button.textContent;
-            button.setAttribute('onclick', `TeacherManager.select(${teacherId}, '${teacherName}')`);
-        });
-
-        // Öğretmen detaylarını başlangıçta gizle
-        document.querySelectorAll('.teacher-details').forEach(detail => {
-            detail.style.display = 'none';
-        });
-    document.addEventListener('DOMContentLoaded', () => {
-        // Başlangıçta tüm öğretmen detaylarını göster
-        document.querySelectorAll('.teacher-details').forEach(detail => {
-            detail.style.display = 'block';
-        });
-    });
-
-    const TeacherManager = {
-        filter: () => {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.teacher-options button').forEach(button => {
-                button.style.display = button.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        },
-
-        select: (teacherId, teacherName) => {
-            const teacherButton = document.querySelector('.teacher-select-container button');
-            teacherButton.textContent = teacherName;
-
-            if (teacherId === 'all') {
-                // Tüm öğretmen detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'block';
-                });
-            } else {
-                // Sadece seçilen öğretmenin detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-                const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
-                if (teacherDetails) {
-                    teacherDetails.style.display = 'block';
-                }
-            }
-
-            // Dropdown menüyü kapat
-            DropdownManager.toggle('teacherDropdown');
-        },
-    };
-    });
-
    
 </script>
 <script>
@@ -693,7 +585,7 @@ Pano
         const courseId = document.getElementById('courseId').value;
 
         try {
-            const response = await fetch(`/belge_ekle/${courseId}/`, {
+            const response = await fetch(`dersler/belge_ekle/${courseId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': CSRFManager.getToken('csrftoken'),
@@ -770,7 +662,7 @@ Pano
             const formData = new FormData(form);
             
             // İsteği gönder
-            const data = await sendRequest(`/dersler/kaydet/${documentId}/`, 'POST', formData);
+            const data = await sendRequest(`/dersler/kaydet_pano/${documentId}/`, 'POST', formData);
             
             if (data && data.success) {  // success kontrolü ekledik
                 alert(data.message || 'Belge başarıyla kaydedildi');
@@ -781,34 +673,74 @@ Pano
             alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
         }
     }
-    
-    async function archiveDocument(documentId) {
+    async function changeStatu(documentId, statu, isCourse) {
         try {
-            const data = await sendRequest(`/dersler/arsive_al/${documentId}/`, 'POST');
+            const url = `/dersler/durum_degis/${documentId}/${statu}/${isCourse}/`;
+            const data = await sendRequest(url, 'POST');
             
-            if (data && data.success) {  // success kontrolü ekledik
-                alert(data.message || 'Belge başarıyla arşivlendi');
-                // UI'den satırı kaldır
-                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
-                if (row) {
-                    row.remove();
+            if (data && data.success) {
+                {% comment %} alert(data.message || 'İşlem başarıyla tamamlandı'); {% endcomment %}
+                
+                if (isCourse === 'true') {
+                    console.log(documentId);
+                    // Ders iptal/arşiv işlemi - tüm card'ı kaldır
+                    const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
+                    }
+                } else {
+                    // Belge arşiv işlemi - sadece satırı kaldır
+                    const documentRow = document.querySelector(`#document-form-${documentId}`).closest('tr');
+                    if (documentRow) {
+                        documentRow.remove();
+                    }
+                }
+                
+                // Eğer sunucudan yönlendirme talebi gelirse
+                if (data.redirect) {
+                    window.location.reload();
                 }
             }
         } catch (error) {
-            console.error('Arşivleme hatası:', error);
-            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+            console.error('Durum değiştirme hatası:', error);
+            alert('İşlem sırasında bir hata oluştu: ' + error.message);
         }
     }
-</script>
+    // Belge Silme
+    async function deleteContent(id, isCourse) {
+        try {
+            if(isCourse === 'true'){
+                const url = `/dersler/ders_sil/${id}/`;
+            }else{
+                const url = `/dersler/belge_sil/${id}/`;
+            }
+            const data = await sendRequest(url, 'POST');
 
+            {% comment %} ModalManager.hide('documentDeleteModal'); {% endcomment %}
+             if (data && data.success) {
+                    {% comment %} alert(data.message || 'İşlem başarıyla tamamlandı'); {% endcomment %}
+                    
+                    if (isCourse === 'true') {
+                        console.log(documentId);
+                        // Ders iptal/arşiv işlemi - tüm card'ı kaldır
+                        const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
+                        if (courseCard) {
+                            courseCard.remove();
+                        }
+                    } else {
+                        // Belge arşiv işlemi - sadece satırı kaldır
+                        const documentRow = document.querySelector(`#document-form-${documentId}`).closest('tr');
+                        if (documentRow) {
+                            documentRow.remove();
+                        }
+                    }
+            }
+        }
 
-<script>
-    function selectAllTeachers(teachers) {
-        const teacherIds = [];
-        teachers.forEach(teacher => {
-            teacherIds.push(teacher.id);
-        });
-        
+        catch (error) {
+            console.error('Silme hatası:', error);
+            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
     }
 </script>
 
@@ -830,21 +762,23 @@ Pano
     <h1 class="text-center">Pano</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
+    <!-- Daha erişilebilir versiyon -->
     <div class="teacher-select-container">
-        <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Öğretmen Seçiniz</button>
-        <div id="teacherDropdown" class="teacher-search-bar">
-            <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="TeacherManager.filter()">
-            <div class="teacher-options">
-                <button onclick="TeacherManager.select('all', 'Tüm Öğretmenler')">Tüm Öğretmenler</button>
-                {% for teacher in teachers %}
-                    <button onclick="TeacherManager.select('{{ teacher.id }}', '{{ teacher.name }} {{ teacher.surname }}')">
-                        {{ teacher.name }} {{ teacher.surname }}
-                    </button>
-                {% endfor %}
-            </div>
-        </div>
+        <label for="teacherSelect">Öğretmen Seçiniz</label>
+        <select 
+            id="teacherSelect" 
+            class="form-control"
+            data-search="true"
+            data-placeholder="Öğretmen seçiniz...">
+            <option value="">Seçiniz...</option>
+            <option value="all">Tüm Öğretmenler</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}">
+                    {{ teacher.name }} {{ teacher.surname }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
-
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
@@ -864,77 +798,102 @@ Pano
                             <!-- Documents Table -->
                             <h6>Belgeler:</h6>
                             {% if course.documents %}
-                                <table class="table table-bordered table-responsive text-wrap">
-                                    <thead>
-                                        <tr>
-                                            <th>Seç</th>
-                                            <th>Kategori</th>
-                                            <th>Belge Adı</th>
-                                            <th>İşlemler</th>
-                                            <th>Başlangıç Tarihi</th>
-                                            <th>Bitiş Tarihi</th>
-                                            <th>Türü</th>
-                                            <th>Dilekçe</th>
-                                            <th>Durum</th>
-                                            <th>Kaydet</th>
-                                            <th>Arşive Al</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for document in course.documents %}
-                                            <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
-                                                {% csrf_token %}
+                                <div class="table-container">
+                                    <table class="table table-bordered table-responsive text-wrap">
+                                        <thead>
+                                            <tr>
+                                                <th>Seç</th>
+                                                <th>Kategori</th>
+                                                <th>Belge Adı</th>
+                                                <th>İşlemler</th>
+                                                <th>Başlangıç Tarihi</th>
+                                                <th>Bitiş Tarihi</th>
+                                                <th>Türü</th>
+                                                <th>Dilekçe</th>
+                                                <th>Durum</th>
+                                                <th>Kaydet</th>
+                                                <th>Arşive Al</th>
+                                                <th>İptal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for document in course.documents %}
                                                 <tr>
+                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <td>
+                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                        </td>
+                                                        <td>{{ document.category }}</td>
+                                                        <td>{{ document.belge_adi|default:'' }}</td>
+                                                        <td> 
+                                                            {% if document.belge_adi and document.belge_url %} 
+                                                                <button type="button" class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button> 
+                                                            {% else %} 
+                                                                <button type="button" class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button> 
+                                                            {% endif %} 
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
+                                                        </td>
+                                                        <td>
+                                                            {% if document.is_uploaded %}
+                                                                <span class="status-icon success">✔️</span>
+                                                            {% else %}
+                                                                <span class="status-icon error">❌</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                        </td>
+                                                    </form>
+
                                                     <td>
-                                                        <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                        <button 
+                                                            class="btn btn-sm btn-primary" 
+                                                            onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
+                                                            id="document-form-{{ document.id }}"> Arşive Al
+                                                        </button>
                                                     </td>
-                                                    <td>{{ document.category }}</td>
-                                                    <td>{{ document.belge_adi|default:'' }}</td>
                                                     <td>
-                                                        {% if document.belge_adi and document.belge_url %}
-                                                            <button class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button>
-                                                        {% else %}
-                                                            <button class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
-                                                    </td>
-                                                    <td>
-                                                        {% if document.is_uploaded %}
-                                                            <span class="status-icon success">✔️</span>
-                                                        {% else %}
-                                                            <span class="status-icon error">❌</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
+                                                        <button 
+                                                            class="btn btn-sm btn-warning" 
+                                                            onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
+                                                            id="document-form-{{ document.id }}"> İptal
+                                                        </button>
                                                     </td>
                                                 </tr>
-                                            </form>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                                
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div> 
                             {% else %}
                                 <p>Bu derse ait belge bulunmamaktadır.</p>
                             {% endif %}
                             <!-- Action Buttons -->
                             <div class="action-buttons">
-                                <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
-                                <button class="btn btn-primary" onclick="CourseManager.showArchiveModal('{{ course.id }}')">Arşivle</button>
+                                <button class="btn btn-warning" 
+                                    onclick="changeStatu({{course.id}},'iptal','true')"
+                                    id="course-form-{{ course.id }}">İptal
+                                </button>
+                                <button class="btn btn-danger" 
+                                    onclick="deleteContent({{course.id}},'true')"
+                                    id="course-form-{{ course.id }}">Sil
+                                </button>
+                                <button 
+                                    class="btn btn-primary" 
+                                    onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
+                                    id="course-form-{{ course.id }}"> Arşive Al
+                                </button>
                                 <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                 <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
                                  <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
