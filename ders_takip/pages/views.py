@@ -33,7 +33,14 @@ def get_teachers_with_courses_and_documents(status=None):
                     "id": document.id,
                     "category": document.category,
                     "belge_adi": document.name,
-                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
+                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
+                    "is_uploaded": document.is_uploaded,
+                    "uploaded_at": document.uploaded_at,
+                    "dilekce_name": document.dilekce_name,
+                    "dilekce_is_uploaded": document.dilekce_is_uploaded,
+                    "start_date": document.start_date,
+                    "end_date": document.end_date,
+                    
                 }
                 for document in documents
             ]

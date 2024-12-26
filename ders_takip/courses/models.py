@@ -39,7 +39,7 @@ class CourseFile(models.Model):
     
 
     is_uploaded = models.BooleanField(default=False)
-    
+    uploaded_at = models.DateField(verbose_name="uploaded_at", null=True, blank=True)
     dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
     dilekce_is_uploaded = models.BooleanField(default=False)
     

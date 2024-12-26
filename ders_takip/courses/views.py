@@ -203,23 +203,29 @@ def delete_file_view(request, id):
     if request.method == 'POST':
         try:
             document = get_object_or_404(CourseFile, id=id)
-            document.delete()
+            # document.delete()
             return JsonResponse({'success': True, 'message': 'Belge başarıyla silindi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
 @login_required
-def update_course_statu(request, id):
-    if request.method != 'POST':
-        try:
-            course = get_object_or_404(Course, id=id)
-            course.statu = "Arşivlendi" if course.statu != "Arşivlendi" else "Aktif"
-            course.save()
-            return JsonResponse({'success': True, 'message': 'Ders durumu başarıyla güncellendi.'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
+@require_http_methods(["POST"])
+def delete_course_view(request, id):
+    try:
+        course = get_object_or_404(Course, id=id)
+        # course.delete()
+        return JsonResponse({
+            'success': True, 
+            'message': 'Ders başarıyla silindi.'
+        }, status=200)
+    except Exception as e:
+        return JsonResponse({
+            'success': False, 
+            'message': f'Hata: {str(e)}'
+        }, status=500)
+        
+        
 
 @login_required
 def update_course_files(request, id):
@@ -312,19 +318,8 @@ def add_file(request, id):
 
 
 
-@login_required
-@csrf_exempt
-@require_http_methods(["POST"])
-def delete_course_view(request, id):
-    if request.method == 'POST':
-        try:
-            course = get_object_or_404(Course, id=id)
-            course.delete()
-            return JsonResponse({'success': True, 'message': 'Ders başarıyla silindi.'})
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
+        
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -364,10 +359,13 @@ def save_document_details(request, document_id):
             # Değişiklikleri kaydet
             document.save()
 
-            return JsonResponse({'success': True, 'message': 'Belge bilgileri başarıyla güncellendi.'})
+            return JsonResponse({
+            'success': True,
+            'message': 'Belge başarıyla arşivlendi'
+        })
         except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+            return JsonResponse({'error': str(e)}, status=400)
+    return JsonResponse({'error': 'Geçersiz istek.'}, status=405)
 
 @login_required
 @csrf_exempt

@@ -9,7 +9,6 @@ urlpatterns = [
     path("<int:id>", views.course_detail_view, name="course_detail"),
     
     path('ders_sil/<int:id>/', views.delete_course_view, name='delete_course'),
-    path('ders_arsivle/<int:id>/', views.update_course_statu, name='update_course_statu'),
     
     path('belge_sil/<int:id>/', views.delete_file_view, name='delete_file'),
     path('belge_ekle/<int:id>/', views.add_file, name='add_file'),

@@ -1,3 +1,11 @@
+erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
+ders bazlı dilekçe girilmesi zorunlu tutulabilecek bunu ders ekle sayfasında bir checkbox ile kontrol et eğer true ise belgeler dilekçe adı girilemden arşivlenemez!!!
+belge türü iki taraftan da girilebilir
+
+
+
+
+
 drop down içeriği düzeltilecek  (pano da  çalışmıyor erpde çalışıyor)
 Bütün butonlar çalışır hale gelecek 
 dosya ekleme işlemi frontendden backende bitirilecek  

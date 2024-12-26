@@ -503,74 +503,6 @@ Pano
             }
         },
     };
-
-    
-   // Ders İşlemleri
-    const CourseManager = {
-        showDeleteModal: (courseId) => {
-            const confirmButton = document.getElementById('confirmCourseDelete');
-            confirmButton.setAttribute('data-course-id', courseId);
-            confirmButton.onclick = CourseManager.delete;
-            ModalManager.show('courseDeleteModal');
-        },
-
-        delete: async function() {
-            const courseId = document.getElementById('confirmCourseDelete').getAttribute('data-course-id');
-            
-            try {
-                const response = await fetch(`/dersler/ders_sil/${courseId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': CSRFManager.getToken('csrftoken'),
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Ders silinirken bir hata oluştu.');
-                }
-            } catch (error) {
-                alert('Ders silinirken bir hata oluştu.');
-                console.error('Error:', error);
-            }
-
-            ModalManager.hide('courseDeleteModal');
-        },
-
-        showArchiveModal: (courseId) => {
-            const confirmButton = document.getElementById('confirmCourseArchive');
-            confirmButton.setAttribute('data-course-id', courseId);
-            confirmButton.onclick = CourseManager.archive;
-            ModalManager.show('courseArchiveModal');
-        },
-
-        archive: async function() {
-            const courseId = document.getElementById('confirmCourseArchive').getAttribute('data-course-id');
-            
-            try {
-                const response = await fetch(`/dersler/ders_arsivle/${courseId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': CSRFManager.getToken('csrftoken'),
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Ders arşivlenirken bir hata oluştu.');
-                }
-            } catch (error) {
-                alert('Ders arşivlenirken bir hata oluştu.');
-                console.error('Error:', error);
-            }
-
-            ModalManager.hide('courseArchiveModal');
-        }
-    };
-
-   
 </script>
 <script>
     function addDocument(courseId) {
@@ -706,46 +638,42 @@ Pano
             alert('İşlem sırasında bir hata oluştu: ' + error.message);
         }
     }
-    // Belge Silme
     async function deleteContent(id, isCourse) {
         try {
-            if(isCourse === 'true'){
-                const url = `/dersler/ders_sil/${id}/`;
-            }else{
-                const url = `/dersler/belge_sil/${id}/`;
+            if (isCourse === 'true') {
+                url = `/dersler/ders_sil/${id}/`;
+            } else {
+                url = `/dersler/belge_sil/${id}/`;
             }
+            
             const data = await sendRequest(url, 'POST');
-
-            {% comment %} ModalManager.hide('documentDeleteModal'); {% endcomment %}
-             if (data && data.success) {
-                    {% comment %} alert(data.message || 'İşlem başarıyla tamamlandı'); {% endcomment %}
-                    
-                    if (isCourse === 'true') {
-                        console.log(documentId);
-                        // Ders iptal/arşiv işlemi - tüm card'ı kaldır
-                        const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
-                        if (courseCard) {
-                            courseCard.remove();
-                        }
-                    } else {
-                        // Belge arşiv işlemi - sadece satırı kaldır
-                        const documentRow = document.querySelector(`#document-form-${documentId}`).closest('tr');
-                        if (documentRow) {
-                            documentRow.remove();
-                        }
+            
+            if (data && data.success) {
+                alert(data.message || 'İşlem başarıyla tamamlandı');
+                
+                if (isCourse === 'true') {
+                    // id değişkenini kullan, documentId değil
+                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
                     }
+                } else {
+                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
+                    if (documentRow) {
+                        documentRow.remove();
+                    }
+                }
+                
+                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
+                // window.location.reload();
             }
-        }
-
-        catch (error) {
+        } catch (error) {
             console.error('Silme hatası:', error);
             alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
         }
     }
 </script>
 
-
-{% comment %} pdf {% endcomment %}
 <script>
     function downloadPDF(courseId) {
         if (!courseId) {
@@ -808,9 +736,11 @@ Pano
                                                 <th>İşlemler</th>
                                                 <th>Başlangıç Tarihi</th>
                                                 <th>Bitiş Tarihi</th>
+                                                <th>Yüklenme Tarihi</th>
+                                                
                                                 <th>Türü</th>
                                                 <th>Dilekçe</th>
-                                                <th>Durum</th>
+                                                <th>Uyarı</th>
                                                 <th>Kaydet</th>
                                                 <th>Arşive Al</th>
                                                 <th>İptal</th>
@@ -838,6 +768,13 @@ Pano
                                                         </td>
                                                         <td>
                                                             <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                        </td>
+                                                        <td>
+                                                            {% if document.is_uploaded %}
+                                                                <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                            {% else %}
+                                                                <span class="status-icon error">❌</span>
+                                                            {% endif %}
                                                         </td>
                                                         <td>
                                                             <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
