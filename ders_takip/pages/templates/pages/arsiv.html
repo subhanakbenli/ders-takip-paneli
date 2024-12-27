@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Ders Kayıt Sayfası{% endblock title %}
+{% block title %}Arşiv Sayfası{% endblock title %}
 {% block content %}
 
 <!DOCTYPE html>
@@ -19,8 +19,9 @@
 
     h1 {
       text-align: center;
-      color: #1e90ff;
+      color:rgb(17, 18, 18);
       margin-top: 20px;
+      font-size: 30px;
     }
 
     .teacher-select {
@@ -183,6 +184,8 @@
   }
   </script>
 </head>
+
+
 <body>
   <div class="teacher-select">
     <label for="teacher-select">Öğretmen Seç:</label>
@@ -220,7 +223,7 @@
         {% for row in table_data %}
           <tr>
             <td>{{ row.proje }}</td>
-            <td>{{ row.panoya.yukleme_alani|default:'' }}</td>
+            <td>{{ row.panoya.yukleme_alani }}</td>
             <td>{{ row.panoya.etkinlik_tarihi|default:'' }}</td>
             <td>{{ row.panoya.yukleme_tarihi|default:'' }}</td>
             <td>{{ row.erp.aciklama|default:'' }}</td>
