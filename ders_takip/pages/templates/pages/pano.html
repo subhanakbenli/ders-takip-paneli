@@ -467,7 +467,6 @@ Pano
             const data = await sendRequest(url, 'POST');
             
             if (data && data.success) {
-                {% comment %} alert(data.message || 'İşlem başarıyla tamamlandı'); {% endcomment %}
                 
                 if (isCourse === 'true') {
                     console.log(documentId);
@@ -477,10 +476,10 @@ Pano
                         courseCard.remove();
                     }
                 } else {
-                    // Belge arşiv işlemi - sadece satırı kaldır
-                    const documentRow = document.querySelector(`#document-form-${documentId}`).closest('tr');
-                    if (documentRow) {
-                        documentRow.remove();
+                    const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
+                    const row = button?.closest('tr');
+                    if (row) {
+                        row.remove();
                     }
                 }
                 
@@ -680,8 +679,6 @@ Pano
                                             </tbody>
                                         </table>
                                     </div> 
-                                {% else %}
-                                    <p>Bu derse ait belge bulunmamaktadır.</p>
                                 {% endif %}
                                 <!-- Action Buttons -->
                                 <div class="action-buttons">

@@ -1,523 +1,279 @@
 {% extends "base.html" %}
 
 {% block title %}
-ERP Takip
+ERP
 {% endblock title %}
 
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    .btn-pdf {
-        background-color: #28a745; /* Yeşil */
-        color: white;
-        border: none;
-        font-size: 1rem;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-align: right;
-        margin-bottom: 20px
+    /* Core Layout & Container */
+    .container {
+        width: 100%;
+        min-width: 98%;
+        margin: 0 auto;
+        padding: 0.25rem;
     }
 
-    .btn-pdf:hover {
-        background-color: #218838; /* Daha koyu yeşil */
-        cursor: pointer;
-    }
-    .dropdown {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 1000;
-    }
-    .container {
-        max-width: 100%;
-        margin: 0px;
-        padding: 0px;
-    }
+    /* Typography */
     h1 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
+        font-size: 1.35rem;  /* Reduced from 1.5rem */
+        color: #2d3748;
+        margin-bottom: 1rem;
         text-align: center;
     }
-    .card {
-        margin-bottom: 10px;
+
+    h6 {
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        color: #4a5568;
+        margin-bottom: 0.75rem;
     }
-    .table th, .table td {
-        padding: 6px;
-    }  
-    }  
-    
-    #select-all {
-        cursor: pointer;
-        transform: scale(1.2); /* Checkbox'ı biraz büyütün */
-        margin: 2px; /* Varsayılan boşluğu sıfırlayın */
-        padding: 2px;
+
+    /* Table Styles */
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    .btn-success {
-        background-color: #28a745; /* Yeşil */
+
+    .table {
+        width: 100%;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        border-collapse: collapse;
+    }
+
+    .table th {
+        background-color: #4a5568;
         color: white;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Status Indicators */
+    .status-icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        color: white;
+    }
+
+    .status-icon.success {
+        background-color: #48bb78;
+    }
+
+    .status-icon.error {
+        background-color: #e53e3e;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        transition: all 0.15s ease;
+        cursor: pointer;
         border: none;
-        font-size: 0.8rem;
-        padding: 5px 10px;
-        margin-left: 4px; /* Butonlar arasında boşluk */
+    }
+
+    .btn-success {
+        background-color: #48bb78;
+        color: white;
     }
 
     .btn-success:hover {
-        background-color: #218838; /* Daha koyu yeşil */
+        background-color: #38a169;
     }
 
-    /* Ders seçimi dropdown içeriği */
-    #courseDropdown .course-options button {
-        background-color:rgb(193, 189, 189); /* Açık gri arka plan */
-        color: #333; /* Koyu gri yazı */
-        border: none; /* Kenarlıkları kaldır */
-        padding: 8px 12px; /* Buton iç boşlukları */
-        text-align: left; /* Metni sola hizala */
-        width: 100%; /* Buton genişliği */
-        border-radius: 4px; /* Köşeleri yuvarla */
-        transition: background-color 0.3s; /* Hover animasyonu */
-    }
-
-    /* Hover efekti */
-    #courseDropdown .course-options button:hover {
-        background-color: #ddd; /* Daha koyu gri */
-        color: #000; /* Siyah yazı */
-    }
-
-    .teacher-options {
-        background-color:rgb(228, 229, 231); /* Hafif gri arka plan */
-        border-radius: 4px; /* Köşeleri yuvarlat */
-        padding: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
-    }
-    .teacher-search-bar input {
-        background-color:rgb(222, 225, 227);
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 8px;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    /* Öğretmen seçme butonu görünümü */
-    .teacher-select-container button {
-        background-color:rgb(70, 71, 72); 
-        color: white; /* Beyaz yazı */
-        font-weight: bold;
-        border: 1px solidrgb(9, 9, 9);
-        border-radius: 5px;
-        padding: 5px;
-        transition: background-color 0.3s, color 0.3s;
-        text-align: center; /* Seçilen metni sola hizala */
-    }
-
-    /* Hover efekti */
-    .teacher-select-container button:hover {
-        background-color:rgb(103, 105, 106); /* Daha koyu mavi */
-        color: #fff;
-    }
-
-    /* Dropdown içeriği görünümü */
-    .teacher-search-bar {
-        max-height: 200px; /* Maksimum yükseklik */
-        overflow-y: auto; /* Taşan içeriği kaydır */
-        background-color:rgb(100, 101, 103); /* Açık gri arka plan */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-    }
-
-    /* Dropdown butonları görünümü */
-    .teacher-options button {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 8px 12px;
-        background-color: #fff; /* Beyaz arka plan */
-        color: #333; /* Koyu gri yazı */
-        border: none;
-        border-radius: 3px;
-        transition: background-color 0.3s;
-    }
-
-    /* Dropdown buton hover efekti */
-    .teacher-options button:hover {
-        background-color: #e9ecef; /* Açık gri */
-        color:rgb(19, 19, 20); /* Mavi yazı */
-    }
-
-    .teacher-select-container button {
-        white-space: nowrap; /* Metin kaymasını önler */
-        overflow: hidden;    /* Taşan metni gizler */
-        text-overflow: ellipsis; /* Metni üç noktayla kısaltır */
-        width: 100%;         /* Butonun genişliğini korur */
-    }
-
-    .search-bar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 10px;
-        display: none; /* Başlangıçta gizli */
-    }
-    .teacher-select-container {
-        position: relative;
-        width: 100%;
-    }
-
-    .btn-confirm {
-        background-color: #28a745; /* Yeşil */
-        color: white;
-        border: none;
-    }
-    .btn-confirm:hover {
-        background-color: #218838;
-    }
-    .btn-cancel {
-        background-color: #dc3545; /* Kırmızı */
-        color: white;
-        border: none;
-    }
-    .btn-cancel:hover {
-        background-color: #c82333;
-    }
-
-    .container {
-        max-width: 100%;
-        min-width: 98%;
-        margin: 0px;
-        padding: 0px;
-    }
-    .card-header, .table thead th {
-        background-color: rgb(97, 98, 99);
-        color: white;
-        font-size: 0.85rem;
-        padding: 5px;
-    }
-    .teacher-card {
-        margin-bottom: 15px;
-        border: 1px solid rgb(55, 56, 57);
-        border-radius: 8px;
-        overflow: hidden;
-        padding: 10px;
-    }
-    .course-card {
-        margin-bottom: 10px;
-        border: 1px solid #6c757d;
-        border-radius: 6px;
-        overflow: hidden;
-        padding: 8px;
-    }
-    .document-table {
-        margin-top: 8px;
-    }
-    .action-buttons {
-        text-align: right;
-        margin-top: 8px;
-        
-        
-    }
-    .action-buttons .btn {
-        margin-left: 4px;
-        padding: 5px 10px;
-        font-size: 0.8rem;
-    }
-    h1 {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-        color: #333;
-        text-align: center;
-    }
-    h5 {
-        font-size: 1rem;
-        margin-bottom: 10px;
-        color: #333;
-    }
-    h6 {
-        font-size: 0.9rem;
-        margin-bottom: 8px;
+    .btn-danger {
+        background-color: #e53e3e;
         color: white;
     }
-    p {
-        font-size: 0.9rem;
-        margin-bottom: 6px;
-    }
-    table {
-        font-size: 0.80rem;
-        width: 100%; /* Tablonun genişliğini ayarlar */
-        border-collapse: collapse; /* Çizgilerin düzgün görünmesi için */
-    }
-    .table th, .table td {
-        padding: 3px;
-    }
-    .table-container {
-        overflow-x: auto; /* Yatay kaydırma ekler */
-        white-space: nowrap; /* İçeriğin satır altına kaymasını engeller */
-    }
-    /* Panoya gönderilen sütunları ayırt etmek için */
-    .clipboard-column {
-        background-color: #d1ecf1; /* Hafif mavi ton */
+
+    .btn-danger:hover {
+        background-color: #c53030;
     }
 
-    .clipboard-column input, 
-    .clipboard-column textarea {
-        background-color: #f0f8ff; /* Daha açık ton */
-    }
-    
-    .duzenle-buton {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color:rgb(234, 107, 34); /* Turuncu arka plan */
-        color: #fff; /* Beyaz yazı */
-        text-decoration: none; /* Altı çizgiyi kaldırır */
-        border-radius: 5px; /* Kenarları yuvarlar */
-        font-size: 16px;
-        transition: background-color 0.3s; /* Hover animasyonu */
-    }
-    .duzenle-buton:hover {
-        background-color:rgb(175, 100, 8); /* Hover'da koyu turuncu */
+    .btn-primary {
+        background-color: #4299e1;
+        color: white;
     }
 
-    .teacher-search-bar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 3px;
-        display: none;
+    .btn-primary:hover {
+        background-color: #3182ce;
     }
-    .teacher-options {
-        max-height: 200px;
-        overflow-y: auto;
+
+    .btn-warning {
+        background-color: #ecc94b;
+        color: #2d3748;
     }
-    .teacher-options button {
-        display: block;
+
+    .btn-warning:hover {
+        background-color: #d69e2e;
+    }
+
+    /* Cards */
+    .card {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    /* Form Elements */
+    .form-control {
         width: 100%;
-        text-align: left;
-        border: none;
-        background: none;
-        padding: 5px 10px;
-        cursor: pointer;
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
     }
-    .teacher-options button:hover {
-        background-color: #f1f1f1;
+
+    .form-control:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
     }
-    .action-buttons .btn-danger {
-        background-color: #dc3545; /* Kırmızı */
-        border: none;
-    }
-    .action-buttons .btn-primary {
-        background-color: #007bff; /* Mavi */
-        border: none;
-    }
-    .action-buttons .btn-warning {
-        background-color: #ffc107; /* Turuncu */
-        border: none;
-        color: #fff;
-    }
-    /* Modal Arkaplanı */
+
+    /* Modal */
     .custom-modal {
-        display: none; /* Başlangıçta gizli */
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
-        z-index: 1050; /* Diğer içeriklerin üstünde görünmesi için */
-        overflow: hidden; /* Taşan içerik gizlenmeli */
-        transition: opacity 0.3s ease-in-out; /* Yavaşça geçiş yaparak açılacak */
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1050;
     }
 
-    /* Modal İçeriği */
     .custom-modal-content {
-        background: #fff;
-        padding: 10px;
-        border-radius: 8px;
-        width: 350px;
-        max-width: 90%; /* Ekran boyutuna göre uyum sağlar */
-        text-align: center;
-        margin: 15% auto; /* Ortalanmış modal */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Gölgeleme */
-        font-family: Arial, sans-serif; /* Yazı tipi */
+        background-color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        width: 90%;
+        max-width: 400px;
+        margin: 15% auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Modal Başlık ve Mesaj */
-    .custom-modal-content p {
-        font-size: 1.2rem;
-        color: #333;
-        margin-bottom: 20px;
-        line-height: 1.5;
+    /* Action Buttons Container */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
     }
 
-    /* Butonlar */
-    .custom-modal-content .btn {
+    /* Teacher Select */
+    .teacher-select-container {
+        margin-bottom: 1rem;
+    }
+
+    .teacher-select-container select {
         width: 100%;
-        padding: 12px;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        border: none;
-        transition: background-color 0.3s;
-        margin-top: 10px;
-    }
-
-    /* Evet Butonu */
-    .custom-modal-content .btn-confirm {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .custom-modal-content .btn-confirm:hover {
-        background-color: #218838;
-    }
-
-    /* Hayır Butonu */
-    .custom-modal-content .btn-cancel {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .custom-modal-content .btn-cancel:hover {
-        background-color: #c82333;
-    }
-
-    /* Butonlar Arasındaki Boşluk */
-    .custom-modal-content button + button {
-        margin-top: 10px; /* Butonlar arasında boşluk bırak */
-    }
-
-    /* Modal Animasyonu */
-    .custom-modal.show {
-        display: block;
-        opacity: 1; /* Modal görünür hale gelir */
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        border: 1px solid #e2e8f0;
+        font-size: 1.1rem;  /* Added font size reduction for select */
     }
 </style>
-
-{% comment %} pdf {% endcomment %}
 <script>
-    function downloadPDF(teacherId) {
-        if (!teacherId) {
-            alert("Lütfen bir öğretmen seçin!");
+    function sendSelectedDocuments() {
+        // Seçili tüm checkboxları bul
+        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+        
+        if (selectedCheckboxes.length === 0) {
+            alert('Lütfen indirilecek belgeleri seçiniz.');
             return;
         }
-        const url = `/ogretmen/${teacherId}/erp_pdf/`; // İlgili path'e yönlendirme
-        window.location.href = url;
-    }
-</script>
-
-<script>
-    function addDocument(courseId) {
-        // Modal içinde formu aç
-        document.getElementById('courseId').value = courseId;
-        ModalManager.show('documentAddModal');
-    }
-
-     //form verilerini göndermek için
-    async function submitDocumentForm() {
-        const formData = new FormData(document.getElementById('addDocumentForm'));
-        const courseId = document.getElementById('courseId').value;
-
-        try {
-            const response = await fetch(`/belge_ekle/${courseId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': CSRFManager.getToken('csrftoken'),
-                },
-                body: formData,
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                alert(result.message);
-                window.location.reload();
-            } else {
-                alert(result.message);
-            }
-        } catch (error) {
-            console.error('Dosya eklenirken hata oluştu:', error);
-            alert('Bir hata oluştu.');
-        }
-
-        ModalManager.hide('documentAddModal');
-    }
-</script>
-
-    {% comment %} erp durum dropdown {% endcomment %}
-<script>
-    function filterByStatus(status) {
-        const teacherDetails = document.querySelectorAll('.teacher-details');
-        teacherDetails.forEach(teacher => {
-            let hasVisibleCourse = false;
-            
-            const courses = teacher.querySelectorAll('.course-card');
-            courses.forEach(course => {
-                const courseStatus = course.querySelector('.course-status');
-                if (courseStatus) {
-                    const text = courseStatus.textContent.trim();
-                    if (status === 'Tümü' || text === status) {
-                        course.style.display = 'block';
-                        hasVisibleCourse = true;
-                    } else {
-                        course.style.display = 'none';
-                    }
-                }
-            });
-
-            teacher.style.display = hasVisibleCourse ? 'block' : 'none';
-        });
-    }
-</script>
-
-<script>
-    // checkboxlar için
-    function downloadSelectedDocuments() {
-        const selectedDocuments = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedDocuments.length === 0) {
-            alert('Lütfen indirilecek belgeleri seçin.');
-            return;
-        }
-
-        selectedDocuments.forEach(checkbox => {
-            const documentUrl = checkbox.getAttribute('data-document-url');
-            const link = document.createElement('a');
-            link.href = documentUrl;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        alert('Seçilen belgeler indiriliyor...');
-    }
-    //Tümünü seç checkbox
-    function toggleAllCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.document-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = source.checked;
-        });
-    }
-
-</script>
-<script>
-    function toggleDropdown(dropdownId) {
-        const dropdown = document.getElementById(dropdownId);
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-</script>
-<script>
     
+        // Seçili belgelerin URL'lerini topla
+        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
+            return {
+                url: checkbox.getAttribute('data-document-url'),
+                isUploaded: checkbox.closest('tr').querySelector('.status-icon.success') !== null
+            };
+        });
+    
+        // Yüklenmemiş belge kontrolü
+        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
+        if (notUploadedDocs.length > 0) {
+            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
+            return;
+        }
+    
+        // Yüklenmiş belgeleri indir
+        selectedDocuments.forEach(doc => {
+            if (doc.url) {
+                // Yeni bir sekmede belgeyi aç
+                const link = document.createElement('a');
+                link.href = doc.url;
+                link.target = '_blank';
+                link.download = ''; // Tarayıcının dosya adını kullanmasına izin ver
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+    }
+    
+    function toggleAllDocuments(courseId) {
+        // Tüm belgeleri seç checkbox'ı
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        
+        // İlgili tablodaki tüm belge checkbox'larını bul
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'ları ana checkbox'ın durumuna göre işaretle
+        documentCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    }
+    
+    // Belge checkbox'larının durumuna göre "Tümünü Seç" checkbox'ını güncelle
+    function updateSelectAllCheckbox(courseId) {
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'lar seçili mi kontrol et
+        const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
+        const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
+        
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = anyChecked && !allChecked;
+    }
+    
+    // Her belge checkbox'ına event listener ekle
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.document-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const courseId = this.closest('.card').getAttribute('data-course-id');
+                updateSelectAllCheckbox(courseId);
+            });
+        });
+    });
+</script>
+
+<script>
     // Modal İşlemleri
     const ModalManager = {
         show: (modalId) => {
@@ -550,11 +306,7 @@ ERP Takip
                 console.error(`Modal with ID '${modalId}' not found.`);
             }
         },
-    };
-    
-
-
-
+    }; 
     // CSRF Token Alma
     const CSRFManager = {
         getToken: (name) => {
@@ -563,7 +315,6 @@ ERP Takip
             return cookie ? decodeURIComponent(cookie.split('=')[1]) : null;
         },
     };
-
     // Fetch İstekleri
     const FetchManager = {
         post: async (url, onSuccess, onError) => {
@@ -581,181 +332,6 @@ ERP Takip
             }
         },
     };
-
-    // Belge Silme
-    function confirmDocumentDelete() {
-        const documentId = document.getElementById('confirmDocumentDelete').getAttribute('data-document-id');
-        FetchManager.post(
-            `/dersler/belge_sil/${documentId}/`,
-            () => {
-                alert('Belge başarıyla silindi.');
-                window.location.reload();
-            },
-            () => alert('Belge silinirken bir hata oluştu.')
-        );
-        ModalManager.hide('documentDeleteModal');
-    }
-
-    // Dropdown İşlemleri
-    const DropdownManager = {
-        toggle: (dropdownId) => {
-            const dropdown = document.getElementById(dropdownId);
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        },
-    };
-
-    // Öğretmen İşlemleri
-    const TeacherManager = {
-        filter: () => {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.teacher-options button').forEach(button => {
-                button.style.display = button.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        },
-
-        select: (teacherId, teacherName) => {
-            DropdownManager.toggle('teacherDropdown');
-
-            const teacherButton = document.querySelector('.teacher-select-container button');
-            teacherButton.textContent = teacherName;
-
-            TeacherManager.showDetails(teacherId);
-        },
-
-        showDetails: (teacherId) => {
-            document.querySelectorAll('.teacher-details').forEach(detail => {
-                detail.style.display = 'none';
-            });
-
-            const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
-            if (teacherDetails) {
-                teacherDetails.style.display = 'block';
-            }
-        },
-    };
-    
-   // Ders İşlemleri
-    const CourseManager = {
-        showDeleteModal: (courseId) => {
-            const confirmButton = document.getElementById('confirmCourseDelete');
-            confirmButton.setAttribute('data-course-id', courseId);
-            confirmButton.onclick = CourseManager.delete;
-            ModalManager.show('courseDeleteModal');
-        },
-
-        delete: async function() {
-            const courseId = document.getElementById('confirmCourseDelete').getAttribute('data-course-id');
-            
-            try {
-                const response = await fetch(`/dersler/ders_sil/${courseId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': CSRFManager.getToken('csrftoken'),
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Ders silinirken bir hata oluştu.');
-                }
-            } catch (error) {
-                alert('Ders silinirken bir hata oluştu.');
-                console.error('Error:', error);
-            }
-
-            ModalManager.hide('courseDeleteModal');
-        },
-
-        showArchiveModal: (courseId) => {
-            const confirmButton = document.getElementById('confirmCourseArchive');
-            confirmButton.setAttribute('data-course-id', courseId);
-            confirmButton.onclick = CourseManager.archive;
-            ModalManager.show('courseArchiveModal');
-        },
-
-        archive: async function() {
-            const courseId = document.getElementById('confirmCourseArchive').getAttribute('data-course-id');
-            
-            try {
-                const response = await fetch(`/dersler/ders_arsivle/${courseId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': CSRFManager.getToken('csrftoken'),
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Ders arşivlenirken bir hata oluştu.');
-                }
-            } catch (error) {
-                alert('Ders arşivlenirken bir hata oluştu.');
-                console.error('Error:', error);
-            }
-
-            ModalManager.hide('courseArchiveModal');
-        }
-    };
-
-    // Sayfa Yükleme İşlemleri
-    document.addEventListener('DOMContentLoaded', () => {
-        // Öğretmen seçenekleri için onclick olaylarını ayarla
-        document.querySelectorAll('.teacher-options button').forEach(button => {
-            const teacherId = button.getAttribute('onclick').match(/\d+/)[0];
-            const teacherName = button.textContent;
-            button.setAttribute('onclick', `TeacherManager.select(${teacherId}, '${teacherName}')`);
-        });
-
-        // Öğretmen detaylarını başlangıçta gizle
-        document.querySelectorAll('.teacher-details').forEach(detail => {
-            detail.style.display = 'none';
-        });
-    document.addEventListener('DOMContentLoaded', () => {
-        // Başlangıçta tüm öğretmen detaylarını göster
-        document.querySelectorAll('.teacher-details').forEach(detail => {
-            detail.style.display = 'block';
-        });
-    });
-
-    const TeacherManager = {
-        filter: () => {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            document.querySelectorAll('.teacher-options button').forEach(button => {
-                button.style.display = button.textContent.toLowerCase().includes(query) ? 'block' : 'none';
-            });
-        },
-
-        select: (teacherId, teacherName) => {
-            const teacherButton = document.querySelector('.teacher-select-container button');
-            teacherButton.textContent = teacherName;
-
-            if (teacherId === 'all') {
-                // Tüm öğretmen detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'block';
-                });
-            } else {
-                // Sadece seçilen öğretmenin detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-                const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
-                if (teacherDetails) {
-                    teacherDetails.style.display = 'block';
-                }
-            }
-
-            // Dropdown menüyü kapat
-            DropdownManager.toggle('teacherDropdown');
-        },
-    };
-    });
-
-   
-</script>
-<script>
     function addDocument(courseId) {
         // Modal içinde formu aç
         document.getElementById('courseId').value = courseId;
@@ -768,7 +344,7 @@ ERP Takip
         const courseId = document.getElementById('courseId').value;
 
         try {
-            const response = await fetch(`/belge_ekle/${courseId}/`, {
+            const response = await fetch(`dersler/belge_ekle/${courseId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': CSRFManager.getToken('csrftoken'),
@@ -791,8 +367,36 @@ ERP Takip
         ModalManager.hide('documentAddModal');
     }
 </script>
-
-
+<script>
+    // Öğretmen seçim işlemleri
+    document.addEventListener('DOMContentLoaded', function() {
+        const teacherSelect = document.getElementById('teacherSelect');
+        
+        if (teacherSelect) {
+            teacherSelect.addEventListener('change', function() {
+                const selectedTeacherId = this.value;
+                
+                // Tüm öğretmen detaylarını gizle
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+                
+                if (selectedTeacherId) {
+                    // Seçilen öğretmenin detaylarını göster
+                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                    if (selectedTeacherDetails) {
+                        selectedTeacherDetails.style.display = 'block';
+                    }
+                } else {
+                    // Hiçbir öğretmen seçili değilse tüm detayları göster
+                    document.querySelectorAll('.teacher-details').forEach(detail => {
+                        detail.style.display = 'block';
+                    });
+                }
+            });
+        }
+    });
+</script>
 <script>
     async function sendRequest(url, method, formData = null) {
         try {
@@ -857,104 +461,108 @@ ERP Takip
             alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
         }
     }
-    
-    async function archiveDocument(documentId) {
+    async function changeStatu(documentId, statu, isCourse) {
         try {
-            const data = await sendRequest(`/dersler/arsivle_erp/${documentId}/`, 'POST');
-            
-            if (data && data.success) {  // success kontrolü ekledik
-                alert(data.message || 'Belge başarıyla arşivlendi');
-                // UI'den satırı kaldır
-                const row = document.querySelector(`#document-form-${documentId}`).closest('tr');
-                if (row) {
-                    row.remove();
+            const url = `/dersler/durum_degis/${documentId}/${statu}/${isCourse}/`;
+            const data = await sendRequest(url, 'POST');
+            console.log(data);
+            if (data && data.success) {
+                
+                if (isCourse === 'true') {
+                    console.log(documentId);
+                    // Ders iptal/arşiv işlemi - tüm card'ı kaldır
+                    const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
+                    }
+                } else {
+                    const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
+                    const row = button?.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                }
+                
+                // Eğer sunucudan yönlendirme talebi gelirse
+                if (data.redirect) {
+                    window.location.reload();
                 }
             }
         } catch (error) {
-            console.error('Arşivleme hatası:', error);
-            alert('Arşivleme işlemi sırasında bir hata oluştu: ' + error.message);
+            console.error('Durum değiştirme hatası:', error);
+            alert('İşlem sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    async function deleteContent(id, isCourse) {
+        try {
+            if (isCourse === 'true') {
+                url = `/dersler/ders_sil/${id}/`;
+            } else {
+                url = `/dersler/belge_sil/${id}/`;
+            }
+            
+            const data = await sendRequest(url, 'POST');
+            
+            if (data && data.success) {
+                alert(data.message || 'İşlem başarıyla tamamlandı');
+                
+                if (isCourse === 'true') {
+                    // id değişkenini kullan, documentId değil
+                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
+                    }
+                } else {
+                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
+                    if (documentRow) {
+                        documentRow.remove();
+                    }
+                }
+                
+                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
+                // window.location.reload();
+            }
+        } catch (error) {
+            console.error('Silme hatası:', error);
+            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
         }
     }
 </script>
 
 <script>
-    // CSRF Token Helper
-    const getCsrfToken = () => {
-        const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-        const csrfCookie = cookies.find(cookie => cookie.startsWith('csrftoken='));
-        return csrfCookie ? decodeURIComponent(csrfCookie.split('=')[1]) : '';
-    };
-
-    // Durum Değiştirme Fonksiyonu
-    async function changeStatus(id, status) {
-        const url = `/durum_degis/${id}/${status}/`;
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCsrfToken(),
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message || 'Durum başarıyla değiştirildi!');
-                location.reload(); // Gerekirse sayfayı yenile
-            } else {
-                throw new Error(data.error || 'Durum değiştirilemedi.');
-            }
-        } catch (error) {
-            console.error('Durum değiştirilemedi:', error);
-            alert('Bir hata oluştu: ' + error.message);
+    function downloadPDF(courseId) {
+        if (!courseId) {
+            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
+            return;
         }
-    }
-
-    // Arşivleme Fonksiyonu
-    async function archiveCourse(id,statu,iscourse) {
-        const url = `/durum_degis/${id}/${statu}/${iscourse}/`;
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCsrfToken(),
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                alert(data.message || 'Kurs başarıyla arşivlendi!');
-                location.reload(); // Gerekirse sayfayı yenile
-            } else {
-                throw new Error(data.error || 'Kurs arşivlenemedi.');
-            }
-        } catch (error) {
-            console.error('Kurs arşivlenemedi:', error);
-            alert('Bir hata oluştu: ' + error.message);
-        }
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
     }
 </script>
 
 
-<div class="container mt-1">
-    <h1 class="text-center">ERP Takip</h1>
+<div class="container">
+    <h1 class="text-center">Pano</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
-    <div class="teacher-select-container">
-        <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Öğretmen Seçiniz</button>
-        <div id="teacherDropdown" class="teacher-search-bar">
-            <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="TeacherManager.filter()">
-            <div class="teacher-options">
-              <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Tüm Öğretmenler</button>
-                {% for teacher in teachers %}
-                    <button onclick="TeacherManager.select('{{ teacher.id }}', '{{ teacher.name }} {{ teacher.surname }}')">{{ teacher.name }} {{ teacher.surname }}</button>
-                {% endfor %}
-            </div>
-        </div>
+    <!-- Daha erişilebilir versiyon -->
+    
+    <div class="teacher-select-container ">
+        <label for="teacherSelect">Öğretmen Seçiniz</label>
+        <select 
+            id="teacherSelect" 
+            class="form-control"
+            data-search="true"
+            data-placeholder="Öğretmen seçiniz...">
+            <option value="">Seçiniz...</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}">
+                    {{ teacher.name }} {{ teacher.surname }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
 
-    <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
             <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
@@ -974,7 +582,8 @@ ERP Takip
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes(this)">İndirilsin mi?
+                                                    <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
+                                                    İndir
                                                 </th>
                                                 <th>Yükleme Alanı</th>
                                                 <th>Etkinlik Tarihi</th>
@@ -1007,12 +616,7 @@ ERP Takip
                                         </thead>
                                         <tbody>
                                             {% for document in course.documents %}
-                                                
-                                                {% if document.id %}
-                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
-                                                {% else %}
-                                                    <form id="document-form-unknown" action="#" method="post">
-                                                {% endif %}
+                                                <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
                                                     {% csrf_token %}
                                                     <tr>
                                                         <td>
@@ -1081,19 +685,33 @@ ERP Takip
                                                             <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
                                                         </td>
                                                         <td>
-                                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                            <button type="button" 
+                                                            class="btn btn-sm btn-danger" 
+                                                            onclick="saveDocument({{ document.id }})">Kaydet</button>
                                                         </td>
                                                         <td>
-                                                            <button type="button" class="btn btn-sm btn-danger" onclick="archiveDocument({{ document.id }})">Arşive Al</button>
+                                                            <button 
+                                                                type="button"
+                                                                class="btn btn-sm btn-primary" 
+                                                                onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
+                                                                id="document-form-{{ document.id }}"> Arşivle</button>
+                                                        </td>
+                                                        <td>
+                                                            <button 
+                                                                type="button"
+                                                                class="btn btn-sm btn-warning" 
+                                                                onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
+                                                                id="document-form-{{ document.id }}"> İptal
+                                                            </button>
                                                         </td>
 
                                                     </tr>
                                                 </form>
-                                                {% empty %}
-                                                    <tr>
-                                                        <td colspan="3">Henüz belge eklenmemiş.</td>
-                                                    </tr>
-                                                {% endfor %}
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="3">Henüz belge eklenmemiş.</td>
+                                                </tr>
+                                            {% endfor %}
                                             
 
                                         </tbody>
@@ -1102,25 +720,42 @@ ERP Takip
 
                                 <!-- İşlem Butonları -->
                                 <div class="action-buttons">
-                                    <button class="btn btn-warning" onclick="archiveCourse({{course.id}},'iptal','True')">İptal</button>
-                                    {% comment %} <a href="{% url 'statu_change' id=101 statu='İptal' %}" class="btn btn-primary">İptal</a> {% endcomment %}
-                                    <button class="btn btn-danger" onclick="CourseManager.showDeleteModal('{{ course.id }}')">Sil</button>
-                                    <button class="btn btn-warning" onclick="archiveCourse({{course.id}},'arsiv','True')">Arşivle</button>
+                                    <button class="btn btn-warning" 
+                                        onclick="changeStatu({{course.id}},'iptal','true')"
+                                        id="course-form-{{ course.id }}">İptal
+                                    </button>
+                                    <button class="btn btn-danger" 
+                                        onclick="deleteContent({{course.id}},'true')"
+                                        id="course-form-{{ course.id }}">Sil
+                                    </button>
+                                    <button 
+                                        class="btn btn-primary" 
+                                        onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
+                                        id="course-form-{{ course.id }}"> Dersi Arşivle
+                                    </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn-pdf" onclick="downloadPDF('{{ teacher.id }}')">PDF İndir</button>
+                                    <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
                                 </div>
                             </div>
                         </div>
+                    {% empty %}
+                        <p>Ders bulunamadı.</p>
                     {% endfor %}
-                {% else %}
-                    <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
+                
                 {% endif %}
             </div>
+        {% empty %}
+            <p>Öğretmen bulunamadı.</p>
         {% endfor %}
+    
     </div>
 </div>
 
-<!-- Dosya Ekle Modal -->
+
+
+
+    <!-- Dosya Ekle Modal -->
 <div id="documentAddModal" class="custom-modal">
     <div class="custom-modal-content">
         <form id="addDocumentForm">
