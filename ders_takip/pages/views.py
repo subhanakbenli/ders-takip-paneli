@@ -42,6 +42,7 @@ def get_teachers_with_courses_and_documents(status=None):
                     "dilekce_is_uploaded": document.dilekce_is_uploaded,
                     "start_date": document.start_date,
                     "end_date": document.end_date,
+                    "type": document.type,
                     
                 }
                 for document in documents
@@ -69,16 +70,11 @@ def get_teachers_with_courses_and_documents(status=None):
 
 def pano_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
-    print(teachers_data)
     return render(request, 'pages/pano.html', {'teachers': teachers_data})
 
 def pano_ozet_view(request):
     teachers = get_teachers_with_courses_and_documents()
     return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
-
-def detayli_goruntule(request, document_id):
-    document = get_object_or_404(Document, id=document_id)
-    return render(request, 'pages/detayli_goruntule.html', {'document': document})
 
 
 
