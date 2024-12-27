@@ -26,7 +26,6 @@ def get_default_sections():
         "Müdür Yardımcısı Onaylı Raporlar",
         "Video",
         "Excel Dosya Yüklemesi",
-        "Dilekçe Yüklemesi",
         "Eksiklik Belirtme",
     ]
 
@@ -525,4 +524,5 @@ def statu_change(request,id,statu,isCourse="true"):
             'success': False,
             'error': str(e)
         }, status=400)
+
 
