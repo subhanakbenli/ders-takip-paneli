@@ -18,6 +18,8 @@ class Course(models.Model):
     start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
     end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
     
+    dilekce_required = models.BooleanField(default=False, verbose_name="dilekce_required")
+    
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
     created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -36,13 +38,6 @@ class CourseFile(models.Model):
     name = models.CharField(max_length=255, verbose_name="file_name", null=True, blank=True)
     type = models.CharField(max_length=255, verbose_name="type", null=True, blank=True)
     statu = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu", default="aktif")
-    
-
-    is_uploaded = models.BooleanField(default=False)
-    uploaded_at = models.DateField(verbose_name="uploaded_at", null=True, blank=True)
-    dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
-    dilekce_is_uploaded = models.BooleanField(default=False)
-    
     current_version = models.OneToOneField(
         'CourseFileVersion',
         on_delete=models.SET_NULL,
@@ -52,9 +47,33 @@ class CourseFile(models.Model):
         verbose_name="current_version"
     )
     
-    start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
-    end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
     
+    start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
+    is_uploaded = models.BooleanField(default=False)
+    uploaded_date = models.DateField(verbose_name="uploaded_at", null=True, blank=True)
+    end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
+
+    dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
+    dilekce_is_uploaded = models.BooleanField(default=False)
+    
+    etkinlik_no = models.CharField(max_length=255, verbose_name="etkinlik_no", null=True, blank=True)
+    etkinlik_adi = models.CharField(max_length=255, verbose_name="etkinlik_adi", null=True, blank=True)
+    etkinlik_kodu = models.CharField(max_length=255, verbose_name="etkinlik_kodu", null=True, blank=True)
+    sinif= models.CharField(max_length=255, verbose_name="sinif", null=True, blank=True)
+    sehir = models.CharField(max_length=255, verbose_name="sehir", null=True, blank=True)
+    katilanlar = models.CharField(max_length=255, verbose_name="katilanlar", null=True, blank=True)
+    sisteme_giris_tarihi = models.CharField(max_length=255, verbose_name="ekleme_tarihi", null=True, blank=True)
+    egitim_olusturma_tarihi = models.CharField(max_length=255, verbose_name="egitim_olusturma_tarihi", null=True, blank=True)
+    katilimci_kodu = models.CharField(max_length=255, verbose_name="katilimci_kodu", null=True, blank=True)
+    egitim_kayit_no_1 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_1", null=True, blank=True)
+    egitim_kayit_no_2 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_2", null=True, blank=True)
+    egitim_kayit_no_3 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_3", null=True, blank=True)
+    description = models.TextField(verbose_name="description", blank=True, null=True)
+    description_1 = models.TextField(verbose_name="description_1", blank=True, null=True)
+    description_2 = models.TextField(verbose_name="description_2", blank=True, null=True)
+    description_3= models.TextField(verbose_name="description_3", blank=True, null=True)
+    
+
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
     created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
 

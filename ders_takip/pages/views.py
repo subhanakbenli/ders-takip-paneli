@@ -11,16 +11,6 @@ from django.db import models
 # Create your views here.
 
 
-class Document(models.Model):
-    belge_adi = models.CharField(max_length=255, null=True, blank=True)
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    uploaded_at = models.DateTimeField(null=True, blank=True)
-    category = models.CharField(max_length=100, null=True, blank=True)
-    warning = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return self.belge_adi or "Unnamed Document"
 
 def get_teachers_with_courses_and_documents(status=None):
     teachers_data = []
@@ -47,7 +37,7 @@ def get_teachers_with_courses_and_documents(status=None):
                     "belge_adi": document.name,
                     "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
                     "is_uploaded": document.is_uploaded,
-                    "uploaded_at": document.uploaded_at,
+                    "uploaded_at": document.uploaded_date,
                     "dilekce_name": document.dilekce_name,
                     "dilekce_is_uploaded": document.dilekce_is_uploaded,
                     "start_date": document.start_date,
