@@ -153,7 +153,7 @@ def add_course_view(request):
             for _ in range(yukleme_miktari):
                 CourseFile.objects.create(course=course, category=bolum_adi)
 
-        return redirect('show_courses_list')
+        return redirect('courses_list')
 
     else:
         # GET isteğinde öğretmen ve varsayılan bölümleri render et

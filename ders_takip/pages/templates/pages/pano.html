@@ -7,409 +7,273 @@ Pano
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    /* Core Layout & Container */
+    .container {
+        width: 100%;
+        min-width: 98%;
+        margin: 0 auto;
+        padding: 0.25rem;
+    }
+
+    /* Typography */
+    h1 {
+        font-size: 1.35rem;  /* Reduced from 1.5rem */
+        color: #2d3748;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    h6 {
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        color: #4a5568;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Table Styles */
     .table-container {
         overflow-x: auto;
-        white-space: nowrap;
-        width: 100%;
-        margin-bottom: 0.9rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
-    
+
     .table {
-        margin-bottom: 0;  /* Container içindeki tablonun alt margin'ini kaldırır */
+        width: 100%;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        border-collapse: collapse;
     }
+
+    .table th {
+        background-color: #4a5568;
+        color: white;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Status Indicators */
     .status-icon {
         display: inline-flex;
         align-items: center;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: bold;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
         color: white;
     }
 
     .status-icon.success {
-        background-color:rgb(5, 236, 143); /* Yeşil */
+        background-color: #48bb78;
     }
 
     .status-icon.error {
-        background-color:rgb(93, 54, 18); /* Kırmızı */
+        background-color: #e53e3e;
     }
-    #select-all {
+
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        transition: all 0.15s ease;
         cursor: pointer;
-        transform: scale(1.2); /* Checkbox'ı biraz büyütün */
-        margin: 2px; /* Varsayılan boşluğu sıfırlayın */
-        padding: 2px;
-    }
-    .btn-success {
-        background-color: #28a745; /* Yeşil */
-        color: white;
         border: none;
-        font-size: 0.75;
-        padding: 5px 10px;
-        margin-left: 4px; /* Butonlar arasında boşluk */
+    }
+
+    .btn-success {
+        background-color: #48bb78;
+        color: white;
     }
 
     .btn-success:hover {
-        background-color: #218838; /* Daha koyu yeşil */
+        background-color: #38a169;
     }
 
-    /* Ders seçimi dropdown içeriği */
-    #courseDropdown .course-options button {
-        background-color:rgb(193, 189, 189); /* Açık gri arka plan */
-        color: #333; /* Koyu gri yazı */
-        border: none; /* Kenarlıkları kaldır */
-        padding: 8px 12px; /* Buton iç boşlukları */
-        text-align: left; /* Metni sola hizala */
-        width: 100%; /* Buton genişliği */
-        border-radius: 4px; /* Köşeleri yuvarla */
-        transition: background-color 0.3s; /* Hover animasyonu */
-    }
-
-    /* Hover efekti */
-    #courseDropdown .course-options button:hover {
-        background-color: #ddd; /* Daha koyu gri */
-        color: #000; /* Siyah yazı */
-    }
-
-    .teacher-options {
-        background-color:rgb(228, 229, 231); /* Hafif gri arka plan */
-        border-radius: 4px; /* Köşeleri yuvarlat */
-        padding: 10px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
-    }
-    .teacher-search-bar input {
-        background-color:rgb(222, 225, 227);
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 8px;
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    /* Öğretmen seçme butonu görünümü */
-    .teacher-select-container button {
-        background-color:rgb(70, 71, 72); 
-        color: white; /* Beyaz yazı */
-        font-weight: bold;
-        border: 1px solidrgb(9, 9, 9);
-        border-radius: 5px;
-        padding: 5px;
-        transition: background-color 0.3s, color 0.3s;
-        text-align: center; /* Seçilen metni sola hizala */
-    }
-
-    /* Hover efekti */
-    .teacher-select-container button:hover {
-        background-color:rgb(103, 105, 106); /* Daha koyu mavi */
-        color: #fff;
-    }
-
-    /* Dropdown içeriği görünümü */
-    .teacher-search-bar {
-        max-height: 200px; /* Maksimum yükseklik */
-        overflow-y: auto; /* Taşan içeriği kaydır */
-        background-color:rgb(100, 101, 103); /* Açık gri arka plan */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-    }
-
-    /* Dropdown butonları görünümü */
-    .teacher-options button {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 8px 12px;
-        background-color: #fff; /* Beyaz arka plan */
-        color: #333; /* Koyu gri yazı */
-        border: none;
-        border-radius: 3px;
-        transition: background-color 0.3s;
-    }
-
-    /* Dropdown buton hover efekti */
-    .teacher-options button:hover {
-        background-color: #e9ecef; /* Açık gri */
-        color:rgb(19, 19, 20); /* Mavi yazı */
-    }
-
-    .teacher-select-container button {
-        white-space: nowrap; /* Metin kaymasını önler */
-        overflow: hidden;    /* Taşan metni gizler */
-        text-overflow: ellipsis; /* Metni üç noktayla kısaltır */
-        width: 100%;         /* Butonun genişliğini korur */
-    }
-
-    .search-bar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 10px;
-        display: none; /* Başlangıçta gizli */
-    }
-    .teacher-select-container {
-        position: relative;
-        width: 100%;
-    }
-
-    .btn-confirm {
-        background-color: #28a745; /* Yeşil */
-        color: white;
-        border: none;
-    }
-    .btn-confirm:hover {
-        background-color: #218838;
-    }
-    .btn-cancel {
-        background-color: #dc3545; /* Kırmızı */
-        color: white;
-        border: none;
-    }
-    .btn-cancel:hover {
-        background-color: #c82333;
-    }
-
-    .container {
-        max-width: 100%;
-        min-width: 98%;
-        margin: 0px;
-        padding: 0px;
-    }
-    .card-header, .table thead th {
-        background-color: rgb(97, 98, 99);
-        color: white;
-        font-size: 0.8rem;
-        padding: 10px;
-    }
-    .teacher-card {
-        margin-bottom: 15px;
-        border: 1px solid rgb(55, 56, 57);
-        border-radius: 8px;
-        overflow: hidden;
-        padding: 10px;
-    }
-    .course-card {
-        margin-bottom: 10px;
-        border: 1px solid #6c757d;
-        border-radius: 6px;
-        overflow: hidden;
-        padding: 8px;
-    }
-    .document-table {
-        
-        margin-top: 8px;
-    }
-    .action-buttons {
-        text-align: right;
-        margin-top: 8px;
-        
-        
-    }
-    .action-buttons .btn {
-        margin-left: 4px;
-        padding: 5px 10px;
-        font-size: 0.75rem;
-    }
-    h1 {
-        font-size: 1.3rem;
-        margin-bottom: 20px;
-        color: #333;
-        text-align: center;
-    }
-    h5 {
-        font-size: 9rem;
-        margin-bottom: 10px;
-        color: #333;
-    }
-    h6 {
-        font-size: 0.85rem;
-        margin-bottom: 8px;
+    .btn-danger {
+        background-color: #e53e3e;
         color: white;
     }
-    p {
-        font-size: 0.85rem;
-        margin-bottom: 6px;
-    }
-    table {
-        font-size: 0.80rem;
-        overflow-x: auto;
-        width: 100%;
-        
-    }
-    .table th, .table td {
-        padding: 6px;
+
+    .btn-danger:hover {
+        background-color: #c53030;
     }
 
-    .duzenle-buton {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color:rgb(234, 107, 34); /* Turuncu arka plan */
-        color: #fff; /* Beyaz yazı */
-        text-decoration: none; /* Altı çizgiyi kaldırır */
-        border-radius: 5px; /* Kenarları yuvarlar */
-        font-size: 16px;
-        transition: background-color 0.3s; /* Hover animasyonu */
-    }
-    .duzenle-buton:hover {
-        background-color:rgb(175, 100, 8); /* Hover'da koyu turuncu */
+    .btn-primary {
+        background-color: #4299e1;
+        color: white;
     }
 
-    .teacher-search-bar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 10px;
-        display: none;
+    .btn-primary:hover {
+        background-color: #3182ce;
     }
-    .teacher-options {
-        max-height: 200px;
-        overflow-y: auto;
+
+    .btn-warning {
+        background-color: #ecc94b;
+        color: #2d3748;
     }
-    .teacher-options button {
-        display: block;
+
+    .btn-warning:hover {
+        background-color: #d69e2e;
+    }
+
+    /* Cards */
+    .card {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    /* Form Elements */
+    .form-control {
         width: 100%;
-        text-align: left;
-        border: none;
-        background: none;
-        padding: 5px 10px;
-        cursor: pointer;
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
     }
-    .teacher-options button:hover {
-        background-color: #f1f1f1;
+
+    .form-control:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
     }
-    .action-buttons .btn-danger {
-        background-color: #dc3545; /* Kırmızı */
-        border: none;
-    }
-    .action-buttons .btn-primary {
-        background-color: #007bff; /* Mavi */
-        border: none;
-    }
-    .action-buttons .btn-warning {
-        background-color: #ffc107; /* Turuncu */
-        border: none;
-        color: #fff;
-    }
-    /* Modal Arkaplanı */
+
+    /* Modal */
     .custom-modal {
-        display: none; /* Başlangıçta gizli */
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5); /* Yarı saydam arka plan */
-        z-index: 1050; /* Diğer içeriklerin üstünde görünmesi için */
-        overflow: hidden; /* Taşan içerik gizlenmeli */
-        transition: opacity 0.3s ease-in-out; /* Yavaşça geçiş yaparak açılacak */
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1050;
     }
 
-    /* Modal İçeriği */
     .custom-modal-content {
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        width: 350px;
-        max-width: 90%; /* Ekran boyutuna göre uyum sağlar */
-        text-align: center;
-        margin: 15% auto; /* Ortalanmış modal */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Gölgeleme */
-        font-family: Arial, sans-serif; /* Yazı tipi */
+        background-color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        width: 90%;
+        max-width: 400px;
+        margin: 15% auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    /* Modal Başlık ve Mesaj */
-    .custom-modal-content p {
-        font-size: 1.05rem;
-        color: #333;
-        margin-bottom: 20px;
-        line-height: 1.5;
+    /* Action Buttons Container */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
     }
 
-    /* Butonlar */
-    .custom-modal-content .btn {
+    /* Teacher Select */
+    .teacher-select-container {
+        margin-bottom: 1rem;
+    }
+
+    .teacher-select-container select {
         width: 100%;
-        padding: 12px;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        cursor: pointer;
-        border: none;
-        transition: background-color 0.3s;
-        margin-top: 10px;
-    }
-
-    /* Evet Butonu */
-    .custom-modal-content .btn-confirm {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .custom-modal-content .btn-confirm:hover {
-        background-color: #218838;
-    }
-
-    /* Hayır Butonu */
-    .custom-modal-content .btn-cancel {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .custom-modal-content .btn-cancel:hover {
-        background-color: #c82333;
-    }
-
-    /* Butonlar Arasındaki Boşluk */
-    .custom-modal-content button + button {
-        margin-top: 10px; /* Butonlar arasında boşluk bırak */
-    }
-
-    /* Modal Animasyonu */
-    .custom-modal.show {
-        display: block;
-        opacity: 1; /* Modal görünür hale gelir */
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        border: 1px solid #e2e8f0;
+        font-size: 1.1rem;  /* Added font size reduction for select */
     }
 </style>
 <script>
-    // checkboxlar için
-    function downloadSelectedDocuments() {
-        const selectedDocuments = document.querySelectorAll('.document-checkbox:checked');
-        if (selectedDocuments.length === 0) {
-            alert('Lütfen indirilecek belgeleri seçin.');
+    function sendSelectedDocuments() {
+        // Seçili tüm checkboxları bul
+        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+        
+        if (selectedCheckboxes.length === 0) {
+            alert('Lütfen indirilecek belgeleri seçiniz.');
             return;
         }
-
-        selectedDocuments.forEach(checkbox => {
-            const documentUrl = checkbox.getAttribute('data-document-url');
-            const link = document.createElement('a');
-            link.href = documentUrl;
-            link.download = '';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+    
+        // Seçili belgelerin URL'lerini topla
+        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
+            return {
+                url: checkbox.getAttribute('data-document-url'),
+                isUploaded: checkbox.closest('tr').querySelector('.status-icon.success') !== null
+            };
         });
-
-        alert('Seçilen belgeler indiriliyor...');
-    }
-    //Tümünü seç checkbox
-    function toggleAllCheckboxes(source) {
-        const checkboxes = document.querySelectorAll('.document-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = source.checked;
+    
+        // Yüklenmemiş belge kontrolü
+        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
+        if (notUploadedDocs.length > 0) {
+            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
+            return;
+        }
+    
+        // Yüklenmiş belgeleri indir
+        selectedDocuments.forEach(doc => {
+            if (doc.url) {
+                // Yeni bir sekmede belgeyi aç
+                const link = document.createElement('a');
+                link.href = doc.url;
+                link.target = '_blank';
+                link.download = ''; // Tarayıcının dosya adını kullanmasına izin ver
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         });
     }
+    
+    function toggleAllDocuments(courseId) {
+        // Tüm belgeleri seç checkbox'ı
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        
+        // İlgili tablodaki tüm belge checkbox'larını bul
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'ları ana checkbox'ın durumuna göre işaretle
+        documentCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    }
+    
+    // Belge checkbox'larının durumuna göre "Tümünü Seç" checkbox'ını güncelle
+    function updateSelectAllCheckbox(courseId) {
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'lar seçili mi kontrol et
+        const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
+        const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
+        
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = anyChecked && !allChecked;
+    }
+    
+    // Her belge checkbox'ına event listener ekle
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.document-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const courseId = this.closest('.card').getAttribute('data-course-id');
+                updateSelectAllCheckbox(courseId);
+            });
+        });
+    });
 </script>
 
 <script>
-    
     // Modal İşlemleri
     const ModalManager = {
         show: (modalId) => {
@@ -442,8 +306,7 @@ Pano
                 console.error(`Modal with ID '${modalId}' not found.`);
             }
         },
-    };
-    
+    }; 
     // CSRF Token Alma
     const CSRFManager = {
         getToken: (name) => {
@@ -469,42 +332,6 @@ Pano
             }
         },
     };
-    
-
-
-    // Öğretmen İşlemleri
-    const TeacherManager = {
-        select: (teacherId, teacherName) => {
-            const teacherButton = document.querySelector('.teacher-select-container button');
-            if (teacherButton) {
-                teacherButton.textContent = teacherName; // Seçilen öğretmenin adı butona yazılır
-            }
-
-            if (teacherId === 'all') {
-                // Tüm öğretmen detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'block';
-                });
-            } else {
-                // Sadece seçilen öğretmenin detaylarını göster
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-                const teacherDetails = document.getElementById(`teacher-details-${teacherId}`);
-                if (teacherDetails) {
-                    teacherDetails.style.display = 'block';
-                }
-            }
-
-            // Dropdown menüyü kapat
-            const dropdown = document.getElementById('teacherDropdown');
-            if (dropdown) {
-                dropdown.style.display = 'none';
-            }
-        },
-    };
-</script>
-<script>
     function addDocument(courseId) {
         // Modal içinde formu aç
         document.getElementById('courseId').value = courseId;
@@ -540,7 +367,36 @@ Pano
         ModalManager.hide('documentAddModal');
     }
 </script>
-
+<script>
+    // Öğretmen seçim işlemleri
+    document.addEventListener('DOMContentLoaded', function() {
+        const teacherSelect = document.getElementById('teacherSelect');
+        
+        if (teacherSelect) {
+            teacherSelect.addEventListener('change', function() {
+                const selectedTeacherId = this.value;
+                
+                // Tüm öğretmen detaylarını gizle
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+                
+                if (selectedTeacherId) {
+                    // Seçilen öğretmenin detaylarını göster
+                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                    if (selectedTeacherDetails) {
+                        selectedTeacherDetails.style.display = 'block';
+                    }
+                } else {
+                    // Hiçbir öğretmen seçili değilse tüm detayları göster
+                    document.querySelectorAll('.teacher-details').forEach(detail => {
+                        detail.style.display = 'block';
+                    });
+                }
+            });
+        }
+    });
+</script>
 <script>
     async function sendRequest(url, method, formData = null) {
         try {
@@ -686,12 +542,13 @@ Pano
 </script>
 
 
-<div class="container mt-1">
+<div class="container">
     <h1 class="text-center">Pano</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
-    <div class="teacher-select-container">
+    
+    <div class="teacher-select-container ">
         <label for="teacherSelect">Öğretmen Seçiniz</label>
         <select 
             id="teacherSelect" 
@@ -699,7 +556,6 @@ Pano
             data-search="true"
             data-placeholder="Öğretmen seçiniz...">
             <option value="">Seçiniz...</option>
-            <option value="all">Tüm Öğretmenler</option>
             {% for teacher in teachers %}
                 <option value="{{ teacher.id }}">
                     {{ teacher.name }} {{ teacher.surname }}
@@ -711,140 +567,153 @@ Pano
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
-        <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
-            {% if teacher.courses %}
-                {% for course in teacher.courses %}
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
-                            <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                            <p><strong>Durum:</strong> {{ course.statu }}</p>
-                            <p><strong>Açıklama:</strong> {{ course.description }}</p>
-                            <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                            <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
-                            
-                            <!-- Documents Table -->
-                            <h6>Belgeler:</h6>
-                            {% if course.documents %}
-                                <div class="table-container">
-                                    <table class="table table-bordered table-responsive text-wrap">
-                                        <thead>
-                                            <tr>
-                                                <th>Seç</th>
-                                                <th>Kategori</th>
-                                                <th>Belge Adı</th>
-                                                <th>İşlemler</th>
-                                                <th>Başlangıç Tarihi</th>
-                                                <th>Bitiş Tarihi</th>
-                                                <th>Yüklenme Tarihi</th>
-                                                
-                                                <th>Türü</th>
-                                                <th>Dilekçe</th>
-                                                <th>Uyarı</th>
-                                                <th>Kaydet</th>
-                                                <th>Arşive Al</th>
-                                                <th>İptal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for document in course.documents %}
+            <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
+                {% if teacher.courses %}
+                    {% for course in teacher.courses %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                                <p><strong>Durum:</strong> {{ course.statu }}</p>
+                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                                <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
+                                
+                                <!-- Documents Table -->
+                                <h6>Belgeler:</h6>
+                                {% if course.documents %}
+                                    <div class="table-container">
+                                        <table class="table table-bordered table-responsive text-wrap">
+                                            <thead>
                                                 <tr>
+                                                    <th>
+                                                        <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
+                                                        Seç
+                                                    </th>
+                                                    <th>Kategori</th>
+                                                    <th>Belge Adı</th>
+                                                    <th>İşlemler</th>
+                                                    <th>Başlangıç Tarihi</th>
+                                                    <th>Bitiş Tarihi</th>
+                                                    <th>Yüklenme Tarihi</th>
+                                                    
+                                                    <th>Türü</th>
+                                                    <th>Dilekçe</th>
+                                                    <th>Uyarı</th>
+                                                    <th>Kaydet</th>
+                                                    <th>Arşivle</th>
+                                                    <th>İptal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for document in course.documents %}
                                                     <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
                                                         {% csrf_token %}
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                        </td>
-                                                        <td>{{ document.category }}</td>
-                                                        <td>{{ document.belge_adi|default:'' }}</td>
-                                                        <td> 
-                                                            {% if document.belge_adi and document.belge_url %} 
-                                                                <button type="button" class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button> 
-                                                            {% else %} 
-                                                                <button type="button" class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button> 
-                                                            {% endif %} 
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
-                                                        </td>
-                                                        <td>
-                                                            {% if document.is_uploaded %}
-                                                                <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
-                                                            {% else %}
-                                                                <span class="status-icon error">❌</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
-                                                        </td>
-                                                        <td>
-                                                            {% if document.is_uploaded %}
-                                                                <span class="status-icon success">✔️</span>
-                                                            {% else %}
-                                                                <span class="status-icon error">❌</span>
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-sm btn-danger" onclick="saveDocument({{ document.id }})">Kaydet</button>
-                                                        </td>
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                            </td>
+                                                            <td>{{ document.category }}</td>
+                                                            <td>{{ document.belge_adi|default:'' }}</td>
+                                                            <td> 
+                                                                {% if document.belge_adi and document.belge_url %} 
+                                                                    <button type="button" class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button> 
+                                                                {% else %} 
+                                                                    <button type="button" class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button> 
+                                                                {% endif %} 
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                            </td>
+                                                            <td>
+                                                                {% if document.is_uploaded %}
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                                {% else %}
+                                                                    <span class="status-icon error">❌</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.turu|default:'' }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe adı girin" value="{{ document.dilekce_name|default:'' }}">
+                                                            </td>
+                                                            <td>
+                                                                {% if document.is_uploaded %}
+                                                                    <span class="status-icon success">✔️</span>
+                                                                {% else %}
+                                                                    <span class="status-icon error">❌</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-danger" 
+                                                                onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                            </td>
+                                                            <td>
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-primary" 
+                                                                    onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
+                                                                    id="document-form-{{ document.id }}"> Arşivle
+                                                                </button>
+                                                            </td>
+                                                            <td>
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-warning" 
+                                                                    onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
+                                                                    id="document-form-{{ document.id }}"> İptal
+                                                                </button>
+                                                            </td>
+                                                        </tr>
                                                     </form>
 
-                                                    <td>
-                                                        <button 
-                                                            class="btn btn-sm btn-primary" 
-                                                            onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
-                                                            id="document-form-{{ document.id }}"> Arşive Al
-                                                        </button>
-                                                    </td>
-                                                    <td>
-                                                        <button 
-                                                            class="btn btn-sm btn-warning" 
-                                                            onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
-                                                            id="document-form-{{ document.id }}"> İptal
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div> 
-                            {% else %}
-                                <p>Bu derse ait belge bulunmamaktadır.</p>
-                            {% endif %}
-                            <!-- Action Buttons -->
-                            <div class="action-buttons">
-                                <button class="btn btn-warning" 
-                                    onclick="changeStatu({{course.id}},'iptal','true')"
-                                    id="course-form-{{ course.id }}">İptal
-                                </button>
-                                <button class="btn btn-danger" 
-                                    onclick="deleteContent({{course.id}},'true')"
-                                    id="course-form-{{ course.id }}">Sil
-                                </button>
-                                <button 
-                                    class="btn btn-primary" 
-                                    onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
-                                    id="course-form-{{ course.id }}"> Arşive Al
-                                </button>
-                                <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                 <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="12">Bu derse ait belge bulunmamaktadır.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                {% else %}
+                                    <p>Bu derse ait belge bulunmamaktadır.</p>
+                                {% endif %}
+                                <!-- Action Buttons -->
+                                <div class="action-buttons">
+                                    <button class="btn btn-warning" 
+                                        onclick="changeStatu({{course.id}},'iptal','true')"
+                                        id="course-form-{{ course.id }}">İptal
+                                    </button>
+                                    <button class="btn btn-danger" 
+                                        onclick="deleteContent({{course.id}},'true')"
+                                        id="course-form-{{ course.id }}">Sil
+                                    </button>
+                                    <button 
+                                        class="btn btn-primary" 
+                                        onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
+                                        id="course-form-{{ course.id }}"> Dersi Arşivle
+                                    </button>
+                                    <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                    <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
 
 
-                            </div>
+                                </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p>Bu öğretmene ait henüz ders eklenmemiş.</p>
-            {% endif %}
-        </div>
+                    {% empty %}
+                    <p>Bu Öğretmene Ait Ders Bulunamadı</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Öğretmen Bulunamadı.</p>
         {% endfor %}
 
     </div>
