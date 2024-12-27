@@ -1,213 +1,121 @@
-
 {% extends "base.html" %}
 
-{% block title %}Ders Listesi{% endblock %}
+{% block title %}
+Pano Özet
+{% endblock title %}
 
 {% block content %}
 <style>
-    /* Genel Stil */
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f5f5f5;
+    .container {
+        margin-top: 2rem;
+        padding: 1rem;
+        display: flex; /* Flexbox düzeni */
+        flex-direction: column; /* İçerikleri dikey hizala */
+        justify-content: center; /* Yatayda ortala */
+        align-items: center; /* İçerikleri ortala */
     }
 
-    h2 {
+    h1 {
+        font-size: 1.5rem;
+        color: #2d3748;
+        margin-bottom: 1rem;
         text-align: center;
-        color: #333;
-        margin: 10px 0;
     }
 
-    /* Tablo Stili */
-    table {
-        width: 100%;
-        margin: 10px auto;
+    .table-container {
+        overflow-x: auto;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        max-width: 80%; /* Tablo genişliği ekranın %80'ini geçmesin */
+    }
+
+    .table {
+        width: 100%; /* Tablo genişliği konteynerin tamamını kaplasın */
+        font-size: 0.875rem;
         border-collapse: collapse;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 0 auto; /* Tabloyu kapsayıcısının içinde ortalar */
     }
 
-    th, td {
-        padding: 12px;
+    .table th {
+        background-color: #4a5568;
+        color: white;
+        padding: 0.75rem;
         text-align: left;
-        border-bottom: 1px solid #ddd;
     }
 
-    /* Sıralanabilir Sütun Stili */
-    th {
-        background-color: #007bff;
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .status-icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
         color: white;
-        cursor: pointer;
-        position: relative;
-        transition: background-color 0.3s;
     }
 
-    th:hover {
-        background-color: #0056b3;
+    .status-icon.success {
+        background-color: #48bb78;
     }
 
-    th a {
-        color: white;
-        text-decoration: none;
+    .status-icon.error {
+        background-color: #e53e3e;
     }
-
-    .sort-icon {
-        font-size: 12px;
-        margin-left: 5px;
-        opacity: 0.7;
-        transition: opacity 0.3s;
-    }
-
-    th:hover .sort-icon {
-        opacity: 1;
-    }
-
 
     tr:hover {
-        background-color: #e0e0e0; /* Daha koyu bir gri ton */
-    }
-    
-    /* Tıklanabilir Satırlar */
-    tbody tr {
-        cursor: pointer;
-    }
-
-    /* Sayfa Başına Öğe Sayısı Seçimi */
-    #per_page {
-        display: inline-block;
-        margin: 10px;
-        padding: 6px;
-        border: 1px solid #ddd;
-    }
-
-    /* Sayfalama Kontrolleri */
-    .pagination {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .pagination a {
-        color: #007bff;
-        padding: 8px 16px;
-        text-decoration: none;
-        margin: 0 4px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .pagination a:hover {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .pagination span {
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #f1f1f1;
-    }
-    .btn-download {
-        display: block;
-        margin: 20px 10px;
-        padding: 10px 20px;
-        background-color: #28a745;
-        color: white;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        position: absolute;
-        right: 10px;
-    }
-
-    .btn-download:hover {
-        background-color: #218838;
+        background-color: #f7fafc;
     }
 </style>
 
-{% comment %} pdf için {% endcomment %}
-<script>
-  function downloadPDF(courseId) {
-        if (!courseId) {
-            alert("Ders ID'si bulunamadı.");
-            return;
-        }
-        window.location.href =`/ogretmen/${courseId}/pano_ozet_pdf/`;
-    }
+<div class="container">
+    <h1>Pano Özet</h1> 
+    <div class="table-container">
+        <table class="table table-bordered table-responsive text-wrap">
+            <thead>
+                <tr>
+                    <th>Öğretmen Adı</th>
+                    <th>Ders Adı</th>
 
-</script>
-
-<h2>Pano Özet</h2>
-
-<label for="per_page">Sayfa başına:</label>
-<select id="per_page" onchange="updatePerPage()">
-    <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
-    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
-    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
-    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
-</select>
-
-<!-- Client Listesi Tablosu -->
-<table border="1">
-    <thead>
-        <tr>
-            <th><a>Öğretmen Adı </a></th>
-            <th><a>Ders Adı</a></th>
-            <th>Başlangıç-Bitiş Tarihi</th>
-            <th>Belge Adı</th>
-            <th>Durum</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for course in page_obj %}
-            <tr onclick="window.location.href='/dersler/{{ course.id }}';">
-                <td>{{ course.teacher.name }}</td>
-                <td>{{ course.name }}</td>>
-                <td>{{ course.start_date}} - {{ course.end_date}}</td>
-                <td>{{ document.belge_adi|default:'' }}</td>
-                <td>
-                    {% if document.is_uploaded %}
-                        <span class="status-icon success">✔️</span>
-                    {% else %}
-                        <span class="status-icon error">❌</span>
-                    {% endif %}
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="7">Ders Bulunamadı</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-    <button class="btn-download" onclick="downloadPDF()">PDF İndir</button>
-
-<!-- Sayfalama Kontrolleri -->
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page=1&per_page={{ per_page }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">İlk Sayfa</a>
-        <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">Önceki</a>
-    {% endif %}
-
-    <span>Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">Sonraki</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">Son Sayfa</a>
-    {% endif %}
+                    <th>Başlangıç Tarihi</th>
+                    <th>Bitiş Tarihi</th>
+                    <th>Yükleme Tarihi</th>
+                    <th>Uyarı</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                    {% for course in teacher.courses %}
+                        {% for document in course.documents %}
+                        <tr onclick="window.location.href='{% url 'pano' %}'" style="cursor: pointer;">
+                            <td>{{ teacher.name }} {{teacher.surname}}</td>
+                            <td>{{ course.name }}</td>
+        
+                            <td>{{ document.start_date|date:"d/m/Y" }}</td>
+                            <td>{{ document.end_date|date:"d/m/Y" }}</td>
+                            <td>
+                                {% if document.is_uploaded %}
+                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}"></span>
+                                {% else %}
+                                    <span class="status-icon error">Yükleme tarihi girilmedi</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if document.is_uploaded %}
+                                    <span class="status-icon success">✔️</span>
+                                {% else %}
+                                    <span class="status-icon error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-    
-
-<script>
-    // Kullanıcı sayfa başına gösterilecek öğe sayısını seçtiğinde sayfayı yenile
-    function updatePerPage() {
-        const perPage = document.getElementById('per_page').value;
-        const url = new URL(window.location.href);
-        url.searchParams.set('per_page', perPage);
-        window.location.href = url.href;
-    }
-</script>
-
 {% endblock content %}

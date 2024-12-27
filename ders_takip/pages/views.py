@@ -6,9 +6,21 @@ from courses.models import Course, CourseFile, Teacher
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db import models
 
 # Create your views here.
 
+
+class Document(models.Model):
+    belge_adi = models.CharField(max_length=255, null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    uploaded_at = models.DateTimeField(null=True, blank=True)
+    category = models.CharField(max_length=100, null=True, blank=True)
+    warning = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.belge_adi or "Unnamed Document"
 
 def get_teachers_with_courses_and_documents(status=None):
     teachers_data = []
@@ -74,10 +86,17 @@ def pano_ozet_view(request):
     teachers = get_teachers_with_courses_and_documents()
     return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
 
+def detayli_goruntule(request, document_id):
+    document = get_object_or_404(Document, id=document_id)
+    return render(request, 'pages/detayli_goruntule.html', {'document': document})
+
+
+
 
 def arsiv_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
+
 def erp_view(request):
     teachers_data= get_teachers_with_courses_and_documents()
     # Şablona gönderilecek veri
@@ -86,6 +105,9 @@ def erp_view(request):
     }
     return render(request, 'pages/erp.html', context)
 
+def erp_ozet_view(request):
+    teachers_data = get_teachers_with_courses_and_documents()
+    return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})
 
 
 
@@ -126,6 +148,8 @@ def arsiv_view(request):
         "table_data": table_data,
     }
     return render(request, "pages/arsiv.html", context)
+
+
 
 
 

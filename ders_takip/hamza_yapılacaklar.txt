@@ -1,0 +1,9 @@
+ders detay sayfası pdf çalışıyo açıklama kısmı silik çıkıyo
+öğretmen detay sayfası data gönderme
+erp sayfası data gönderme
+
+
+sübhan
+
+pano özet sayfasına sadece yüklenmeyen dataların gönderilmesi gerekiyo
+erp özet sayfasına da aynı şekilde yüklenmeyen datalar gönderilecek

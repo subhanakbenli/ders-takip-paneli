@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 
 
 
+
 @login_required()
 def add_teacher(request):
     
@@ -130,23 +131,43 @@ def get_course_with_documents(course):
             "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
             "baslangic_tahihi":document.start_date,
             "bitis_tarihi":document.end_date,
-
+            
         }
         for document in documents
     ]
 
     return documents_data
 
+from .models import Teacher
+
+def get_teacher_data(teacher_id):
+    try:
+        teacher = Teacher.objects.get(id=teacher_id)  
+        data = {
+            "name": teacher.name,
+            "surname": teacher.surname,
+            "title": teacher.title,
+            "description": teacher.description,
+            "telephone": teacher.telephone,
+            "telephone2": teacher.telephone2,
+            "mail": teacher.mail,
+            "adress": teacher.adress,
+        }
+        return data
+    except Teacher.DoesNotExist:
+        return None
+
+
 
 
 def teacher_pdf(request, teacher_id):
    
     teacher = get_object_or_404(Teacher, id=teacher_id)
-
+    courses = Course.objects.filter(teacher=teacher)
 
     context = {
-        'teacher': teacher,
-
+        'teacher':teacher,
+        'courses': courses
     }
     return render_to_pdf('pdf/pdf_teacher_detail.html', context)
 
@@ -166,7 +187,7 @@ def generate_pdf(request, course_id):
     return render_to_pdf('pdf/pdf_template.html', context)
 
 
-# öğretmen detay sayfası pdf
+
 
 
 
@@ -185,6 +206,8 @@ def pdf_pano(request, course_id):
     return render_to_pdf('pdf/pdf_pano.html', context)
 
 
+
+
 def pano_ozet_pdf(request, course_id):
     
     course = get_object_or_404(Course, id=course_id)
@@ -194,6 +217,8 @@ def pano_ozet_pdf(request, course_id):
         
     }
     return render_to_pdf('pano_ozet_pdf.html', context)
+
+
 
 def pdf_arsiv(request, teacher_id):
     teacher = get_object_or_404(Teacher, id=teacher_id)
@@ -205,6 +230,8 @@ def pdf_arsiv(request, teacher_id):
     }
 
     return render_to_pdf('pdf/pdf_arsiv.html', context)
+
+
 
 def erp_pdf(request, teacher_id):
     teacher = get_object_or_404(Teacher, id=teacher_id)

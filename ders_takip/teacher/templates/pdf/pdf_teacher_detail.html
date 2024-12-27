@@ -41,7 +41,7 @@
 
     <ul>
         <li><strong>Telefon:</strong> {{ teacher.telephone }}</li>
-        <li><strong>Email:</strong> {{ teacher.email }}</li>
+        <li><strong>Email:</strong> {{ teacher.mail }}</li>
     </ul>
 
     <h2>Verdiği Dersler</h2>
@@ -53,10 +53,10 @@
             </tr>
         </thead>
         <tbody>
-            {% for ders in ogretmen_dersleri %}
+            {% for course in courses %}
                 <tr>
-                    <td>{{ ders.name }}</td>
-                    <td>{{ ders.description }}</td>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.description }}</td>
                 </tr>
             {% empty %}
                 <tr>
