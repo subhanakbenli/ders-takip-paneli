@@ -78,7 +78,6 @@ def get_teachers_with_courses_and_documents(status=None):
     return teachers_data
 
 def get_course_with_documents(course):
-    courses_data = []
 
     # Belge verilerini çek
     documents = CourseFile.objects.filter(course=course)
@@ -92,16 +91,15 @@ def get_course_with_documents(course):
         for document in documents
     ]
 
-    courses_data.append({
+    return{
         "id": course.id,
         "name": course.name,
         "statu": course.statu,
         "description": course.description,
         "created_at": course.created_at,
         "files": documents_data
-    })
+    }
 
-    return courses_data
 
 def get_course_details(id):
     course = get_object_or_404(Course, id=id)
@@ -417,78 +415,38 @@ def save_pano(request, id):
 @require_http_methods(["POST"]) # bitmedi
 def save_erp(request, id):
     try:
-        # Belgeyi veritabanından al veya 404 hatası döndür
         related_courseFile = get_object_or_404(CourseFile, id=id)
-        
-        # Form verilerini al
-        etkinlik_no = request.POST.get('etkinlik_no')
-        etkinlik_adi = request.POST.get('etkinlik_adi')
-        etkinlik_kodu = request.POST.get('etkinlik_kodu')
-        sinif = request.POST.get('sinif')
-        sehir = request.POST.get('sehir')
-        katilanlar = request.POST.get('katilanlar')
-        sisteme_giris_tarihi = request.POST.get('sisteme_giris_tarihi')
-        egitim_olusturma_tarihi = request.POST.get('egitim_olusturma_tarihi')
-        katilimci_kodu = request.POST.get('katilimci_kodu')
-        egitim_kayit_no_1 = request.POST.get('egitim_kayit_no_1')
-        egitim_kayit_no_2 = request.POST.get('egitim_kayit_no_2')
-        egitim_kayit_no_3 = request.POST.get('egitim_kayit_no_3')
-        description = request.POST.get('description')
-        description_1 = request.POST.get('description_1')
-        description_2 = request.POST.get('description_2')
-        description_3 = request.POST.get('description_3')
-        
-        # Belge bilgilerini güncelle
-        if related_courseFile:
-            if etkinlik_no:
-                related_courseFile.etkinlik_no = etkinlik_no
-            if etkinlik_adi:
-                related_courseFile.etkinlik_adi = etkinlik_adi
-            if etkinlik_kodu:
-                related_courseFile.etkinlik_kodu = etkinlik_kodu
-            if sinif:
-                related_courseFile.sinif = sinif
-            if sehir:
-                related_courseFile.sehir = sehir
-            if katilanlar:
-                related_courseFile.katilanlar = katilanlar
-            if sisteme_giris_tarihi:
-                related_courseFile.sisteme_giris_tarihi = sisteme_giris_tarihi
-            if egitim_olusturma_tarihi:
-                related_courseFile.egitim_olusturma_tarihi = egitim_olusturma_tarihi
-            if katilimci_kodu:
-                related_courseFile.katilimci_kodu = katilimci_kodu
-            if egitim_kayit_no_1:
-                related_courseFile.egitim_kayit_no_1 = egitim_kayit_no_1
-            if egitim_kayit_no_2:
-                related_courseFile.egitim_kayit_no_2 = egitim_kayit_no_2
-            if egitim_kayit_no_3:
-                related_courseFile.egitim_kayit_no_3 = egitim_kayit_no_3
-            if description:
-                related_courseFile.description = description
-            if description_1:
-                related_courseFile.description_1 = description_1
-            if description_2:
-                related_courseFile.description_2 = description_2
-            if description_3:
-                related_courseFile.description_3 = description_3
-        
-            # Değişiklikleri kaydet
-            related_courseFile.save()
-            return JsonResponse({
-                'success': True,
-                'message': 'Belge başarıyla güncellendi',
-            })        
-        else:
-            return JsonResponse({
-                'success': False,
-                'error': 'Belge bulunamadı'
-            }, status=404)
+        form_data = get_form_data(request)
+        update_course_file(related_courseFile, form_data)
+        return JsonResponse({'success': True, 'message': 'Belge başarıyla güncellendi'})
     except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=400)
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+def get_form_data(request):
+    return {
+        'etkinlik_no': request.POST.get('etkinlik_no'),
+        'etkinlik_adi': request.POST.get('etkinlik_adi'),
+        'etkinlik_kodu': request.POST.get('etkinlik_kodu'),
+        'sinif': request.POST.get('sinif'),
+        'sehir': request.POST.get('sehir'),
+        'katilanlar': request.POST.get('katilanlar'),
+        'sisteme_giris_tarihi': request.POST.get('sisteme_giris_tarihi'),
+        'egitim_olusturma_tarihi': request.POST.get('egitim_olusturma_tarihi'),
+        'katilimci_kodu': request.POST.get('katilimci_kodu'),
+        'egitim_kayit_no_1': request.POST.get('egitim_kayit_no_1'),
+        'egitim_kayit_no_2': request.POST.get('egitim_kayit_no_2'),
+        'egitim_kayit_no_3': request.POST.get('egitim_kayit_no_3'),
+        'description': request.POST.get('description'),
+        'description_1': request.POST.get('description_1'),
+        'description_2': request.POST.get('description_2'),
+        'description_3': request.POST.get('description_3')
+    }
+
+def update_course_file(course_file, form_data):
+    for key, value in form_data.items():
+        if value:
+            setattr(course_file, key, value)
+    course_file.save()
 
 @login_required
 @csrf_exempt

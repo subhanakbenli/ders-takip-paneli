@@ -630,7 +630,7 @@ ERP
                                                         <td>{{ document.warning_date }}</td>
                                                         <td>{{ document.warning }}</td>
                                                         <td>
-                                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın" />
+                                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?" />

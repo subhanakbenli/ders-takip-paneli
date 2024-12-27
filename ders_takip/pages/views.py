@@ -8,10 +8,6 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import models
 
-# Create your views here.
-
-
-
 def get_teachers_with_courses_and_documents(status=None):
     teachers_data = []
 
@@ -77,8 +73,6 @@ def pano_ozet_view(request):
     return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
 
 
-
-
 def arsiv_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
@@ -95,16 +89,12 @@ def erp_ozet_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})
 
-
-
-
-
-
 def index(request):
     user, created = User.objects.get_or_create(username="test_user", defaults={"email": "test@example.com"})
 
     login(request, user)
     return render(request, 'base.html')
+
 def arsiv_view(request):
     return render(request, 'pages/arsiv.html')
 

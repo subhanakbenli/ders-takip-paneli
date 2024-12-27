@@ -129,7 +129,7 @@ Ders Detayı
 
 
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Ders İsmi: {{ course.0.name }}</h1>
+    <h1 class="text-center mb-4">Ders İsmi: {{ course.name }}</h1>
 
     <div class="card shadow-lg">
         <div class="card-header text-center">
@@ -138,9 +138,9 @@ Ders Detayı
         <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item"><strong>Öğretmen Adı:</strong> {{ teacher.name }}</li>
-                <li class="list-group-item"><strong>Durum:</strong> {{ course.0.statu }}</li>
-                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.0.description }}</li>
-                <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.0.created_at }}</li>
+                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
+                <li class="list-group-item"><strong>Açıklama:</strong> {{ course.description }}</li>
+                <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</li>
             </ul>
         </div>
 
@@ -156,7 +156,7 @@ Ders Detayı
                     </tr>
                 </thead>
                 <tbody>
-                    {% for document in course.0.files %}
+                    {% for document in course.files %}
                         <tr>
                             <td>{{ document.category }}</td>
                             <td>{{ document.belge_adi|default:"Henüz Belge Eklenmedi" }}</td>
@@ -183,7 +183,7 @@ Ders Detayı
 </div>
 
 <div class="action-buttons">
-    <button type="button" class="btn btn-success" onclick="downloadPDF({{ course.0.id }})">PDF İndir</button>
+    <button type="button" class="btn btn-success" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>    
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCourseModal">Düzenle</button>
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>  
@@ -204,7 +204,7 @@ Ders Detayı
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
-                <button type="button" class="btn btn-success" onclick="confirmArchiveCourse('{{ course.0.id }}')">Evet</button>
+                <button type="button" class="btn btn-success" onclick="confirmArchiveCourse('{{ course.id }}')">Evet</button>
             </div>
         </div>
     </div>
@@ -225,7 +225,7 @@ Ders Detayı
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Hayır</button>
-                <button type="button" class="btn btn-success" onclick="confirmDeleteCourse('{{ course.0.id }}')">Evet</button>
+                <button type="button" class="btn btn-success" onclick="confirmDeleteCourse('{{ course.id }}')">Evet</button>
             </div>
         </div>
     </div>
