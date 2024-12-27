@@ -147,18 +147,16 @@ Ders Kayıt Sayfası
       <label for="description" class="form-label">Açıklama</label>
       <input id="description" type="text" name="description" class="form-control" placeholder="Ders açıklamasını girin" />
     </div>
+    
     <div class="form-group mb-3">
-      <label for="petition-required" class="form-label">Dilekçe Eklensin mi?</label>
+      <label for="petition-required" class="form-label">Dilekçe Yüklemek Zorunlu olsun mu?</label>
       <select id="petition-required" name="petition_required" class="form-select" required>
         <option value="no">Hayır</option>
         <option value="yes">Evet</option>
       </select>
     </div>
 
-    <div class="form-group mb-3" id="petition-upload-group" style="display: none;">
-      <label for="petition-file" class="form-label">Dilekçe Yükle</label>
-      <input id="petition-file" type="file" name="petition_file" class="form-control" accept=".pdf" />
-    </div>
+    
     <table id="dynamic-table">
       <thead>
         <tr>
@@ -190,30 +188,7 @@ Ders Kayıt Sayfası
     <button id="submit-button" type="submit">Kaydet</button>
   </form>
 
-{% comment %} dilekçe checkbox {% endcomment %}
-  <script>
-    const petitionRequired = document.getElementById('petition-required');
-    const petitionUploadGroup = document.getElementById('petition-upload-group');
-    const petitionFile = document.getElementById('petition-file');
 
-    petitionRequired.addEventListener('change', function () {
-      if (this.value === 'yes') {
-        petitionUploadGroup.style.display = 'block';
-        petitionFile.setAttribute('required', 'required');
-      } else {
-        petitionUploadGroup.style.display = 'none';
-        petitionFile.removeAttribute('required');
-      }
-    });
-
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function (e) {
-      if (petitionRequired.value === 'yes' && !petitionFile.value) {
-        e.preventDefault();
-        alert('Dilekçe eklemek zorunludur!');
-      }
-    });
-  </script>
 
   <script>
     const table = document.getElementById("dynamic-table");

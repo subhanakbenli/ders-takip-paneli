@@ -26,6 +26,7 @@ def get_default_sections():
         "Müdür Yardımcısı Onaylı Raporlar",
         "Video",
         "Excel Dosya Yüklemesi",
+        'Dilekçe',
         "Eksiklik Belirtme",
     ]
 
