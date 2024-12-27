@@ -8,43 +8,70 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
         table {
-            width: 100%;
+            width: 100%; /* Tablonun genişliğini tam sayfaya yayıyoruz */
             border-collapse: collapse;
             margin-top: 20px;
+            table-layout: fixed; /* Sütun genişliklerini eşit yapar */
+            font-size: 0.9em; /* Yazı boyutunu küçülterek daha kompakt hale getirir */
         }
+
         table, th, td {
             border: 1px solid black;
         }
+
         th, td {
-            padding: 8px;
+            padding: 6px; /* Hücre içi dolgusunu azaltır */
             text-align: left;
+            overflow: hidden; /* Taşmaları gizler */
+            text-overflow: ellipsis; /* Uzun metinlerin sonuna "..." ekler */
+            white-space: nowrap; /* Metinleri tek satırda tutar */
         }
+
         th {
             background-color: #f2f2f2;
+            font-size: 0.9em; /* Başlık yazı boyutunu küçültür */
+        }
+
+        @media print {
+            body {
+                margin: 10px;
+            }
         }
     </style>
 </head>
 <body>
     <h1>{{ course.name }} Belgeleri</h1>
+    <p><strong>Öğretmen:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+    <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+    <p><strong>Durum:</strong> {{ course.statu }}</p>
+    <p><strong>Açıklama:</strong> {{ course.description }}</p>
+    <p><strong>Oluşturulma Tarihi:</strong> {{ course.start_date }}</p>
+    <p><strong>Başlangıç Dönemi:</strong> {{ course.created_at }}</p>
+
     <table>
         <thead>
             <tr>
-                <th>Kategori</th>
-                <th>Belge Adı</th>
-                <th>Başlangıç Tarihi</th>
-                <th>Bitiş Tarihi</th>
-                <th>Türü</th>
+                <th style="width: 15%;">Kategori</th>
+                <th style="width: 20%;">Belge Adı</th>
+                <th style="width: 15%;">Başlangıç Tarihi</th>
+                <th style="width: 15%;">Bitiş Tarihi</th>
+                <th style="width: 15%;">Yükleme Tarihi</th>
+                <th style="width: 10%;">Türü</th>
+                <th style="width: 10%;">Dilekçte</th>
             </tr>
         </thead>
         <tbody>
             {% for document in documents %}
             <tr>
-                <td>{{ document.category }}</td>
-                <td>{{ document.belge_adi }}</td>
-                <td>{{ document.start_date }}</td>
-                <td>{{ document.end_date }}</td>
-                <td>{{ document.turu }}</td>
+                <td>{{ document.category|default:"none" }}</td>
+                <td>{{ document.name|default:"none" }}</td>
+                <td>{{ document.start_date|default:"none" }}</td>
+                <td>{{ document.end_date|default:"none" }}</td>
+                <td>{{ document.upload_date|default:"none" }}</td>
+                <td>{{ document.type|default:"none" }}</td>
+                <td>{{ document.petition|default:"none" }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -8,47 +8,135 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-        }
-        h1 {
-            text-align: center;
+            background-color: #f9f9f9;
             color: #333;
         }
+
+        h1 {
+            text-align: center;
+            color: #444;
+            font-size: 1.8em;
+        }
+
+        p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            table-layout: fixed; /* Sütun genişliklerini sabitler */
+            word-wrap: break-word; /* Uzun metinleri kırar */
+            font-size: 0.9em;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
         }
+
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 10px;
             text-align: left;
         }
+
         th {
-            background-color: #f4f4f4;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        td {
+            white-space: nowrap; /* Tek satırda tutar */
+            overflow: hidden; /* Taşan metni gizler */
+            text-overflow: ellipsis; /* Taşan metni "..." ile gösterir */
+            text-align: left;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        /* Responsive tasarım için tabloyu yatay kaydırılabilir yap */
+        .table-container {
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
-    <h1>{{ teacher.name }} {{ teacher.surname }} - ERP Raporu</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Ders Adı</th>
-                <th>Başlangıç Tarihi</th>
-                <th>Bitiş Tarihi</th>
-                <th>Durum</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.name }}</td>
-                <td>{{ course.start_date }}</td>
-                <td>{{ course.end_date }}</td>
-                <td>{{ course.status }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1>ERP Raporu</h1>
+    <p><strong>Öğretmen:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+    <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+    <p><strong>Durum:</strong> {{ course.statu }}</p>
+    <p><strong>Açıklama:</strong> {{ course.description }}</p>
+    <p><strong>Oluşturulma Tarihi:</strong> {{ course.start_date }}</p>
+    <p><strong>Başlangıç Dönemi:</strong> {{ course.created_at }}</p>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Etkinlik Tarihi</th>
+                    <th>Yükleme Tarihi</th>
+                    <th>Bitiş Tarihi</th>
+                    <th>Türü</th>
+                    <th>Dilekçe Yazıldı mı?</th>
+                    <th>Açıklama</th>
+                    <th>Etkinlik No</th>
+                    <th>Etkinlik Tarihi</th>
+                    <th>Öğretmen</th>
+                    <th>Sınıf</th>
+                    <th>Şehir</th>
+                    <th>Kimlerin Katıldığı</th>
+                    <th>Sisteme Giriş Tarihi</th>
+                    <th>Etkinliğin Adı</th>
+                    <th>Eğitim Oluşturma Tarihi</th>
+                    <th>Katılımcı Kodu</th>
+                    <th>Eğitim Kayıt No</th>
+                    <th>Etkinlik Açıklaması</th>
+                    <th>Kodu</th>
+                    <th>Katılımcı Sayısı</th>
+                    <th>Verilen Not</th>
+                    <th>Güncelleme Tarihi</th>
+                    <th>Açıklama</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.event_date|default:"none" }}</td>
+                    <td>{{ course.upload_date|default:"none" }}</td>
+                    <td>{{ course.end_date|default:"none" }}</td>
+                    <td>{{ course.type|default:"none" }}</td>
+                    <td>{{ course.petition_written|default:"none" }}</td>
+                    <td>{{ course.description|default:"none" }}</td>
+                    <td>{{ course.event_no|default:"none" }}</td>
+                    <td>{{ course.event_date|default:"none" }}</td>
+                    <td>{{ course.teacher|default:"none" }}</td>
+                    <td>{{ course.class|default:"none" }}</td>
+                    <td>{{ course.city|default:"none" }}</td>
+                    <td>{{ course.attendees|default:"none" }}</td>
+                    <td>{{ course.system_entry_date|default:"none" }}</td>
+                    <td>{{ course.event_name|default:"none" }}</td>
+                    <td>{{ course.training_creation_date|default:"none" }}</td>
+                    <td>{{ course.participant_code|default:"none" }}</td>
+                    <td>{{ course.training_record_no|default:"none" }}</td>
+                    <td>{{ course.event_description|default:"none" }}</td>
+                    <td>{{ course.code|default:"none" }}</td>
+                    <td>{{ course.participant_count|default:"none" }}</td>
+                    <td>{{ course.grade|default:"none" }}</td>
+                    <td>{{ course.update_date|default:"none" }}</td>
+                    <td>{{ course.additional_description|default:"none" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

@@ -3,6 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ course.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%; /* Tablo genişliğini tam yap */
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 1em; /* Yazı boyutunu artır */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px; /* Hücre dolgusunu artır */
+            text-align: left;
+            vertical-align: top;
+            word-wrap: break-word; /* Uzun kelimeleri kır */
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: #fff;
+            font-size: 1.1em; /* Başlık yazı boyutunu artır */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .truncate {
+            max-width: 200px; /* Açıklama sütununu daha geniş yap */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        .center-text {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+
+        /* Mobil cihazlar için düzenleme */
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+    </style>
 </head>
 <body>
     <h1>{{ course.name }}</h1>
@@ -12,28 +87,31 @@
     <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
 
     <h2>Belgeler</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Belge Kategorisi</th>
-                <th>Belge Adı</th>
-                <th>Başlangıç-Bitiş Tarihi</th>
-                <th>Açıklama</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for document in documents %}
+    <div class="table-container">
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ document.category }}</td>
-                    <td>{{ document.belge_adi|default:"Belge Eklenmedi" }}</td>
-                    <td>{{ document.start_date }} - {{ document.end_date }}</td>
+                    <th style="width: 25%;">Belge Kategorisi</th>
+                    <th style="width: 25%;">Belge Adı</th>
+                    <th style="width: 25%;">Başlangıç-Bitiş Tarihi</th>
+                    <th style="width: 25%;">Açıklama</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">Henüz belge eklenmemiş.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for document in documents %}
+                    <tr>
+                        <td>{{ document.category }}</td>
+                        <td>{{ document.belge_adi|default:"Belge Eklenmedi" }}</td>
+                        <td>{{ document.start_date }} - {{ document.end_date }}</td>
+                        <td>{{ document.description }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="center-text">Henüz belge eklenmemiş.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

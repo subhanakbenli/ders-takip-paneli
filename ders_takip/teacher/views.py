@@ -128,11 +128,27 @@ def get_course_with_documents(course):
             "category": document.category,
             "belge_adi": document.name,
             "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
+            "baslangic_tahihi":document.start_date,
+            "bitis_tarihi":document.end_date,
+
         }
         for document in documents
     ]
 
     return documents_data
+
+
+
+def teacher_pdf(request, teacher_id):
+   
+    teacher = get_object_or_404(Teacher, id=teacher_id)
+
+
+    context = {
+        'teacher': teacher,
+
+    }
+    return render_to_pdf('pdf/pdf_teacher_detail.html', context)
 
 
 def generate_pdf(request, course_id):
@@ -151,40 +167,31 @@ def generate_pdf(request, course_id):
 
 
 # öğretmen detay sayfası pdf
-def teacher_pdf(request, teacher_id):
-    # Öğretmeni al
-    teacher = get_object_or_404(Teacher, id=teacher_id)
 
-    # Öğretmenin derslerini al
-    # ogretmen_dersleri = teacher.course_set.all()  # Teacher modelinizin ders ilişkisine göre düzenleyin
 
-    # Şablona gönderilecek veriler
-    context = {
-        'teacher': teacher,
-        # 'ogretmen_dersleri': ogretmen_dersleri,
-    }
 
-    # PDF'yi render et
-    return render_to_pdf('pdf/pdf_teacher_detail.html', context)
+
 
 def pdf_pano(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    # documents = course.documents.all()  # Dersin belgelerini alın
+    
 
     context = {
         'course': course,
-        # 'documents': documents
+        'documents': get_course_with_documents(course=course)
+
     }
 
     return render_to_pdf('pdf/pdf_pano.html', context)
 
 
 def pano_ozet_pdf(request, course_id):
-    # İlgili kursu al
+    
     course = get_object_or_404(Course, id=course_id)
     context = {
         'course': course,
-        # 'documents': course.documents.all()  # Kursun belgeleri
+        
+        
     }
     return render_to_pdf('pano_ozet_pdf.html', context)
 
@@ -203,7 +210,7 @@ def erp_pdf(request, teacher_id):
     teacher = get_object_or_404(Teacher, id=teacher_id)
     context = {
         "teacher": teacher,
-        "courses": teacher.courses.all(),  # Varsayılan olarak öğretmenin tüm kurslarını gönder
+        
     }
     return render_to_pdf("pdf/erp_pdf.html", context)
 
