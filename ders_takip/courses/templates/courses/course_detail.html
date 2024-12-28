@@ -144,7 +144,7 @@ Ders Detayı
         <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item"><strong>Öğretmen Adı:</strong> {{ teacher.name }}</li>
-                <li class="list-group-item"><strong>Durum:</strong> {{ course.statu }}</li>
+                <li class="list-group-item"><strong>Pano Durum:</strong> {{ course.statu_pano }}</li>
                 <li class="list-group-item"><strong>Açıklama:</strong> {{ course.description }}</li>
                 <li class="list-group-item"><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</li>
             </ul>
@@ -162,7 +162,7 @@ Ders Detayı
                     </tr>
                 </thead>
                 <tbody>
-                    {% for document in course.files %}
+                    {% for document in course.documents %}
                         <tr>
                             <td>{{ document.category }}</td>
                             <td>{{ document.belge_adi|default:"Henüz Belge Eklenmedi" }}</td>

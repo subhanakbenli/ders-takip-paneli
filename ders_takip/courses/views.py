@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Course ,CourseFile,CourseFileVersion  # Veritabanı modeli
+from .models import Course ,CourseFile,CourseFileVersion # Veritabanı modeli
+from .utils import get_default_sections, get_course_with_documents, get_course_details
 from teacher.models import Teacher  # Öğretmen modeli
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
@@ -12,106 +13,6 @@ from django.contrib.auth.decorators import login_required
 
 
 INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
-
-def get_default_sections():
-    """Varsayılan bölümleri döndürür."""
-    return [
-        "Ders Belgesi",
-        "Müdür Yardımcısı Onaylı Ders Belgesi",
-        "Ödevler Belgesi",
-        "Müdür Yardımcısı Onaylı Ödevler Belgesi",
-        "Yapılmış Ödevler Belgesi",
-        "Müdür Yardımcısı Onaylı Yapılmış Ödevler Belgesi",
-        "Raporlar",
-        "Müdür Yardımcısı Onaylı Raporlar",
-        "Video",
-        "Excel Dosya Yüklemesi",
-        'Dilekçe',
-        "Eksiklik Belirtme",
-    ]
-
-def get_teachers_with_courses_and_documents(status=None):
-    teachers_data = []
-
-    # Get all teachers
-    teachers = Teacher.objects.all()
-
-    for teacher in teachers:
-        # Get courses for each teacher
-        if status:
-            courses = Course.objects.filter(teacher=teacher, statu=status)
-        else:
-            courses = Course.objects.filter(teacher=teacher)
-        
-        courses_data = []
-        for course in courses:
-            # Get documents for each course
-            documents = CourseFile.objects.filter(course=course)
-
-            documents_data = [
-                {
-                    "id": document.id,
-                    "category": document.category,
-                    "belge_adi": document.name,
-                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
-                }
-                for document in documents
-            ]
-
-            courses_data.append({
-                "id": course.id,
-                "name": course.name,
-                "statu": course.statu,
-                "description": course.description,
-                "created_at": course.created_at,
-                "documents": documents_data
-            })
-
-        teachers_data.append({
-            "id": teacher.id,
-            "name": teacher.name,
-            "surname": teacher.surname,
-            "description": teacher.description,
-            "courses": courses_data
-        })
-
-    return teachers_data
-
-def get_course_with_documents(course):
-
-    # Belge verilerini çek
-    documents = CourseFile.objects.filter(course=course)
-
-    documents_data = [
-        {
-            "category": document.category,
-            "belge_adi": document.name,
-            "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None
-        }
-        for document in documents
-    ]
-
-    return{
-        "id": course.id,
-        "name": course.name,
-        "statu": course.statu,
-        "description": course.description,
-        "created_at": course.created_at,
-        "files": documents_data
-    }
-
-
-def get_course_details(id):
-    course = get_object_or_404(Course, id=id)
-    files_of_course =CourseFile.objects.filter(course=course)
-    files = {}
-    for file in files_of_course:
-        try:
-            files[file.category] += 1 
-        except:
-            files[file.category] = 1
-    return files
-
 
 @login_required
 def add_course_view(request):
@@ -160,7 +61,6 @@ def add_course_view(request):
             "sections": get_default_sections()
         })
 
-
 @login_required
 def course_detail_view(request, id):
     course = Course.objects.get(id=id)
@@ -201,7 +101,7 @@ def delete_file_view(request, id):
     if request.method == 'POST':
         try:
             document = get_object_or_404(CourseFile, id=id)
-            # document.delete()
+            document.delete()
             return JsonResponse({'success': True, 'message': 'Belge başarıyla silindi.'})
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
@@ -212,7 +112,7 @@ def delete_file_view(request, id):
 def delete_course_view(request, id):
     try:
         course = get_object_or_404(Course, id=id)
-        # course.delete()
+        course.delete()
         return JsonResponse({
             'success': True, 
             'message': 'Ders başarıyla silindi.'
@@ -224,7 +124,6 @@ def delete_course_view(request, id):
         }, status=500)
         
         
-
 @login_required
 def update_course_files(request, id):
     if request.method == 'POST':
@@ -314,10 +213,7 @@ def add_file(request, id):
 
     return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
 
-
-
-
-        
+       
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -451,33 +347,42 @@ def update_course_file(course_file, form_data):
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
-def statu_change(request,id,statu,isCourse="true"):
+def statu_change(request, id, statu, isCourse="true"):
     try:
-        if isCourse=="true":
+        if isCourse == "true":
             related = get_object_or_404(Course, id=id)
         else:
             related = get_object_or_404(CourseFile, id=id)
-        related.statu = statu
+
+        # URL'ye göre statu alanını güncelle
+        
+        if 'erp' in request.path:
+            related.statu_erp = statu
+        elif 'pano' in request.path:
+            related.statu_pano = statu
+
         related.save()
-        if isCourse=="true":
+
+        if isCourse == "true":
             if statu == 'arsiv':
-                message= 'Ders başarıyla arşivlendi'
+                message = 'Ders başarıyla arşivlendi'
             elif statu == 'iptal':
-                message= 'Ders başarıyla iptal edildi'
+                message = 'Ders başarıyla iptal edildi'
             else:
-                message= 'Ders başarıyla aktif edildi'
+                message = 'Ders başarıyla aktif edildi'
         else:
             if statu == 'arsiv':
-                message= 'Belge başarıyla arşivlendi'
+                message = 'Belge başarıyla arşivlendi'
             elif statu == 'iptal':
-                message= 'Belge başarıyla iptal edildi'
+                message = 'Belge başarıyla iptal edildi'
             else:
-                message= 'Belge başarıyla aktif edildi'
+                message = 'Belge başarıyla aktif edildi'
+
         return JsonResponse({
             'success': True,
             'message': message
         })
-        
+
     except Exception as e:
         return JsonResponse({
             'success': False,

@@ -56,11 +56,11 @@ def show_teacher_detail(request, id):
     
     # Sadece giriş yapan kullanıcının kayıtlarını getir
     teacher =Teacher.objects.get(id=id)
-    lessons_for_teacher = Course.objects.filter(id=id)
+    lessons_for_teacher = Course.objects.filter(teacher=teacher)
 
     context = {
         "teacher": teacher,
-        "ogretmen_dersleri":lessons_for_teacher,
+        "courses":lessons_for_teacher,
         }
     return render(request, "teacher/teacher.html", context)
 
@@ -138,27 +138,6 @@ def get_course_with_documents(course):
 
     return documents_data
 
-from .models import Teacher
-
-def get_teacher_data(teacher_id):
-    try:
-        teacher = Teacher.objects.get(id=teacher_id)  
-        data = {
-            "name": teacher.name,
-            "surname": teacher.surname,
-            "title": teacher.title,
-            "description": teacher.description,
-            "telephone": teacher.telephone,
-            "telephone2": teacher.telephone2,
-            "mail": teacher.mail,
-            "adress": teacher.adress,
-        }
-        return data
-    except Teacher.DoesNotExist:
-        return None
-
-
-
 
 def teacher_pdf(request, teacher_id):
    
@@ -189,14 +168,9 @@ def generate_pdf(request, course_id):
 
 
 
-
-
-
-
 def pdf_pano(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
-
     context = {
         'course': course,
         'documents': get_course_with_documents(course=course)
@@ -209,7 +183,7 @@ def pdf_pano(request, course_id):
 
 
 def pano_ozet_pdf(request, course_id):
-    
+
     course = get_object_or_404(Course, id=course_id)
     context = {
         'course': course,

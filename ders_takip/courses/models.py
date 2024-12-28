@@ -12,9 +12,9 @@ class Course(models.Model):
 
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, verbose_name="teacher")
     name = models.CharField(max_length=255, verbose_name="name")
-    statu = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu", null=True, blank=True)
     description = models.TextField(verbose_name="description", blank=True, null=True)
-    
+    statu_pano = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_pano", default="aktif")
+    statu_erp = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_erp", default="aktif")
     start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
     end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
     
@@ -37,7 +37,8 @@ class CourseFile(models.Model):
     category = models.CharField(max_length=255, verbose_name="category", null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name="file_name", null=True, blank=True)
     type = models.CharField(max_length=255, verbose_name="type", null=True, blank=True)
-    statu = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu", default="aktif")
+    statu_pano = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_pano", default="aktif")
+    statu_erp = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_erp", default="aktif")
     current_version = models.OneToOneField(
         'CourseFileVersion',
         on_delete=models.SET_NULL,
@@ -93,10 +94,19 @@ class CourseFileVersion(models.Model):
 
 
 @receiver(pre_save, sender=Course)
-def update_course_files_statu(sender, instance, **kwargs):
+def update_course_files_statu_erp(sender, instance, **kwargs):
     if instance.pk:  # Sadece mevcut nesneler için çalıştır
         previous_instance = Course.objects.get(pk=instance.pk)
         # Eğer `statu` değiştiyse
-        if previous_instance.statu != instance.statu:
+        if previous_instance.statu_erp != instance.statu_erp:
             # `CourseFile` nesnelerinin `statu` alanını güncelle
-            instance.coursefile_set.filter(statu=previous_instance.statu).update(statu=instance.statu)
+            instance.coursefile_set.filter(statu_erp=previous_instance.statu_erp).update(statu_erp=instance.statu_erp)
+
+@receiver(pre_save, sender=Course)
+def update_course_files_statu_pano(sender, instance, **kwargs):
+    if instance.pk:  # Sadece mevcut nesneler için çalıştır
+        previous_instance = Course.objects.get(pk=instance.pk)
+        # Eğer `statu` değiştiyse
+        if previous_instance.statu_pano != instance.statu_pano:
+            # `CourseFile` nesnelerinin `statu` alanını güncelle
+            instance.coursefile_set.filter(statu_pano=previous_instance.statu_pano).update(statu=instance.statu_pano)

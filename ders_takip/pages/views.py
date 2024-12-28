@@ -2,67 +2,11 @@ from django.shortcuts import render
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
-from courses.models import Course, CourseFile, Teacher
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import models
-
-def get_teachers_with_courses_and_documents(status=None):
-    teachers_data = []
-
-    # Get all teachers
-    teachers = Teacher.objects.all()
-
-    for teacher in teachers:
-        # Get courses for each teacher
-        if status:
-            courses = Course.objects.filter(teacher=teacher, statu=status)
-        else:
-            courses = Course.objects.filter(teacher=teacher)
-        
-        courses_data = []
-        for course in courses:
-            # Get documents for each course
-            documents = CourseFile.objects.filter(course=course)
-
-            documents_data = [
-                {
-                    "id": document.id,
-                    "category": document.category,
-                    "belge_adi": document.name,
-                    "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
-                    "is_uploaded": document.is_uploaded,
-                    "uploaded_at": document.uploaded_date,
-                    "dilekce_name": document.dilekce_name,
-                    "dilekce_is_uploaded": document.dilekce_is_uploaded,
-                    "start_date": document.start_date,
-                    "end_date": document.end_date,
-                    "type": document.type,
-                    
-                }
-                for document in documents
-            ]
-
-            courses_data.append({
-                "id": course.id,
-                "name": course.name,
-                "statu": course.statu,
-                "description": course.description,
-                "created_at": course.created_at,
-                "documents": documents_data
-            })
-
-        teachers_data.append({
-            "id": teacher.id,
-            "name": teacher.name,
-            "surname": teacher.surname,
-            "description": teacher.description,
-            "courses": courses_data
-        })
-
-    return teachers_data
-
+from courses.utils import get_teachers_with_courses_and_documents
 
 def pano_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
@@ -133,9 +77,3 @@ def arsiv_view(request):
         "table_data": table_data,
     }
     return render(request, "pages/arsiv.html", context)
-
-
-
-
-
-

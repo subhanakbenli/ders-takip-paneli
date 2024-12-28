@@ -96,10 +96,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for ders in ogretmen_dersleri %}
+                    {% for course in courses %}
                         <tr onclick="window.location.href='#';">
-                            <td>{{ ders.name }}</td>
-                            <td>{{ ders.description }}</td>
+                            <td>{{ course.name }}</td>
+                            <td>{{ course.description }}</td>
                             <td>
                                 {% if document.is_uploaded %}
                                     <span class="status-icon success">✔️</span>
