@@ -1,6 +1,4 @@
 from django.shortcuts import render, redirect
-from .models import Course ,CourseFile,CourseFileVersion # Veritabanı modeli
-from .utils import get_default_sections, get_course_with_documents, get_course_details
 from teacher.models import Teacher  # Öğretmen modeli
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
@@ -10,7 +8,10 @@ import json
 from django.db import models
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
-
+from .utils import get_default_sections, get_course_with_documents, get_course_details
+from .models import Course ,CourseFile,CourseFileVersion # Veritabanı modeli
+from account.views import user_has_permission
+from ders_takip.settings import USER,SUPERUSER,ADMIN
 
 INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
@@ -96,6 +97,7 @@ def courses_list_view(request):
 
 @login_required
 @csrf_exempt
+@user_has_permission([ADMIN])
 def delete_file_view(request, id):
     print("delete_file",id)
     if request.method == 'POST':
@@ -109,6 +111,7 @@ def delete_file_view(request, id):
 
 @login_required
 @require_http_methods(["POST"])
+@user_has_permission([ADMIN])
 def delete_course_view(request, id):
     try:
         course = get_object_or_404(Course, id=id)
