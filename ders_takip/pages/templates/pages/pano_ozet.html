@@ -7,7 +7,7 @@ Pano Özet
 {% block content %}
 <style>
     .container {
-        margin-top: 2rem;
+        margin-top: -25px;
         padding: 1rem;
         display: flex; /* Flexbox düzeni */
         flex-direction: column; /* İçerikleri dikey hizala */
@@ -27,7 +27,8 @@ Pano Özet
         overflow-x: auto;
         border-radius: 0.5rem;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        max-width: 80%; /* Tablo genişliği ekranın %80'ini geçmesin */
+        max-width: 100%; /* Tüm genişliği kapsasın */
+        width: 100%; /* Kapsayıcı genişliği tam ekran genişliği kadar */
     }
 
     .table {

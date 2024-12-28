@@ -85,6 +85,15 @@ def erp_view(request):
     }
     return render(request, 'pages/erp.html', context)
 
+def erp_iptal_view(request):
+    teachers_data= get_teachers_with_courses_and_documents()
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,  # Geçici öğretmen verileri
+    }
+    return render(request, 'pages/erp_iptal.html', context)
+
+
 def erp_ozet_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})

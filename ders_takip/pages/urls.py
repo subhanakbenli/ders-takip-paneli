@@ -9,5 +9,6 @@ urlpatterns = [
     path('pano_ozet/', views.pano_ozet_view, name='pano_ozet'),
     path('erp/', views.erp_view, name='erp'),
     path('erp_ozet/', views.erp_ozet_view, name='erp_ozet'),  
+    path('erp_iptal/', views.erp_iptal_view, name='erp_iptal'),  
 ]  
 

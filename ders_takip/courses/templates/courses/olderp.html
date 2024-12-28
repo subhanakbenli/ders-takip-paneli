@@ -7,9 +7,41 @@ ERP Takip
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+    .dropdown {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+    }
+
+    .dropdown-menu {
+        display: block !important; /* !important ekleyerek zorlayın */
+        visibility: visible; /* Eğer görünmüyorsa */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 5px 0;
+        min-width: 150px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dropdown-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        color: #333;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
+        color: #000;
+    }
+
     .dropdown {
         position: absolute;
         top: 10px;
@@ -32,20 +64,6 @@ ERP Takip
     .table th, .table td {
         padding: 6px;
     }
-    
-    
-=======
-    
-    
->>>>>>> Stashed changes
-=======
-    
-    
->>>>>>> Stashed changes
-=======
-    
-    
->>>>>>> Stashed changes
     #select-all {
         cursor: pointer;
         transform: scale(1.2); /* Checkbox'ı biraz büyütün */
@@ -402,11 +420,44 @@ ERP Takip
     }
 </style>
 
+{% comment %} durum dropdown {% endcomment %}
+<script>
+    function filterByStatus(status) {
+        const teacherDetails = document.querySelectorAll('.teacher-details');
+        teacherDetails.forEach(teacher => {
+            let hasVisibleCourse = false;
+            
+            const courses = teacher.querySelectorAll('.card');
+            courses.forEach(course => {
+                const courseStatus = course.querySelector('p strong');
+                if (courseStatus && courseStatus.textContent.trim() === 'Durum:') {
+                    const text = courseStatus.nextSibling.textContent.trim();
+                    if (status === 'Tümü' || text === status) {
+                        course.style.display = 'block';
+                        hasVisibleCourse = true;
+                    } else {
+                        course.style.display = 'none';
+                    }
+                }
+            });
+
+            teacher.style.display = hasVisibleCourse ? 'block' : 'none';
+        });
+    }
+
+    function toggleDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+    }
 
 
+</script>
 
 
-    {% comment %} erp durum dropdown {% endcomment %}
 <script>
     function filterByStatus(status) {
         const teacherDetails = document.querySelectorAll('.teacher-details');
@@ -881,13 +932,12 @@ ERP Takip
 
 </script>
 
-
 <div class="container mt-1">
-    <h1 class="text-center">ERP Takip</h1>
+    
 
     <!-- Öğretmen Seçim Dropdown -->
     <div class="teacher-select-container">
-        <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Öğretmen Seçiniz</button>
+        <button class="form-control" onclick="toggleDropdown('teacherDropdown')">Öğretmenn Seçiniz</button>
         <div id="teacherDropdown" class="teacher-search-bar">
             <input type="text" id="searchInput" class="form-control mb-2" placeholder="Öğretmen ismi ara..." onkeyup="TeacherManager.filter()">
             <div class="teacher-options">
@@ -898,7 +948,19 @@ ERP Takip
             </div>
         </div>
     </div>
+    <!-- Durum Seçimi Dropdown -->
+    <div class="dropdown">
+        <button class="btn btn-secondary" type="button" id="statusDropdown" onclick="toggleDropdown('statusOptions')">
+            Durum Seç
+        </button>
+        <div id="statusOptions" class="dropdown-menu">
+            <button class="dropdown-item" onclick="filterByStatus('Tümü')">Tümü</button>
+            <button class="dropdown-item" onclick="filterByStatus('Aktif')">Aktif</button>
+            <button class="dropdown-item" onclick="filterByStatus('İptal')">İptal</button>
+        </div>
+    </div>
 
+<h1 class="text-center">ERP Takip</h1>
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}

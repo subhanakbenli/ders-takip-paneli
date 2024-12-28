@@ -7,6 +7,12 @@ Ders Detayı
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .container h1 {
+        font-weight: 500 !important;
+        font-size: 25px !important;
+        color: white !important; /* Rengi beyaz yap */
+        margin-bottom: 20px !important;
+    }
     .btn-success {
         background-color: #28a745;
         border-color: #28a745;
@@ -34,7 +40,7 @@ Ders Detayı
     }
     .card-header, .table thead th {
         font-size: 15px;
-        background-color: #007bff;
+        background-color:rgb(87, 88, 88);
         color: white;
     }
     .card-footer {
@@ -129,11 +135,11 @@ Ders Detayı
 
 
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Ders İsmi: {{ course.name }}</h1>
+    
 
     <div class="card shadow-lg">
         <div class="card-header text-center">
-            <h4>Ders Bilgileri</h4>
+            <h1 class="text-center mb-4">Ders İsmi: {{ course.name }}</h1>
         </div>
         <div class="card-body">
             <ul class="list-group">
