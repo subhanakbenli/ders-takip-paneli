@@ -65,12 +65,13 @@ def add_course_view(request):
 @login_required
 def course_detail_view(request, id):
     course = Course.objects.get(id=id)
+    teacher = course.teacher
     course_data = get_course_with_documents(course)
 
     if not course_data:
         return redirect('show_courses_list')
 
-    return render(request, 'courses/course_detail.html', {'course': course_data})
+    return render(request, 'courses/course_detail.html', {"teacher":teacher,'course': course_data})
 
 @login_required
 def courses_list_view(request):

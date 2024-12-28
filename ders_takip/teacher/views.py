@@ -7,8 +7,7 @@ from django.shortcuts import redirect
 from .models import Teacher
 from courses.models import Course,CourseFile
 from django.template.loader import render_to_string
-from account.views import user_has_permission
-from ders_takip.settings import USER,SUPERUSER,ADMIN
+
 
 
 
@@ -94,8 +93,6 @@ def show_teacher_list(request):
     }
     return render(request, "teacher/teacher_list.html", context)
 
-@login_required()
-@user_has_permission([ADMIN])
 def delete_teacher(request, id):
     teacher = get_object_or_404(Teacher, id=id)
     teacher.delete()
@@ -115,7 +112,6 @@ def render_to_pdf(template_src, context_dict={}):
         return HttpResponse('PDF oluşturulamadı', content_type='text/plain')
     return response
 
-@login_required()
 def ogretmenler_listesi_pdf(request):
     ogretmenler = [
         {'isim': 'Ahmet Yılmaz', 'branş': 'Matematik'},
@@ -142,7 +138,7 @@ def get_course_with_documents(course):
 
     return documents_data
 
-@login_required()
+
 def teacher_pdf(request, teacher_id):
    
     teacher = get_object_or_404(Teacher, id=teacher_id)
@@ -154,7 +150,7 @@ def teacher_pdf(request, teacher_id):
     }
     return render_to_pdf('pdf/pdf_teacher_detail.html', context)
 
-@login_required()
+
 def generate_pdf(request, course_id):
     # Course objesini al
     course = get_object_or_404(Course, id=course_id)

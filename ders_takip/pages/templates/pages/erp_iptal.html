@@ -195,6 +195,46 @@ ERP
         background-color: rgba(233, 232, 232, 0.8);
     }
 </style>
+
+<script>
+    async function changeStatu(documentId, statu, isCourse) {
+        try {
+            const url = `/dersler/erp_iptal_view/${documentId}/${statu}/${isCourse}/`;
+            const data = await sendRequest(url, 'POST');
+            
+            if (data && data.success) {
+                if (isCourse === 'true') {
+                    // UI'de durumu güncelleme
+                    const button = document.querySelector(`#course-form-${documentId}`);
+                    if (button) {
+                        if (statu === 'iptal') {
+                            button.innerText = 'Aktife Al';
+                            button.setAttribute('onclick', `changeStatu('${documentId}', 'aktif', '${isCourse}')`);
+                        } else {
+                            button.innerText = 'İptal';
+                            button.setAttribute('onclick', `changeStatu('${documentId}', 'iptal', '${isCourse}')`);
+                        }
+                    }
+                } else {
+                    // Belge işlemleri için farklı UI güncellemesi gerekebilir
+                    const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
+                    const row = button?.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                }
+                
+                if (data.redirect) {
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error('Durum değiştirme hatası:', error);
+            alert('İşlem sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+
+</script>
 <script>
     function sendSelectedDocuments() {
         // Seçili tüm checkboxları bul
@@ -574,7 +614,7 @@ ERP
                             <div class="card-body">
                                 <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
                                 <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                                <p><strong>Durum:</strong> {{ course.statu }}</p>
+                                <p><strong>Durum:</strong> {{ course.statu_erp }}</p>
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                                 <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
@@ -635,65 +675,73 @@ ERP
                                                             <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?" />
+                                                            <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"></textarea>
+                                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"value="{{ document.description|default:'' }}" ></textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="etkinlik_no" placeholder="Etkinlik No:" />
+                                                            <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="etkinlik_tarihi" />
+                                                            <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" />
+                                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" value=" document.ogretmen_adi|default:'' " />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="sinif" placeholder="Sınıf:" />
+                                                            <input type="text" name="sinif" placeholder="Sınıf:" value="{{ document.sinif|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="sehir" placeholder="Şehir:" />
+                                                            <input type="text" name="sehir" placeholder="Şehir:" value="{{ document.sehir|default:'' }}" />
                                                         </td>
                                                          <td>
-                                                            <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" />
-                                                        </td>
-                                                        <td>Sisteme giriş tarihi</td>
-                                                        <td>
-                                                            <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:" />
+                                                            <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="egitim_olusturma_tarihi" />
+                                                            <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="katilimci_tarihi" />
+                                                            <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="egitim_kayit_no_1" placeholder="Eğitim kayıt no 1 yazın" />
+                                                            <input type="date" name="egitim_olusturma_tarihi" placeholder = "Eğitim Oluşturma Tarihi:"  value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="egitim_kayit_no_2" placeholder="Eğitim kayıt no 2 yazın" />
+                                                            <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın" />
+                                                            <input type="text" name="egitim_kayit_no_1" placeholder="Eğitim kayıt no 1 yazın"  value="{{ document.egitim_kayit_no_1|default:'' }}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="egitim_kayit_no_2" placeholder="Eğitim kayıt no 2 yazın"   value="{{ document.egitim_kayit_no_2|default:'' }}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın"   value="{{ document.egitim_kayit_no_3|default:'' }}"/>
                                                         </td>
                                                          <td>
-                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"></textarea>
+                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"  value="{{ document.description|default:'' }}"></textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="kodu" placeholder="Kod yazın" />
+                                                            <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.etkinlik_kodu|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1" />
+                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.etkinlik_sayisi|default:'' " />
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1" />
+                                                            <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="guncelleme_tarihi" />
+                                                            <input type="date" name="guncelleme_tarihi"  value=" document.guncelleme_tarihi|default:'' " />
                                                         </td>
                                                         <td>
-                                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"></textarea>
+                                                            <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
+                                                        </td>
+                                                         <td>
+                                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"  value="{{ document.description_2|default:'' }}"></textarea>
+                                                        </td>
+                                                         <td>
+                                                            <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>
                                                         </td>
                                                         <td>
                                                             <button type="button" 
@@ -731,10 +779,12 @@ ERP
 
                                 <!-- İşlem Butonları -->
                                 <div class="action-buttons">
-                                    <button class="btn btn-warning" 
-                                        onclick="changeStatu({{course.id}},'iptal','true')"
-                                        id="course-form-{{ course.id }}">İptal
+                                    <button 
+                                        class="btn btn-warning"
+                                        onclick="changeStatu('{{ course.id }}', 'aktif', 'true')"
+                                        id="course-form-{{ course.id }}">Aktif
                                     </button>
+
                                     <button class="btn btn-danger" 
                                         onclick="deleteContent({{course.id}},'true')"
                                         id="course-form-{{ course.id }}">Sil

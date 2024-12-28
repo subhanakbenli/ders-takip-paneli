@@ -2,68 +2,167 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Öğretmen Detayı</title>
     <style>
+        /* Genel stil */
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color:rgb(165, 166, 169);
             color: #333;
+            line-height: 1.6;
         }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Başlıklar */
+        h1, h2 {
+            text-align: center;
+            color: rgb(141, 190, 239);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: #3498db;
+        }
+
+        /* Liste */
         ul {
             list-style-type: none;
-            padding: 0;
+            padding: 10px;
+            margin: 10px;
         }
+
         ul li {
-            margin: 5px 0;
+            margin: 7px;
+            font-size: 1.1em;
         }
+
+        ul li strong {
+            color:rgb(0, 0, 0);
+        }
+
+        /* Tablo */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: rgb(115, 114, 114);
         }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
-            padding: 8px;
         }
-        th {
-            background-color: #f2f2f2;
+
+        table thead {
+            background-color: rgb(70, 130, 180); /* Mavi renk */
+            color: white; /* Beyaz yazı rengi */
+        }
+
+        table thead th {
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f7f9fc;
+        }
+
+        table tbody tr:hover {
+            background-color: #eef5fc;
+        }
+
+        /* Durum Simgeleri */
+        .status-icon {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: white;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-icon.success {
+            background-color: #27ae60;
+        }
+
+        .status-icon.error {
+            background-color: #e74c3c;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border-top: 3px solid #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Öğretmen: {{ teacher.name }} {{ teacher.surname }}</h1>
+    <div class="container">
+        <h1>Öğretmen: {{ teacher.name }} {{ teacher.surname }}</h1>
+        <ul>
+            <li><strong>Telefon:</strong> {{ teacher.telephone }}</li>
+            <li><strong>Unvan:</strong> {{ teacher.statu }}</li>
+            <li><strong>Email:</strong> {{ teacher.mail }}</li>
+            <li><strong>Adres:</strong> {{ teacher.address }}</li>
+            <li><strong>Açıklama:</strong> {{ teacher.description }}</li>
+        </ul>
 
-    <ul>
-        <li><strong>Telefon:</strong> {{ teacher.telephone }}</li>
-        <li><strong>Email:</strong> {{ teacher.mail }}</li>
-    </ul>
-
-    <h2>Verdiği Dersler</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Ders Adı</th>
-                <th>Ders Açıklaması</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in courses %}
+        <h2>Verdiği Dersler</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ders Adı</th>
+                    <th>Ders Açıklaması</th>
+                    <th>Uyarı</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
                 <tr>
                     <td>{{ course.name }}</td>
                     <td>{{ course.description }}</td>
+                    <td>
+                        {% if course.document.is_uploaded %}
+                        <span class="status-icon success">Yüklendi</span>
+                        {% else %}
+                        <span class="status-icon error">Yüklenmedi</span>
+                        {% endif %}
+                    </td>
                 </tr>
-            {% empty %}
+                {% empty %}
                 <tr>
-                    <td colspan="2" style="text-align: center;">Henüz ders yok.</td>
+                    <td colspan="3" style="text-align: center;">Henüz ders yok.</td>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

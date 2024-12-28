@@ -697,8 +697,34 @@ Pano
                                         id="course-form-{{ course.id }}"> Dersi Arşivle
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
+                                    <button class="btn btn-success" 
+                                        style="
+                                                background-color:rgb(45, 204, 45); 
+                                                color: white; 
+                                                border: none; 
+                                                padding: 5px 10px; 
+                                                border-radius: 4px; 
+                                                cursor: pointer;
+                                                transition: background-color 0.3s ease;
+                                            " 
+                                        onmouseover="this.style.backgroundColor='#004d00'" 
+                                        onmouseout="this.style.backgroundColor='#006400'" 
+                                        onclick="sendSelectedDocuments()">
+                                    İndir
+                                    </button>
+                                    <button class="btn btn-success btn-sm" 
+                                            style="
+                                                background-color:rgb(15, 144, 15); 
+                                                color: white; 
+                                                border: none; 
+                                                padding: 5px 10px; 
+                                                border-radius: 4px; 
+                                                cursor: pointer;
+                                                transition: background-color 0.3s ease;
+                                            "                                             
+                                            onclick="downloadPDF({{ course.id }})">
+                                        PDF İndir
+                                    </button>
 
 
                                 </div>

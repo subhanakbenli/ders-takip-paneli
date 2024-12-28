@@ -83,6 +83,7 @@
                 <li class="list-group-item"><strong>E-mail:</strong> {{ teacher.email }}</li>
                 <li class="list-group-item"><strong>Adres:</strong> {{ teacher.adress }}</li>
                 <li class="list-group-item"><strong>Açıklama:</strong> {{ teacher.description }}</li>
+                {% comment %} <button class="btn btn-warning btn-sm float-right" onclick="window.location.href='{% url 'teacher_edit' teacher.id %}'">Düzenle</button> {% endcomment %}
             </ul>
         </div>
 

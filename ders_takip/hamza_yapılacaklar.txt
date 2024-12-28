@@ -1,6 +1,4 @@
-ders detay sayfası pdf çalışıyo açıklama kısmı silik çıkıyo
-öğretmen detay sayfası data gönderme
-erp sayfası data gönderme
+öğretmen detay sayfası düzenle butonu ve pdf css
 
 
 sübhan
