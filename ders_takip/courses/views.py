@@ -343,7 +343,7 @@ def update_course_file(course_file, form_data):
 @csrf_exempt
 @require_http_methods(["POST"])
 def statu_change(request, id, statu, isCourse="true"):
-    try:
+    # try:
         if isCourse == "true":
             related = get_object_or_404(Course, id=id)
         else:
@@ -385,10 +385,10 @@ def statu_change(request, id, statu, isCourse="true"):
             'message': message
         })
 
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=400)
+    # except Exception as e:
+    #     return JsonResponse({
+    #         'success': False,
+    #         'error': str(e)
+    #     }, status=400)
 
 

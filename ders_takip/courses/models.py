@@ -116,4 +116,4 @@ def update_course_files_statu_pano(sender, instance, **kwargs):
         # Eğer `statu` değiştiyse
         if previous_instance.statu_pano != instance.statu_pano:
             # `CourseFile` nesnelerinin `statu` alanını güncelle
-            instance.coursefile_set.filter(statu_pano=previous_instance.statu_pano).update(statu=instance.statu_pano)
+            instance.coursefile_set.filter(statu_pano=previous_instance.statu_pano).update(statu_pano=instance.statu_pano)

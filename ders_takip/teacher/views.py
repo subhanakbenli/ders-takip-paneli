@@ -175,6 +175,17 @@ def generate_pdf(request, course_id):
 
 
 
+def pano_ozet_pdf(request, course_id):
+
+    course = get_object_or_404(Course, id=course_id)
+    context = {
+        'course': course,
+        
+        
+    }
+    return render_to_pdf('pano_ozet_pdf.html', context)
+
+
 
 def pdf_pano(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -188,27 +199,13 @@ def pdf_pano(request, course_id):
     return render_to_pdf('pdf/pdf_pano.html', context)
 
 
-
-
-def pano_ozet_pdf(request, course_id):
-
+def pdf_arsiv(request, course_id):
     course = get_object_or_404(Course, id=course_id)
+
+
     context = {
         'course': course,
-        
-        
-    }
-    return render_to_pdf('pano_ozet_pdf.html', context)
-
-
-
-def pdf_arsiv(request, teacher_id):
-    teacher = get_object_or_404(Teacher, id=teacher_id)
-    # table_data = teacher.get_table_data()  # Öğretmen verilerini alın 
-
-    context = {
-        'teacher': teacher,
-        
+        'documents': get_course_with_documents(course=course)
     }
 
     return render_to_pdf('pdf/pdf_arsiv.html', context)
@@ -222,4 +219,9 @@ def erp_pdf(request, teacher_id):
         
     }
     return render_to_pdf("pdf/erp_pdf.html", context)
+
+
+
+
+
 

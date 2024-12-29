@@ -1,75 +1,317 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ teacher.name }} Ders Arşivi</title>
-    <style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arşiv</title>
+<style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f8f9fa;
             color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-center {
+            text-align: center;
         }
 
         h1 {
-            text-align: center;
-            color: #1e90ff;
+            font-size: 2.5em;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        h4 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        .card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: #007bff;
+            color: #fff;
+            padding: 10px 15px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+        }
+
+        .card-body {
+            padding: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin-top: 15px;
         }
 
         th, td {
-            padding: 10px;
             border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
         }
 
         th {
-            background-color: #1e90ff;
-            color: white;
+            background: #f1f1f1;
         }
 
-        tr:nth-child(even) {
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="date"], input[type="number"] {
+            width: auto;
+        }
+
+        .status-icon {
+            font-size: 1.2em;
+        }
+
+        .status-icon.success {
+            color: green;
+        }
+
+        .status-icon.error {
+            color: red;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+
+        .mt-4 {
+            margin-top: 20px;
+        }
+
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
             background-color: #f9f9f9;
         }
 
-        tr:hover {
+        .table-striped tbody tr:hover {
             background-color: #f1f1f1;
         }
-    </style>
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-top: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+</style>
 </head>
 <body>
-    <h1>{{ teacher.name }} Ders Arşivi</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Proje</th>
-                <th>Yükleme Alanı</th>
-                <th>Etkinlik Tarihi</th>
-                <th>Yükleme Tarihi</th>
-                <th>ERP Açıklama</th>
-                <th>ERP Kodu</th>
-                <th>Not</th>
-                <th>Dilekçe</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in table_data %}
-                <tr>
-                    <td>{{ row.proje }}</td>
-                    <td>{{ row.panoya.yukleme_alani|default:'' }}</td>
-                    <td>{{ row.panoya.etkinlik_tarihi|default:'' }}</td>
-                    <td>{{ row.panoya.yukleme_tarihi|default:'' }}</td>
-                    <td>{{ row.erp.aciklama|default:'' }}</td>
-                    <td>{{ row.erp.kodu|default:'' }}</td>
-                    <td>{{ row.erp.not|default:'' }}</td>
-                    <td>{{ row.erp.dilekce|default:'' }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+    <h1 class="text-center mt-3">Arşiv Sayfası</h1>
+
+
+    <!-- Öğretmen ve Ders Detayları -->
+    <div id="teacherDetailsContainer" class="mt-4">
+        {% for teacher in teachers %}
+        <div id="teacher-details-{{ teacher.id }}" class="teacher-details" style="display: none;">
+            <h2>Öğretmen: {{ teacher.name }} {{ teacher.surname }}</h2>
+            
+            {% if teacher.courses %}
+                {% for course in teacher.courses %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Ders: {{ course.name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                        <p><strong>Durum:</strong> {{ course.statu_pano }}</p>
+                        <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                        <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                        <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
+                        <!-- Ders Belgeleri -->
+                        <h5 class="mt-3">Belgeler:</h5>
+                        {% if course.documents %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>                                                  
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Yükleme Tarihi</th>
+                                    <th>Uyarı Tarihi</th>
+                                    <th>Uyarı</th>
+                                    <th>Türü</th>                                                    
+                                    <th>Dilekçe Yazıldı Mı?</th>
+                                    <th>Açıklama</th>
+                                    <th>Etkinlik No</th>
+                                    <th>Etkinlik Tarihi</th>
+                                    <th>Öğretmen</th>
+                                    <th>Sınıf</th>
+                                    <th>Şehir</th>
+                                    <th>Kimlerin Katıldığı</th>
+                                    <th>Sisteme Giriş Tarihi</th>
+                                    <th>Etkinliğin Adı</th>
+                                    <th>Eğitim Oluşturma Tarihi</th>
+                                    <th>Katılımcı Kodu</th>
+                                    <th>Eğitim Kayıt NO 1</th>
+                                    <th>Eğitim Kayıt NO 2</th>
+                                    <th>Eğitim Kayıt NO 2</th>
+                                    <th>Etkinlik Açıklaması</th>
+                                    <th>Kodu</th>
+                                    <th>Katılımcı Sayısı</th>
+                                    <th>Verilen Not</th>
+                                    <th>Güncelleme Tarihi</th>
+                                    <th>Açıklama 1</th>
+                                    <th>Açıklama 2</th> 
+                                    <th>Açıklama 3</th>
+                        
+                                    
+                                  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for document in course.documents %}
+                                <tr>
+                                    <td>{{document.start_date}}</td>
+                                    <td>{{document.upload_date}}</td>
+                                    <td>{{ document.end_date }}</td>
+                                    <td>
+                                        {% if document.is_uploaded %}
+                                            <span class="status-icon success">✔️</span>
+                                        {% else %}
+                                            <span class="status-icon error">❌</span>
+                                        {% endif %}
+                                        </td>
+                                        <td>
+                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"value="{{ document.description|default:'' }}" ></textarea>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" value=" document.ogretmen_adi|default:'' " />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="sinif" placeholder="Sınıf:" value="{{ document.sinif|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="sehir" placeholder="Şehir:" value="{{ document.sehir|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                        <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="date" name="egitim_olusturma_tarihi" placeholder = "Eğitim Oluşturma Tarihi:"  value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="egitim_kayit_no_1" placeholder="Eğitim kayıt no 1 yazın"  value="{{ document.egitim_kayit_no_1|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="egitim_kayit_no_2" placeholder="Eğitim kayıt no 2 yazın"   value="{{ document.egitim_kayit_no_2|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın"   value="{{ document.egitim_kayit_no_3|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"  value="{{ document.description|default:'' }}"></textarea>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.etkinlik_kodu|default:'' }}"/>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.etkinlik_sayisi|default:'' " />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
+                                        </td>
+                                        <td>
+                                            <input type="date" name="guncelleme_tarihi"  value=" document.guncelleme_tarihi|default:'' " />
+                                        </td>
+                                        <td>
+                                            <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
+                                        </td>
+                                        <td>
+                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"  value="{{ document.description_2|default:'' }}"></textarea>
+                                        </td>
+                                        <td>
+                                            <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>
+                                        </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>Bu derse ait belge bulunmamaktadır.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <p>Bu öğretmene ait ders bulunmamaktadır.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
 </body>
 </html>

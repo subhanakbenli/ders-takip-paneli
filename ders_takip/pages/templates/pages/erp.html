@@ -467,7 +467,7 @@ ERP
     }
     async function changeStatu(documentId, statu, isCourse) {
         try {
-            const url = `/dersler/durum_degis/${documentId}/${statu}/${isCourse}/`;
+            const url = `/dersler/durum_degis_erp/${documentId}/${statu}/${isCourse}/`;
             const data = await sendRequest(url, 'POST');
             console.log(data);
             if (data && data.success) {
@@ -755,7 +755,7 @@ ERP
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">Excel İndir</button>
                                 </div>
                             </div>
                         </div>

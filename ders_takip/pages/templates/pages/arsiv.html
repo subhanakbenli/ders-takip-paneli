@@ -7,12 +7,19 @@ Arşiv Sayfası
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .container {
+        width: 100%;
+        min-width: 98%;
+        margin: 0 auto;
+        padding: 0.25rem;
+    }
     #teacherDetailsContainer {     
         min-width: 100% !important;            
     }
 
     body {
       background-color:rgb(230, 242, 253) !important; /* Hafif mavi renk */
+      width: 100%;
     }
     .belge_ekle{
         text-align:center;
@@ -50,7 +57,7 @@ Arşiv Sayfası
     }
 
     .table {
-        width: 100%;
+        width: 100% !important;
         font-size: 0.7875rem;  /* Reduced from 0.875rem */
         border-collapse: collapse;
     }
@@ -549,7 +556,7 @@ Arşiv Sayfası
             return;
         }
         // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
+        window.location.href = `/ogretmen/${courseId}/pdf_arsiv/`;
     }
 </script>
 
@@ -683,7 +690,7 @@ Arşiv Sayfası
                                                                 <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
+                                                                <input type="date" name="sisteme_giris_tarihi" placeholder = "Sisteme giriş tarihi:"  value="{{document.sisteme_giris_tarihi|default:'' }}"/>
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />

@@ -99,8 +99,8 @@ Pano Özet
                             <td>{{ teacher.name }} {{teacher.surname}}</td>
                             <td>{{ course.name }}</td>
         
-                            <td>{{ document.start_date|date:"d/m/Y" }}</td>
-                            <td>{{ document.end_date|date:"d/m/Y" }}</td>
+                            <td>{{ document.start_date|date:"d/m/Y"|default:'Başlangıç Tarihi Girilmedi' }}</td>
+                            <td>{{ document.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
                             <td>
                                 {% if document.is_uploaded %}
                                     <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}"></span>
