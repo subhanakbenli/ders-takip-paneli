@@ -96,9 +96,9 @@ def courses_list_view(request):
     }
     return render(request, "courses/courses_list.html", context)
 
-@login_required
-@csrf_exempt
+@require_http_methods(["POST"])
 @user_has_permission([ADMIN])
+@csrf_exempt
 def delete_file_view(request, id):
     print("delete_file",id)
     if request.method == 'POST':
@@ -110,7 +110,6 @@ def delete_file_view(request, id):
             return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
     return JsonResponse({'success': False, 'message': INVALID_REQUEST_METHOD_MESSAGE})
 
-@login_required
 @require_http_methods(["POST"])
 @user_has_permission([ADMIN])
 def delete_course_view(request, id):

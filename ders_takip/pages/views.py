@@ -25,7 +25,6 @@ def arsiv_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/arsiv.html', {'teachers': teachers_data})
 
-@login_required
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_view(request):
     teachers_data= get_teachers_with_courses_and_documents(status="aktif",page="erp")
@@ -35,7 +34,6 @@ def erp_view(request):
     }
     return render(request, 'pages/erp.html', context)
 
-@login_required
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_iptal_view(request):
     teachers_data= get_teachers_with_courses_and_documents(status="iptal", page="erp")
@@ -45,13 +43,12 @@ def erp_iptal_view(request):
     }
     return render(request, 'pages/erp_iptal.html', context)
 
-@login_required
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_ozet_view(request):
     teachers_data = get_teachers_with_courses_and_documents(status="aktif", page="erp")
     return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})
 
-
+@login_required
 def index(request):
     user, created = User.objects.get_or_create(
         username="test2_user",

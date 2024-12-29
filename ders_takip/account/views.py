@@ -1,8 +1,7 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.models import User, Group
 from django.http import HttpResponseForbidden,HttpResponse
 from ders_takip.settings import USER,SUPERUSER,ADMIN
 
@@ -37,10 +36,6 @@ def login_request(request):
             })
 
     return render(request, "account/login.html")
-from django.contrib.auth.models import User, Group
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
 
 # Kullanıcı yetki kontrol dekoratörü
 def user_has_permission(required_permissions):
@@ -57,8 +52,7 @@ def user_has_permission(required_permissions):
         return _wrapped_view
     return decorator
 
-@login_required
-# @user_has_permission(['Admin'])
+@user_has_permission([ADMIN])
 def register_request(request):
     groups = Group.objects.all().values_list("name", flat=True)  # Tüm grup adlarını alın
     if request.method == "POST":
