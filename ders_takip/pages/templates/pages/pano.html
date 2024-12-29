@@ -7,6 +7,10 @@ Pano
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .belge_ekle{
+        text-align:center;
+    }
+    .h6
     /* Core Layout & Container */
     .container {
         width: 100%;
@@ -543,7 +547,7 @@ Pano
 
 
 <div class="container">
-    <h1 class="text-center">Pano</h1>
+    <h1 class="text-center">Pano Takip</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
@@ -615,12 +619,8 @@ Pano
                                                             </td>
                                                             <td>{{ document.category }}</td>
                                                             <td>{{ document.belge_adi|default:'' }}</td>
-                                                            <td> 
-                                                                {% if document.belge_adi and document.belge_url %} 
-                                                                    <button type="button" class="btn btn-sm btn-danger" onclick="showModal('documentDeleteModal', '{{ document.id }}')">Sil</button> 
-                                                                {% else %} 
-                                                                    <button type="button" class="btn btn-success" onclick="addDocument('{{ course.id }}')">Ekle</button> 
-                                                                {% endif %} 
+                                                            <td>
+                                                                <button type="button" class="btn btn-success" onclick="openAddDocumentModal('{{ course.id }}')">Ekle</button>
                                                             </td>
                                                             <td>
                                                                 <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
@@ -743,24 +743,121 @@ Pano
     </div>
 </div>
 
+
 <!-- Dosya Ekle Modal -->
-<div id="documentAddModal" class="custom-modal">
+<div id="addDocumentModal" class="custom-modal">
     <div class="custom-modal-content">
-        <form id="addDocumentForm">
-            <input type="hidden" id="courseId" name="course_id">
+        <h6 class = "belge_ekle">Belge Ekle</h6>
+        <h6>Kaydedilmiş Belgeler</h6>
+        <div id="uploadedDocumentsContainer">
+            <p>Hiç belge yüklenmedi.</p>
+        </div>
+        <form id="documentUploadForm">
+            <input type="hidden" id="modalCourseId" name="course_id">
             <div class="form-group">
                 <label for="documentName">Belge Adı:</label>
-                <input type="text" id="documentName" name="document_name" class="form-control" required>
+                <input type="text" id="modalDocumentName" name="document_name" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="file">Dosya:</label>
-                <input type="file" id="file" name="file" class="form-control" required>
+                <label for="documentFile">Dosya:</label>
+                <input type="file" id="modalDocumentFile" name="document_file" class="form-control" required>
             </div>
-            <button type="button" class="btn btn-success" onclick="submitDocumentForm()">Kaydet</button>
-            <button type="button" class="btn btn-danger" onclick="ModalManager.hide('documentAddModal')">İptal</button>
+            <button type="button" class="btn btn-success" onclick="submitDocument()">Kaydet</button>
+            <button type="button" class="btn btn-danger" onclick="ModalManager.hide('addDocumentModal')">İptal</button>
         </form>
+        <hr>
+        
     </div>
 </div>
+
+
+<script>
+// Belge Ekle Modalını Aç
+function openAddDocumentModal(courseId) {
+    document.getElementById('modalCourseId').value = courseId;
+
+    // Kaydedilmiş belgeleri yükle
+    fetchUploadedDocuments(courseId);
+
+    // Modalı göster
+    ModalManager.show('addDocumentModal');
+}
+
+// Kaydedilmiş Belgeleri Getir
+async function fetchUploadedDocuments(courseId) {
+    try {
+        const response = await fetch(`/dersler/kaydedilen_belgeler/${courseId}/`);
+        const data = await response.json();
+
+        const container = document.getElementById('uploadedDocumentsContainer');
+        container.innerHTML = '';
+
+        if (data.documents.length > 0) {
+            data.documents.forEach((doc) => {
+                const documentElement = document.createElement('div');
+                documentElement.className = 'document-item';
+                documentElement.innerHTML = `
+                    <p>${doc.name}</p>
+                    <button class="btn btn-sm btn-primary" onclick="downloadDocument('${doc.url}')">İndir</button>
+                `;
+                container.appendChild(documentElement);
+            });
+        } else {
+            container.innerHTML = '<p>Hiç belge yüklenmedi.</p>';
+        }
+    } catch (error) {
+        console.error('Kaydedilmiş belgeler yüklenirken hata oluştu:', error);
+    }
+}
+
+// Belge Yükle Formunu Gönder
+async function submitDocument() {
+    const formData = new FormData(document.getElementById('documentUploadForm'));
+
+    // Form verilerini konsola yazdırarak doğrulayın
+    console.log([...formData.entries()]);
+
+    try {
+        const response = await fetch(`/dersler/belge_ekle/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': CSRFManager.getToken('csrftoken'),
+            },
+            body: formData,
+        });
+
+        // Gelen yanıtı kontrol edin
+        const result = await response.json();
+        console.log(result);
+
+        if (response.ok && result.success) {
+            alert(result.message);
+            fetchUploadedDocuments(formData.get('course_id')); // Belgeleri yenileyin
+        } else {
+            alert(result.message || 'Belge eklenirken bir hata oluştu.');
+        }
+    } catch (error) {
+        console.error('Belge yüklenirken hata oluştu:', error);
+        alert('Bir hata oluştu: ' + error.message);
+    }
+}
+
+
+
+
+// Belge İndir
+function downloadDocument(url) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.download = '';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+</script>
+
 
 
 <!-- Silme Onay Modalı -->

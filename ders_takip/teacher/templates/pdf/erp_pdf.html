@@ -71,7 +71,7 @@
 </head>
 <body>
     <h1>ERP Raporu</h1>
-    <p><strong>Öğretmen:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+    <p><strong>Öğretmenn:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
     <p><strong>Ders Adı:</strong> {{ course.name }}</p>
     <p><strong>Durum:</strong> {{ course.statu }}</p>
     <p><strong>Açıklama:</strong> {{ course.description }}</p>
@@ -85,6 +85,7 @@
                     <th>Etkinlik Tarihi</th>
                     <th>Yükleme Tarihi</th>
                     <th>Bitiş Tarihi</th>
+                    <th>Uyarı</th>
                     <th>Türü</th>
                     <th>Dilekçe Yazıldı mı?</th>
                     <th>Açıklama</th>
@@ -98,41 +99,49 @@
                     <th>Etkinliğin Adı</th>
                     <th>Eğitim Oluşturma Tarihi</th>
                     <th>Katılımcı Kodu</th>
-                    <th>Eğitim Kayıt No</th>
-                    <th>Etkinlik Açıklaması</th>
+                    <th>Eğitim Kayıt No 1</th>
+                    <th>Eğitim Kayıt No 2</th>
+                    <th>Eğitim Kayıt No 3</th>
+                    <th>Etkinlik açıklaması</th>
                     <th>Kodu</th>
-                    <th>Katılımcı Sayısı</th>
+                    <th>Katılımcı sayısı</th>
                     <th>Verilen Not</th>
                     <th>Güncelleme Tarihi</th>
-                    <th>Açıklama</th>
+                    <th>Açıklama 1</th>
+                    <th>Açıklama 2</th>
+                    <th>Açıklama 3</th>
                 </tr>
             </thead>
             <tbody>
                 {% for course in courses %}
                 <tr>
-                    <td>{{ course.event_date|default:"none" }}</td>
-                    <td>{{ course.upload_date|default:"none" }}</td>
-                    <td>{{ course.end_date|default:"none" }}</td>
-                    <td>{{ course.type|default:"none" }}</td>
-                    <td>{{ course.petition_written|default:"none" }}</td>
+                    <td>{{ document.start_date|default:"none" }}</td>
+                    <td>{{ document.upload_date|default:"none" }}</td>
+                    <td>{{ document.end_date|default:"none" }}</td>
+                    <td>{{ document.type|default:"none" }}</td>
+                    <td>{{ document.dilekce_name|default:"none" }}</td>
                     <td>{{ course.description|default:"none" }}</td>
-                    <td>{{ course.event_no|default:"none" }}</td>
-                    <td>{{ course.event_date|default:"none" }}</td>
-                    <td>{{ course.teacher|default:"none" }}</td>
-                    <td>{{ course.class|default:"none" }}</td>
-                    <td>{{ course.city|default:"none" }}</td>
-                    <td>{{ course.attendees|default:"none" }}</td>
-                    <td>{{ course.system_entry_date|default:"none" }}</td>
-                    <td>{{ course.event_name|default:"none" }}</td>
-                    <td>{{ course.training_creation_date|default:"none" }}</td>
-                    <td>{{ course.participant_code|default:"none" }}</td>
-                    <td>{{ course.training_record_no|default:"none" }}</td>
+                    <td>{{ document.etkinlik_no|default:"none" }}</td>
+                    <td>{{ document.etkinlik_tarihi|default:"none" }}</td>
+                    <td>{{ document.ogretmen_adi|default:"none" }}</td>
+                    <td>{{ document.sinif|default:"none" }}</td>
+                    <td>{{ document.sehir|default:"none" }}</td>
+                    <td>{{ document.katilanlar|default:"none" }}</td>
+                    <td>{{ document.sisteme_giris_tarihi|default:"none" }}</td>
+                    <td>{{ document.etkinlik_adi|default:"none" }}</td>
+                    <td>{{ document.egitim_olusturma_tarihi|default:"none" }}</td>
+                    <td>{{ document.katilimci_kodu|default:"none" }}</td>
+                    <td>{{ document.egitim_kayit_no_1|default:"none" }}</td>
+                    <td>{{ document.egitim_kayit_no_2|default:"none" }}</td>
+                    <td>{{ document.egitim_kayit_no_3|default:"none" }}</td>
                     <td>{{ course.event_description|default:"none" }}</td>
-                    <td>{{ course.code|default:"none" }}</td>
-                    <td>{{ course.participant_count|default:"none" }}</td>
-                    <td>{{ course.grade|default:"none" }}</td>
-                    <td>{{ course.update_date|default:"none" }}</td>
-                    <td>{{ course.additional_description|default:"none" }}</td>
+                    <td>{{ document.etkinlik_kodu|default:"none" }}</td>
+                    <td>{{ document.etkinlik_sayisi|default:"none" }}</td>
+                    <td>{{ document.etkinlik_notu|default:"none" }}</td>
+                    <td>{{ document.guncelleme_tarihi|default:"none" }}</td>
+                    <td>{{ document.description_1|default:"none" }}</td>
+                    <td>{{ document.description_2|default:"none" }}</td>
+                    <td>{{ document.description_3|default:"none" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

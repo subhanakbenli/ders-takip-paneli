@@ -537,18 +537,13 @@ ERP
             return;
         }
         // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
+        window.location.href = `${courseId}/pdf/erp_pdf`;
     }
 </script>
 
 
 <div class="container">
-    <h1 class="text-center">ERP</h1>
-
-
-
-    
-    
+    <h1 class="text-center">ERP Takip</h1> 
     <div class="teacher-select-container ">
         <label for="teacherSelect">Öğretmen Seçiniz</label>
         <select 
@@ -574,7 +569,7 @@ ERP
                             <div class="card-body">
                                 <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
                                 <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                                <p><strong>Durum:</strong> {{ course.statu }}</p>
+                                <p><strong>Durum:</strong> {{ course.statu_erp }}</p>
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                                 <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
@@ -618,6 +613,7 @@ ERP
                                                 <th>Açıklama 3</th>
                                                 <th>Kaydet</th>
                                                 <th>Arşivle</th>
+                                                <th>İptal</th>
                                             </tr>
                                         </thead>
                                         <tbody>

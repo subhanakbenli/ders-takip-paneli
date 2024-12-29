@@ -79,11 +79,11 @@
         <div class="card-body">
             <ul class="list-group">
                 <li class="list-group-item"><strong>Telefon:</strong> {{ teacher.telephone }}</li>
+                <li class="list-group-item"><strong>Telefon 2:</strong> {{ teacher.telephone2 }}</li>
                 <li class="list-group-item"><strong>Unvan:</strong> {{ teacher.title }}</li>
                 <li class="list-group-item"><strong>E-mail:</strong> {{ teacher.email }}</li>
                 <li class="list-group-item"><strong>Adres:</strong> {{ teacher.adress }}</li>
                 <li class="list-group-item"><strong>Açıklama:</strong> {{ teacher.description }}</li>
-                {% comment %} <button class="btn btn-warning btn-sm float-right" onclick="window.location.href='{% url 'teacher_edit' teacher.id %}'">Düzenle</button> {% endcomment %}
             </ul>
         </div>
 
@@ -98,7 +98,7 @@
                 </thead>
                 <tbody>
                     {% for course in courses %}
-                        <tr onclick="window.location.href='#';">
+                        <tr onclick="window.location.href='{% url 'course_detail' teacher.id %}';">
                             <td>{{ course.name }}</td>
                             <td>{{ course.description }}</td>
                             <td>
