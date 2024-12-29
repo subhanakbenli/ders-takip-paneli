@@ -7,8 +7,12 @@ Arşiv Sayfası
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    #teacherDetailsContainer {     
+        min-width: 100% !important;            
+    }
+
     body {
-      background-color:rgb(203, 229, 252) !important; /* Hafif mavi renk */
+      background-color:rgb(230, 242, 253) !important; /* Hafif mavi renk */
     }
     .belge_ekle{
         text-align:center;
@@ -38,6 +42,7 @@ Arşiv Sayfası
 
     /* Table Styles */
     .table-container {
+        width: 100%;
         overflow-x: auto;
         margin-bottom: 1rem;
         border-radius: 0.5rem;
@@ -572,7 +577,7 @@ Arşiv Sayfası
     </div>
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
-    <div id="teacherDetailsContainer">
+    <div id="teacherDetailsContainer" >
         {% for teacher in teachers %}
             <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
                 {% if teacher.courses %}

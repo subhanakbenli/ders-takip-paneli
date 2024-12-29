@@ -1,10 +1,6 @@
 öğretmen detay sayfası düzenle butonu ve pdf css
 Arşiv sayfası etkinlik tarihi sorulacak
 
-sübhan
-
-pano özet sayfasına sadece yüklenmeyen dataların gönderilmesi gerekiyo
-erp özet sayfasına da aynı şekilde yüklenmeyen datalar gönderilecek
 
 
 
@@ -19,4 +15,5 @@ erp özet sayfasına da aynı şekilde yüklenmeyen datalar gönderilecek
 
 
 
-erp de etkinlik tarihi sorulacak
+
+erp de etkinlik tarihi sorulacak!!!!!!!!!

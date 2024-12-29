@@ -97,6 +97,7 @@
                 <tr>
                     <th style="width: 25%;">Belge Kategorisi</th>
                     <th style="width: 25%;">Belge Adı</th>
+                    <th style="width: 25%;">Belge URL</th>
                     <th style="width: 25%;">Başlangıç-Bitiş Tarihi</th>
                     <th style="width: 25%;">Açıklama</th>
                 </tr>
@@ -106,6 +107,13 @@
                     <tr>
                         <td>{{ document.category }}</td>
                         <td>{{ document.belge_adi|default:"Belge Eklenmedi" }}</td>
+                        <td>
+                            {% if document.belge_url %}
+                                <a href="{{ document.belge_url }}" class="btn btn-link view-button" target="_blank">Belgeyi Görüntüle</a>
+                            {% else %}
+                                <span class="text-muted">Belge Eklenmedi</span>
+                            {% endif %}
+                        </td>
                         <td>{{ document.start_date }} - {{ document.end_date }}</td>
                         <td>{{ document.description }}</td>
                     </tr>

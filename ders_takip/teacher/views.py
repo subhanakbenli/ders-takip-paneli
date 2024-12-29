@@ -150,6 +150,14 @@ def teacher_pdf(request, teacher_id):
     }
     return render_to_pdf('pdf/pdf_teacher_detail.html', context)
 
+def teacher_list_pdf(request):
+   
+    teachers =Teacher.objects.all() 
+
+    context = {
+        'teachers':teachers,
+    }
+    return render_to_pdf('pdf/teacher_list_pdf.html', context)
 
 def generate_pdf(request, course_id):
     # Course objesini al
@@ -200,7 +208,7 @@ def pdf_arsiv(request, teacher_id):
 
     context = {
         'teacher': teacher,
-        # 'table_data': table_data
+        
     }
 
     return render_to_pdf('pdf/pdf_arsiv.html', context)

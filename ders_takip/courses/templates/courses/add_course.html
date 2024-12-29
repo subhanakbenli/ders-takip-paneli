@@ -162,7 +162,6 @@ Ders Kayıt Sayfası
           <th>Sıra No</th>
           <th>Bölüm Adı</th>
           <th>Yükleme Miktarı</th>
-          <th>İşlem</th>
         </tr>
       </thead>
       <tbody>
@@ -174,7 +173,6 @@ Ders Kayıt Sayfası
             <input type="number" name="uploads[{{ forloop.counter }}][amount]" min="0" />
             <input type="hidden" name="uploads[{{ forloop.counter }}][label]" value="{{ item }}" />
           </td>
-          <td></td>
         </tr>
         {% endfor %}
         <tr>
