@@ -298,7 +298,6 @@ def save_erp(request, id):
     try:
         related_courseFile = get_object_or_404(CourseFile, id=id)
         form_data = get_form_data(request)
-        print(form_data)
         update_course_file(related_courseFile, form_data)
         print(related_courseFile.description_2)
         return JsonResponse({'success': True, 'message': 'Belge başarıyla güncellendi'})
@@ -336,6 +335,7 @@ def get_form_data(request):
 def update_course_file(course_file, form_data):
     for key, value in form_data.items():
         if value:
+            print(key, value)
             setattr(course_file, key, value)
     course_file.save()
 

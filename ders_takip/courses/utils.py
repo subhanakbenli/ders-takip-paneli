@@ -193,6 +193,7 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
                         "sinif": document.sinif,
                         "sehir": document.sehir,
                         "katilanlar": document.katilimcilar,
+                        "katilimci_sayisi": document.katilimci_sayisi,
                         "sisteme_giris_tarihi": document.sisteme_giris_tarihi,
                         "egitim_olusturma_tarihi": document.egitim_olusturma_tarihi,
                         "katilimci_kodu": document.katilimci_kodu,
@@ -210,7 +211,7 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
             course_warning_message = None                
             if course_warning_counter > 0:
                 teacher_warning_counter += 1
-                course_warning_message = course_warning_counter+" döküman yüklenmeyi bekliyor"
+                course_warning_message = f"{course_warning_counter} döküman yüklenmeyi bekliyor"
 
             courses_data.append({
                 "id": course.id,
@@ -229,7 +230,7 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
             })
         teacher_warning_message = None
         if teacher_warning_counter > 0:
-            teacher_warning_message = teacher_warning_counter+" ders döküman yüklemeyi bekliyor"
+            teacher_warning_message = f"{teacher_warning_counter} ders döküman yüklemeyi bekliyor"
         teachers_data.append({
             "id": teacher.id,
             "name": teacher.name,

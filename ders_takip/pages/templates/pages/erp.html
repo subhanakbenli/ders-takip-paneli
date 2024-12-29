@@ -639,7 +639,8 @@ ERP
                                                             <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"value="{{ document.description|default:'' }}" ></textarea>
+                                                            <textarea name="aciklama" placeholder="Açıklama yazın">{{ document.description|default:'' }}</textarea>
+
                                                         </td>
                                                         <td>
                                                             <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
@@ -660,13 +661,13 @@ ERP
                                                             <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
+                                                            <input type="date" name="sisteme_giris_tarihi"  value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="egitim_olusturma_tarihi" placeholder = "Eğitim Oluşturma Tarihi:"  value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
+                                                            <input type="date" name="egitim_olusturma_tarihi"   value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
@@ -681,28 +682,28 @@ ERP
                                                             <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın"   value="{{ document.egitim_kayit_no_3|default:'' }}"/>
                                                         </td>
                                                          <td>
-                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"  value="{{ document.description|default:'' }}"></textarea>
+                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın">{{ document.etkinlik_aciklamasi|default:'' }}</textarea>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.etkinlik_kodu|default:'' }}"/>
+                                                            <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.kodu|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.etkinlik_sayisi|default:'' " />
+                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.katilimci_sayisi|default:'' " />
                                                         </td>
                                                         <td>
                                                             <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="guncelleme_tarihi"  value=" document.guncelleme_tarihi|default:'' " />
+                                                            <input type="date" name="guncelleme_tarihi"  value="{{document.guncelleme_tarihi|default:''}}" />
                                                         </td>
                                                         <td>
-                                                            <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
+                                                            <textarea name="aciklama_1" placeholder="Açıklama yazın">{{ document.description_1|default:'' }}</textarea>
                                                         </td>
                                                          <td>
-                                                            <textarea name="aciklama_2" value="{{ document.description_2 }}"></textarea>
+                                                            <textarea name="aciklama_2" >{{ document.description_2 }}</textarea>
                                                         </td>
                                                          <td>
-                                                            <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>
+                                                            <textarea name="aciklama_3" placeholder="Açıklama yazın">{{ document.description_3|default:'' }}</textarea>
                                                         </td>
                                                         <td>
                                                             <button type="button" 
