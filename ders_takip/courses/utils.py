@@ -1,7 +1,7 @@
 
 from .models import Course, CourseFile
 from teacher.models import Teacher
-
+from datetime import datetime
 def get_default_sections():
     """Returns the default sections."""
     return [
@@ -58,7 +58,7 @@ def get_course_with_documents(course):
         documents_data.append(                    {
                         "id": document.id,
                         "category": document.category,
-                        "belge_adi": document.name,
+                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,
                         "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
                         "is_uploaded": document.is_uploaded,
                         "uploaded_at": document.uploaded_date,
@@ -117,17 +117,21 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
         list: A list of dictionaries containing teacher details, their courses, and documents.
     """
     teachers_data = []
+    today = datetime.today()
+    
     if teacher:
         teachers = Teacher.objects.filter(id=teacher)
     else:
         teachers = Teacher.objects.all()
     
     for teacher in teachers:
+        teacher_warning_counter = 0
         courses = Course.objects.filter(teacher=teacher)
 
         courses_data = []
         course_statu_dict = {}
         for course in courses:
+            course_warning_counter = 0
             if status:
                 if page == "pano":
                     course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
@@ -151,13 +155,20 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
                     elif page == "erp":
                         if document.statu_erp != status:
                             continue
-                    
-
+                
+                start_date = document.start_date
+                end_date = document.end_date
+                days_to_end = (end_date - today).days
+                days_from_start = (today - start_date).days
+                document_warning_message = None
+                if days_from_start < days_to_end and document.is_uploaded==False:
+                    document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
+                    course_warning_counter += 1
                 documents_data.append(
                     {
                         "id": document.id,
                         "category": document.category,
-                        "belge_adi": document.name,
+                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,
                         "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
                         "is_uploaded": document.is_uploaded,
                         "uploaded_at": document.uploaded_date,
@@ -185,9 +196,13 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
                         "description_2": document.description_2,
                         "description_3": document.description_3,
                         "created_at": document.created_at,
-                        "created_by": document.created_by.username if document.created_by else None
+                        "created_by": document.created_by.username if document.created_by else None,
+                        "warning_message": document_warning_message   
                     })
-                
+            course_warning_message = None                
+            if course_warning_counter > 0:
+                teacher_warning_counter += 1
+                course_warning_message = course_warning_counter+" döküman yüklenmeyi bekliyor"
 
             courses_data.append({
                 "id": course.id,
@@ -201,9 +216,12 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
                 "created_at": course.created_at,
                 "created_by": course.created_by.username if course.created_by else None,
                 "documents": documents_data,
-                "document_statu_dict": document_statu_dict
+                "document_statu_dict": document_statu_dict,
+                "warning_message": course_warning_message
             })
-
+        teacher_warning_message = None
+        if teacher_warning_counter > 0:
+            teacher_warning_message = teacher_warning_counter+" ders döküman yüklemeyi bekliyor"
         teachers_data.append({
             "id": teacher.id,
             "name": teacher.name,
@@ -217,7 +235,8 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
             "created_at": teacher.created_at,
             "created_by": teacher.created_by.username if teacher.created_by else None,
             "courses": courses_data,
-            "course_statu_dict": course_statu_dict
+            "course_statu_dict": course_statu_dict,
+            "warning_message": teacher_warning_message
         })
 
     return teachers_data

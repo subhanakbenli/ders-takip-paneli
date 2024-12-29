@@ -73,7 +73,6 @@ class CourseFile(models.Model):
     description_1 = models.TextField(verbose_name="description_1", blank=True, null=True)
     description_2 = models.TextField(verbose_name="description_2", blank=True, null=True)
     description_3= models.TextField(verbose_name="description_3", blank=True, null=True)
-    
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
     created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)

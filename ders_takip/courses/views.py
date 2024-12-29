@@ -33,7 +33,12 @@ def add_course_view(request):
         # Kurs bilgilerini al ve kaydet
         course_name = request.POST.get('lesson_name')
         description = request.POST.get('description', "")
-        course = Course(name=course_name, teacher=teacher, description=description)
+        dilekce_required = request.POST.get('is_dilekce_required',"")
+        if dilekce_required == "yes":
+            dilekce_required = True
+        else:
+            dilekce_required = False
+        course = Course(name=course_name, teacher=teacher, description=description,dilekce_required=dilekce_required)
         course.save()
 
         # Dinamik tabloda gönderilen verileri işleyin
@@ -339,7 +344,14 @@ def statu_change(request, id, statu, isCourse="true"):
         if 'erp' in request.path:
             related.statu_erp = statu
         elif 'pano' in request.path:
-            related.statu_pano = statu
+            if statu == 'arsiv' and isCourse == "false":
+                if related.course.dilekce_required:
+                    return JsonResponse({
+                        'success': False,
+                        'message': 'Bu dersde dilekçe adı girilmeden belge arşivlenemez!'
+                    }, status=400)
+            else:
+                related.statu_pano = statu
 
         related.save()
 
