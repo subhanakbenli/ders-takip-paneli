@@ -158,15 +158,17 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
                         if document.statu_erp != status:
                             continue
                 
-                
-                start_date = document.start_date
-                end_date = document.end_date
-                days_to_end = (end_date - today).days
-                days_from_start = (today - start_date).days
-                document_warning_message = None
-                if days_from_start < days_to_end and document.is_uploaded==False:
-                    document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
-                    course_warning_counter += 1
+                try:
+                    start_date = document.start_date
+                    end_date = document.end_date
+                    days_to_end = (end_date - today).days
+                    days_from_start = (today - start_date).days
+                    document_warning_message = None
+                    if days_from_start < days_to_end and document.is_uploaded==False:
+                        document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
+                        course_warning_counter += 1
+                except:
+                    document_warning_message = None
                 documents_data.append(
                     {
                         "id": document.id,
