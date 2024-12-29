@@ -633,7 +633,7 @@ ERP
                                                         <td>{{ document.end_date }}</td>
                                                         <td>{{ document.warning }}</td>
                                                         <td>
-                                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
+                                                            <input type="text" name="turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
@@ -648,7 +648,7 @@ ERP
                                                             <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" value=" document.ogretmen_adi|default:'' " />
+                                                            <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı:" value="{{ document.ogretmen_adi|default:'' }} " />
                                                         </td>
                                                         <td>
                                                             <input type="text" name="sinif" placeholder="Sınıf:" value="{{ document.sinif|default:'' }}" />
@@ -699,7 +699,7 @@ ERP
                                                             <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
                                                         </td>
                                                          <td>
-                                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"  value="{{ document.description_2|default:'' }}"></textarea>
+                                                            <textarea name="aciklama_2" value="{{ document.description_2 }}"></textarea>
                                                         </td>
                                                          <td>
                                                             <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>

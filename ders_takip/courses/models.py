@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from teacher.models import Teacher
+from django.contrib.auth.models import User
+
 
 class Course(models.Model):
     STATU_CHOICES = [
@@ -21,7 +23,7 @@ class Course(models.Model):
     dilekce_required = models.BooleanField(default=False, verbose_name="dilekce_required")
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
-    created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -56,26 +58,32 @@ class CourseFile(models.Model):
 
     dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
     dilekce_is_uploaded = models.BooleanField(default=False)
-    
+    description = models.TextField(verbose_name="description", blank=True, null=True)    
     etkinlik_no = models.CharField(max_length=255, verbose_name="etkinlik_no", null=True, blank=True)
-    etkinlik_adi = models.CharField(max_length=255, verbose_name="etkinlik_adi", null=True, blank=True)
-    etkinlik_kodu = models.CharField(max_length=255, verbose_name="etkinlik_kodu", null=True, blank=True)
+    etkinklik_tarihi = models.DateField(verbose_name="etkinklik_tarihi", null=True, blank=True)
+    ogretmen_adi = models.CharField(max_length=255, verbose_name="ogretmen_adi", null=True, blank=True)
     sinif= models.CharField(max_length=255, verbose_name="sinif", null=True, blank=True)
     sehir = models.CharField(max_length=255, verbose_name="sehir", null=True, blank=True)
-    katilanlar = models.CharField(max_length=255, verbose_name="katilanlar", null=True, blank=True)
+    katilimcilar = models.CharField(max_length=255, verbose_name="katilanlar", null=True, blank=True)
     sisteme_giris_tarihi = models.CharField(max_length=255, verbose_name="ekleme_tarihi", null=True, blank=True)
-    egitim_olusturma_tarihi = models.CharField(max_length=255, verbose_name="egitim_olusturma_tarihi", null=True, blank=True)
+    etkinlik_adi = models.CharField(max_length=255, verbose_name="etkinlik_adi", null=True, blank=True)
+    egitim_olusturma_tarihi = models.DateField(verbose_name="egitim_olusturma_tarihi", null=True, blank=True)
+    katilimci_kodu = models.CharField(max_length=255, verbose_name="katilimci_kodu", null=True, blank=True)
     katilimci_kodu = models.CharField(max_length=255, verbose_name="katilimci_kodu", null=True, blank=True)
     egitim_kayit_no_1 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_1", null=True, blank=True)
     egitim_kayit_no_2 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_2", null=True, blank=True)
     egitim_kayit_no_3 = models.CharField(max_length=255, verbose_name="egitim_kayit_no_3", null=True, blank=True)
-    description = models.TextField(verbose_name="description", blank=True, null=True)
+    etkinlik_aciklamasi = models.TextField(verbose_name="etkinlik_aciklamasi", blank=True, null=True)
+    kodu = models.CharField(max_length=255, verbose_name="kodu", null=True, blank=True)
+    katilimci_sayisi = models.CharField(max_length=255, verbose_name="katilimci_sayisi", null=True, blank=True)        
+    verilen_not = models.CharField(max_length=255, verbose_name="verilen_not", null=True, blank=True)
+    guncellenme_tarihi = models.DateField(verbose_name="guncellenme_tarihi", null=True, blank=True)
     description_1 = models.TextField(verbose_name="description_1", blank=True, null=True)
     description_2 = models.TextField(verbose_name="description_2", blank=True, null=True)
     description_3= models.TextField(verbose_name="description_3", blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="created_at")
-    created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.category} - {self.name}"
@@ -86,7 +94,7 @@ class CourseFileVersion(models.Model):
     version_number = models.PositiveIntegerField(verbose_name="version_number")
     file = models.FileField(upload_to='uploads/', verbose_name="file", null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="uploaded_at")
-    uploaded_by = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return f"{self.course_file.name} - Version {self.version_number}"

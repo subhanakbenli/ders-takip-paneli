@@ -298,30 +298,40 @@ def save_erp(request, id):
     try:
         related_courseFile = get_object_or_404(CourseFile, id=id)
         form_data = get_form_data(request)
+        print(form_data)
         update_course_file(related_courseFile, form_data)
+        print(related_courseFile.description_2)
         return JsonResponse({'success': True, 'message': 'Belge başarıyla güncellendi'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 def get_form_data(request):
     return {
+        'type': request.POST.get('turu'),
+        'description': request.POST.get('aciklama'),
         'etkinlik_no': request.POST.get('etkinlik_no'),
-        'etkinlik_adi': request.POST.get('etkinlik_adi'),
-        'etkinlik_kodu': request.POST.get('etkinlik_kodu'),
+        'etkinlik_tarihi': request.POST.get('etkinlik_tarihi'),
+        'ogretmen_adi': request.POST.get('ogretmen_adi'),
         'sinif': request.POST.get('sinif'),
         'sehir': request.POST.get('sehir'),
-        'katilanlar': request.POST.get('katilanlar'),
+        'katilimcilar': request.POST.get('katilimcilar'),
         'sisteme_giris_tarihi': request.POST.get('sisteme_giris_tarihi'),
+        'etkinlik_adi': request.POST.get('etkinlik_adi'),
         'egitim_olusturma_tarihi': request.POST.get('egitim_olusturma_tarihi'),
         'katilimci_kodu': request.POST.get('katilimci_kodu'),
         'egitim_kayit_no_1': request.POST.get('egitim_kayit_no_1'),
         'egitim_kayit_no_2': request.POST.get('egitim_kayit_no_2'),
         'egitim_kayit_no_3': request.POST.get('egitim_kayit_no_3'),
-        'description': request.POST.get('description'),
-        'description_1': request.POST.get('description_1'),
-        'description_2': request.POST.get('description_2'),
-        'description_3': request.POST.get('description_3')
+        'etkinlik_aciklamasi': request.POST.get('etkinlik_aciklamasi'),
+        'kodu': request.POST.get('kodu'),
+        'katilimci_sayisi': request.POST.get('katilimci_sayisi'),
+        'verilen_not': request.POST.get('verilen_not'),
+        'guncelleme_tarihi': request.POST.get('guncelleme_tarihi'),
+        'description_1': request.POST.get('aciklama_1'),
+        'description_2': request.POST.get('aciklama_2'),
+        'description_3': request.POST.get('aciklama_3')
     }
+
 
 def update_course_file(course_file, form_data):
     for key, value in form_data.items():

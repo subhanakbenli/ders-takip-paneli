@@ -28,6 +28,9 @@ def arsiv_view(request):
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_view(request):
     teachers_data= get_teachers_with_courses_and_documents(status="aktif",page="erp")
+    for teacher in teachers_data:
+        for course in teacher['courses']:
+            print(course)
     # Şablona gönderilecek veri
     context = {
         'teachers': teachers_data,  # Geçici öğretmen verileri
