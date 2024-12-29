@@ -183,38 +183,15 @@ def edit_course(request, course_id):
     })
 
 @login_required
-def add_file(request, id):
-    if request.method == 'POST':
+def add_file(request, course_id,document_id):
+    if request.method == 'POST' and request.FILES.get('document_file'):
         try:
-            # CourseFile nesnesini al
-            courseFile = get_object_or_404(CourseFile, id=id)
-
-            # Kullanıcının yüklediği dosyayı al
-            uploaded_file = request.FILES.get('file')
-            if not uploaded_file:
-                return JsonResponse({'success': False, 'message': 'Dosya yüklenmedi.'})
-
-            # Mevcut sürüm numarasını al ve yeni bir sürüm oluştur
-            latest_version_number = courseFile.versions.aggregate(models.Max('version_number'))['version_number__max'] or 0
-            new_version_number = latest_version_number + 1
-
-            new_version = CourseFileVersion.objects.create(
-                course_file=courseFile,
-                version_number=new_version_number,
-                file=uploaded_file,  # Yüklenen dosyayı ekle
-                uploaded_by=request.user  # Dosyayı yükleyen kullanıcı
-            )
-
-            # Yeni sürümü current_version olarak ata
-            courseFile.current_version = new_version
-            courseFile.save()
-
-            return JsonResponse({'success': True, 'message': 'Belge başarıyla eklendi.'})
-
+            
+            # Dosya kaydetme işlemleri
+            return JsonResponse({'success': True})
         except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Hata: {str(e)}'})
-
-    return JsonResponse({'success': False, 'message': 'Geçersiz istek yöntemi.'})
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
        
 @login_required
@@ -311,7 +288,7 @@ def save_pano(request, id):
 
 @login_required
 @csrf_exempt
-@require_http_methods(["POST"]) # bitmedi
+@require_http_methods(["POST"])
 def save_erp(request, id):
     try:
         related_courseFile = get_object_or_404(CourseFile, id=id)

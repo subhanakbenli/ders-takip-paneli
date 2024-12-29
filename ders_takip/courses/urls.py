@@ -11,7 +11,7 @@ urlpatterns = [
     path('ders_sil/<int:id>/', views.delete_course_view, name='delete_course'),
     
     path('belge_sil/<int:id>/', views.delete_file_view, name='delete_file'),
-    path('belge_ekle/<int:id>/', views.add_file, name='add_file'),
+    path('<int:course_id>/belge_ekle/<int:document_id>/', views.add_file, name='add_file'),
     
     path('ders_duzenle/<int:course_id>/', views.edit_course, name='edit_course'),
     

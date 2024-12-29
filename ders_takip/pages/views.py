@@ -66,36 +66,3 @@ def index(request):
         user.save()
     login(request, user)
     return render(request, 'base.html')
-
-
-
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.core.files.storage import default_storage
-
-@csrf_exempt
-def belge_ekle(request):
-    if request.method == "POST":
-        course_id = request.POST.get("course_id")
-        document_name = request.POST.get("document_name")
-        document_file = request.FILES.get("document_file")
-
-        if not course_id or not document_name or not document_file:
-            return JsonResponse({"success": False, "message": "Tüm alanlar doldurulmalıdır."})
-
-        try:
-            # Belgeyi kaydet
-            file_path = default_storage.save(f"uploads/{document_file.name}", document_file)
-
-            # Veritabanına kaydet (örnek bir model kullanımı)
-            # CourseDocument.objects.create(
-            #     course_id=course_id,
-            #     name=document_name,
-            #     file_path=file_path
-            # )
-
-            return JsonResponse({"success": True, "message": "Belge başarıyla yüklendi."})
-        except Exception as e:
-            return JsonResponse({"success": False, "message": f"Hata: {str(e)}"})
-    else:
-        return JsonResponse({"success": False, "message": "Geçersiz istek yöntemi."})
