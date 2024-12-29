@@ -146,15 +146,18 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
             documents_data = []
             document_statu_dict = {}
             for document in documents:
-                document_statu_dict[document.category] = document_statu_dict.get(document.category, 0) + 1                
                 if status:
                     if page == "pano":
+                        document_statu_dict[document.statu_pano] = document_statu_dict.get(document.statu_pano, 0) + 1                
+
                         if document.statu_pano != status:
                             continue
 
                     elif page == "erp":
+                        document_statu_dict[document.statu_erp] = document_statu_dict.get(document.statu_erp, 0) + 1                
                         if document.statu_erp != status:
                             continue
+                
                 
                 start_date = document.start_date
                 end_date = document.end_date
