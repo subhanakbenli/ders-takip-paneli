@@ -639,7 +639,7 @@ Pano
                                                                 <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
                                                             </td>
                                                             <td>{{ document.category }}</td>
-                                                            <td>{{ document.belge_adi|default:'' }}</td>
+                                                            <td>{{ document.belge_adi}}</td>
                                                             <td>
                                                                 <button type="button" class="btn btn-success" 
                                                                 onclick="openDocumentModal(this)" 
@@ -662,7 +662,9 @@ Pano
                                                             <td>
                                                                 <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.type|default:'' }}">
                                                             </td>
-                                                            <td>{{document.dilekce_name|default:'Dilekçe Girilmedi'}}</td>
+                                                            <td>
+                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe Adı Giriniz" value="{{ document.dilekce_name|default:'' }}">
+                                                            </td>
                                                             <td>
                                                                 {% if document.is_uploaded %}
                                                                     <span class="status-icon success green-error">✔️</span>

@@ -90,13 +90,12 @@ class CourseFile(models.Model):
 
 class CourseFileVersion(models.Model):
     course_file = models.ForeignKey(CourseFile, on_delete=models.CASCADE, related_name="versions")
-    version_number = models.PositiveIntegerField(verbose_name="version_number")
     file = models.FileField(upload_to='uploads/', verbose_name="file", null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="uploaded_at")
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.course_file.name} - Version {self.version_number}"
+        return f"{self.course_file.name} - Version {self.id}"
 
 
 @receiver(pre_save, sender=Course)

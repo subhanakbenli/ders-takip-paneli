@@ -98,7 +98,7 @@
                 </thead>
                 <tbody>
                     {% for course in courses %}
-                        <tr onclick="window.location.href='{% url 'course_detail' teacher.id %}';">
+                        <tr onclick="window.location.href='{% url 'course_detail' course.id %}';">
                             <td>{{ course.name }}</td>
                             <td>{{ course.description }}</td>
                             <td>

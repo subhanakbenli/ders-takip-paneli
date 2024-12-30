@@ -191,7 +191,10 @@ def edit_course(request, course_id):
 def add_file(request, course_id,document_id):
     if request.method == 'POST' and request.FILES.get('document_file'):
         try:
-            
+            posted_file = request.FILES['document_file']
+            course_file = get_object_or_404(CourseFile, id=document_id)
+            document_file = CourseFileVersion.objects.create(file=posted_file, course_file=course_file)
+            document_file.save()
             # Dosya kaydetme işlemleri
             return JsonResponse({'success': True})
         except Exception as e:

@@ -1,5 +1,5 @@
 
-from .models import Course, CourseFile
+from .models import Course, CourseFile,CourseFileVersion
 from teacher.models import Teacher
 from datetime import datetime
 
@@ -54,7 +54,8 @@ def get_course_with_documents(course):
     documents_statu_dict={}
     for document in documents:
         documents_statu_dict[document.statu_pano] = documents_statu_dict.get(course.statu_pano, 0) + 1
-        documents_data.append(                    {
+        documents_data.append(
+                    {
                         "id": document.id,
                         "category": document.category,
                         "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,
@@ -70,10 +71,14 @@ def get_course_with_documents(course):
                         "statu_erp": document.statu_erp,
                         "etkinlik_no": document.etkinlik_no,
                         "etkinlik_adi": document.etkinlik_adi,
-                        "etkinlik_kodu": document.etkinlik_kodu,
+                        "kodu": document.kodu,
+                        "etkinklik_tarihi": document.etkinklik_tarihi,
+                        "etkinlik_aciklamasi": document.etkinlik_aciklamasi,
+                        "ogretmen_adi": document.ogretmen_adi,
                         "sinif": document.sinif,
                         "sehir": document.sehir,
-                        "katilanlar": document.katilanlar,
+                        "katilanlar": document.katilimcilar,
+                        "katilimci_sayisi": document.katilimci_sayisi,
                         "sisteme_giris_tarihi": document.sisteme_giris_tarihi,
                         "egitim_olusturma_tarihi": document.egitim_olusturma_tarihi,
                         "katilimci_kodu": document.katilimci_kodu,
@@ -85,9 +90,8 @@ def get_course_with_documents(course):
                         "description_2": document.description_2,
                         "description_3": document.description_3,
                         "created_at": document.created_at,
-                        "created_by": document.created_by.username if document.created_by else None
-                    }
-      )
+                        "created_by": document.created_by.username if document.created_by else None,
+                    })
         
     return {
         "id": course.id,
@@ -164,11 +168,15 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         course_warning_counter += 1
                 except:
                     document_warning_message = None
+                    
+                versions = CourseFileVersion.objects.filter(course_file=document)
+                
+                
                 documents_data.append(
                     {
                         "id": document.id,
                         "category": document.category,
-                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,
+                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,    
                         "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
                         "is_uploaded": document.is_uploaded,
                         "uploaded_at": document.uploaded_date,
