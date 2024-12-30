@@ -534,13 +534,13 @@ ERP
 </script>
 
 <script>
-    function downloadPDF(courseId) {
-        if (!courseId) {
-            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
-            return;
-        }
+    function downloadExcel(courseId=None, statu, page) {
         // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `${courseId}/pdf/erp_pdf`;
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
     }
 </script>
 
@@ -756,7 +756,7 @@ ERP
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">Excel İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'aktif', 'erp')">Excel İndir</button>
                                 </div>
                             </div>
                         </div>

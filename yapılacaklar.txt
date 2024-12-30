@@ -1,6 +1,6 @@
-erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
-belge türü iki taraftan da girilebilir
-dersin belgesi yüklenmediyse uyarı verme işlemini bağla 
++++++++++++erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
+++++++++++++belge türü iki taraftan da girilebilir
++++++++++++dersin belgesi yüklenmediyse uyarı verme işlemini bağla 
 excel cıktıları için işlemler düzeltilecek
 erpde eklemediğim sütunları eklemeliyim 
 --------------------------------------------------------------------------
@@ -12,12 +12,6 @@ erpde eklemediğim sütunları eklemeliyim
 Hamza:
     Bilidirimler ana sayfaya taşınacak!
 
-
-
-
-
-
-    
     Ders Detay sayfasında ders ile ilgili aldığımız birgiler (başlangıç bitiş açıklam vb ) gösterilecek
     ders detay sayfasında da buton olacak ve popup ile ders düzenlenebilecek 
     Ders detay sayfasında da arşiive al butonu sil buyonu vb olacak 

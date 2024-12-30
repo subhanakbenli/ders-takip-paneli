@@ -105,7 +105,7 @@ def get_course_with_documents(course):
         "document_statu_dict": documents_statu_dict
         }
 
-def get_teachers_with_courses_and_documents(teacher=None, status=None, page = None):
+def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, status=None, page = None):
     """
     Returns a list of teachers with their courses and associated documents.
 
@@ -116,21 +116,25 @@ def get_teachers_with_courses_and_documents(teacher=None, status=None, page = No
     Returns:
         list: A list of dictionaries containing teacher details, their courses, and documents.
     """
-    teachers_data = []
     today = datetime.today()
-    
-    if teacher:
-        teachers = Teacher.objects.filter(id=teacher)
+    teachers_data = []
+    print(teacher_id, course_id, status, page)
+    if teacher_id:
+        teachers = Teacher.objects.filter(id=teacher_id)
     else:
         teachers = Teacher.objects.all()
-    
+    print(teachers)
     for teacher in teachers:
+        print(teacher)
         teacher_warning_counter = 0
-        courses = Course.objects.filter(teacher=teacher)
-
+        if course_id:
+            courses = Course.objects.filter(id=course_id)
+        else:
+            courses = Course.objects.filter(teacher=teacher)
         courses_data = []
         course_statu_dict = {}
         for course in courses:
+            print(course)
             course_warning_counter = 0
             if status:
                 if page == "pano":
