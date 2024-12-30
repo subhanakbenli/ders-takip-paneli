@@ -2,6 +2,7 @@
 from .models import Course, CourseFile
 from teacher.models import Teacher
 from datetime import datetime
+
 def get_default_sections():
     """Returns the default sections."""
     return [
@@ -17,7 +18,6 @@ def get_default_sections():
         "Excel Dosya Yüklemesi",
         "Eksiklik Belirtme",
     ]
-
 
 def get_course_details(course):
     """
@@ -37,7 +37,6 @@ def get_course_details(course):
         except KeyError:
             files[file.category] = 1
     return files
-
 
 def get_course_with_documents(course):
     """
@@ -118,14 +117,11 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
     """
     today = datetime.today()
     teachers_data = []
-    print(teacher_id, course_id, status, page)
     if teacher_id:
         teachers = Teacher.objects.filter(id=teacher_id)
     else:
         teachers = Teacher.objects.all()
-    print(teachers)
     for teacher in teachers:
-        print(teacher)
         teacher_warning_counter = 0
         if course_id:
             courses = Course.objects.filter(id=course_id)
@@ -134,18 +130,13 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
         courses_data = []
         course_statu_dict = {}
         for course in courses:
-            print(course)
             course_warning_counter = 0
             if status:
                 if page == "pano":
                     course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
-                    if course.statu_pano != status:
-                        continue
-
                 elif page == "erp":
                     course_statu_dict[course.statu_erp] = course_statu_dict.get(course.statu_erp, 0) + 1
-                    if course.statu_erp != status:
-                        continue
+                    
             documents = CourseFile.objects.filter(course=course)
             documents_data = []
             document_statu_dict = {}
@@ -212,44 +203,48 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         "created_by": document.created_by.username if document.created_by else None,
                         "warning_message": document_warning_message   
                     })
-            course_warning_message = None                
-            if course_warning_counter > 0:
-                teacher_warning_counter += 1
-                course_warning_message = f"{course_warning_counter} döküman yüklenmeyi bekliyor"
-
-            courses_data.append({
-                "id": course.id,
-                "name": course.name,
-                "statu_pano": course.statu_pano,
-                "statu_erp": course.statu_erp,
-                "description": course.description,
-                "start_date": course.start_date,
-                "end_date": course.end_date,
-                "dilekce_required": course.dilekce_required,
-                "created_at": course.created_at,
-                "created_by": course.created_by.username if course.created_by else None,
-                "documents": documents_data,
-                "document_statu_dict": document_statu_dict,
-                "warning_message": course_warning_message
-            })
+            
+            if len(documents_data)!=0:
+                course_warning_message = None                
+                if course_warning_counter > 0:
+                    teacher_warning_counter += 1
+                    course_warning_message = f"{course_warning_counter} döküman yüklenmeyi bekliyor"
+            
+                courses_data.append({
+                    "id": course.id,
+                    "name": course.name,
+                    "statu_pano": course.statu_pano,
+                    "statu_erp": course.statu_erp,
+                    "description": course.description,
+                    "start_date": course.start_date,
+                    "end_date": course.end_date,
+                    "dilekce_required": course.dilekce_required,
+                    "created_at": course.created_at,
+                    "created_by": course.created_by.username if course.created_by else None,
+                    "documents": documents_data,
+                    "document_statu_dict": document_statu_dict,
+                    "warning_message": course_warning_message
+                })
         teacher_warning_message = None
-        if teacher_warning_counter > 0:
-            teacher_warning_message = f"{teacher_warning_counter} ders döküman yüklemeyi bekliyor"
-        teachers_data.append({
-            "id": teacher.id,
-            "name": teacher.name,
-            "surname": teacher.surname,
-            "title": teacher.title,
-            "description": teacher.description,
-            "telephone": teacher.telephone,
-            "telephone2": teacher.telephone2,
-            "mail": teacher.mail,
-            "adress": teacher.adress,
-            "created_at": teacher.created_at,
-            "created_by": teacher.created_by.username if teacher.created_by else None,
-            "courses": courses_data,
-            "course_statu_dict": course_statu_dict,
-            "warning_message": teacher_warning_message
-        })
+        
+        if len(courses_data)!=0:
+            if teacher_warning_counter > 0:
+                teacher_warning_message = f"{teacher_warning_counter} ders döküman yüklemeyi bekliyor"
+            teachers_data.append({
+                "id": teacher.id,
+                "name": teacher.name,
+                "surname": teacher.surname,
+                "title": teacher.title,
+                "description": teacher.description,
+                "telephone": teacher.telephone,
+                "telephone2": teacher.telephone2,
+                "mail": teacher.mail,
+                "adress": teacher.adress,
+                "created_at": teacher.created_at,
+                "created_by": teacher.created_by.username if teacher.created_by else None,
+                "courses": courses_data,
+                "course_statu_dict": course_statu_dict,
+                "warning_message": teacher_warning_message
+            })
 
     return teachers_data

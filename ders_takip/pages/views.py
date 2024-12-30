@@ -53,12 +53,11 @@ def erp_iptal_view(request):
 
 @user_has_permission([SUPERUSER,ADMIN])
 def excel_view(request, course_id,statu, page):
-    print(statu, page, course_id)
+
     if course_id:
         course = get_object_or_404(Course, id=course_id)
         teacher_id = course.teacher.id
         data=get_teachers_with_courses_and_documents(status=statu, page=page, teacher_id=teacher_id, course_id=course_id)
-        print(data)
         write_to_excel(data, f"{statu}_{page}_{course.teacher.name}_{course.name}")
     else:
         data=get_teachers_with_courses_and_documents(status=statu, page=page) 

@@ -3,6 +3,10 @@
 +++++++++++dersin belgesi yüklenmediyse uyarı verme işlemini bağla 
 excel cıktıları için işlemler düzeltilecek
 erpde eklemediğim sütunları eklemeliyim 
+iptale giden belgeleri göster
+ders  başlangıç bitiş tarihi göster
+ders belgelerin durumları hakkında bir cümlede bilgi ver
+arşiv sayfası butonlar kontrol edilecek
 --------------------------------------------------------------------------
 
 

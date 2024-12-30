@@ -601,6 +601,7 @@ Pano
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                                 <p><strong>Başlangıç Dönemi:</strong> {{ course.start_date }}</p>
                                 <p><strong>Bitiş Dönemi:</strong> {{ course.end_date }}</p>
+                                {% for data in %}
                                 <!-- Documents Table -->
                                 <h6>Belgeler:</h6>
                                 {% if course.documents %}
