@@ -10,7 +10,7 @@ from courses.utils import get_teachers_with_courses_and_documents
 from account.views import user_has_permission
 from ders_takip.settings import USER,SUPERUSER,ADMIN
 from .xlsxWriter import write_to_excel
-from courses.models import Course
+from courses.models import Course,CourseFile
 
 
 @login_required
@@ -25,8 +25,8 @@ def pano_iptal_view(request):
 
 @login_required
 def pano_ozet_view(request):
-    teachers = get_teachers_with_courses_and_documents(status="aktif", page="pano")
-    return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
+    data = CourseFile.get_files_in_warning_period()
+    return render(request, 'pages/pano_ozet.html', {'data': data})
 
 @login_required
 def arsiv_view(request):

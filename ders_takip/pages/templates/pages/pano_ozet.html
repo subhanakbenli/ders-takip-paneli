@@ -95,32 +95,28 @@ Pano Özet
                 </tr>
             </thead>
             <tbody>
-                {% for teacher in teachers %}
-                    {% for course in teacher.courses %}
-                        {% for document in course.documents %}
-                        <tr onclick="window.location.href='{% url 'pano' %}'" style="cursor: pointer;">
-                            <td>{{ teacher.name }} {{teacher.surname}}</td>
-                            <td>{{ course.name }}</td>
-        
-                            <td>{{ document.start_date|date:"d/m/Y"|default:'Başlangıç Tarihi Girilmedi' }}</td>
-                            <td>{{ document.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
-                            <td>
-                                {% if document.is_uploaded %}
-                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}"></span>
-                                {% else %}
-                                    <span class="status-icon error">Yükleme tarihi girilmedi</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if document.is_uploaded %}
-                                    <span class="status-icon success green-error">✔️</span>
-                                {% else %}
-                                    <span class="status-icon error green-error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% endfor %}
+                {% for course_file in data %}
+                    <tr onclick="window.location.href='{% url 'pano' %}'" style="cursor: pointer;">
+                        <td>{{ course_file.course.teacher.name }} {{course_file.course.teacher.surname}}</td>
+                        <td>{{ course_file.course.name }}</td>
+
+                        <td>{{ course_file.start_date|date:"d/m/Y"|default:'Başlangıç Tarihi Girilmedi' }}</td>
+                        <td>{{ course_file.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
+                        <td>
+                            {% if course_file.is_uploaded %}
+                                <span type="date" name="end_date" class="form-control" value="{{ course_file.uploaded_date }}"></span>
+                            {% else %}
+                                <span class="status-icon error">Yükleme tarihi girilmedi</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if course_file.is_uploaded %}
+                                <span class="status-icon success green-error">✔️</span>
+                            {% else %}
+                                <span class="status-icon error green-error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

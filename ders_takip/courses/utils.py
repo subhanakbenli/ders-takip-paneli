@@ -256,3 +256,139 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
             })
 
     return teachers_data
+
+
+
+
+def get_warnings( status=None, page = None):
+    today = datetime.today()
+    teachers_data = []
+    teachers = Teacher.objects.all()
+    for teacher in teachers:
+        teacher_warning_counter = 0
+        courses = Course.objects.filter(teacher=teacher)
+        courses_data = []
+        course_statu_dict = {}
+        for course in courses:
+            course_warning_counter = 0
+            if status:
+                if page == "pano":
+                    course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
+                elif page == "erp":
+                    course_statu_dict[course.statu_erp] = course_statu_dict.get(course.statu_erp, 0) + 1
+                    
+            documents = CourseFile.objects.filter(course=course)
+            documents_data = []
+            document_statu_dict = {}
+            for document in documents:
+                if status:
+                    if page == "pano":
+                        document_statu_dict[document.statu_pano] = document_statu_dict.get(document.statu_pano, 0) + 1                
+
+                        if document.statu_pano != status:
+                            continue
+
+                    elif page == "erp":
+                        document_statu_dict[document.statu_erp] = document_statu_dict.get(document.statu_erp, 0) + 1                
+                        if document.statu_erp != status:
+                            continue
+                
+                try:
+                    start_date = document.start_date
+                    end_date = document.end_date
+                    days_to_end = (end_date - today).days
+                    days_from_start = (today - start_date).days
+                    document_warning_message = None
+                    if days_from_start < days_to_end and document.is_uploaded==False:
+                        document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
+                        course_warning_counter += 1
+                except:
+                    document_warning_message = None
+                    
+                versions = CourseFileVersion.objects.filter(course_file=document)
+                
+                
+                documents_data.append(
+                    {
+                        "id": document.id,
+                        "category": document.category,
+                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,    
+                        "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
+                        "is_uploaded": document.is_uploaded,
+                        "uploaded_at": document.uploaded_date,
+                        "dilekce_name": document.dilekce_name,
+                        "dilekce_is_uploaded": document.dilekce_is_uploaded,
+                        "start_date": document.start_date,
+                        "end_date": document.end_date,
+                        "type": document.type,
+                        "statu_pano": document.statu_pano,
+                        "statu_erp": document.statu_erp,
+                        "etkinlik_no": document.etkinlik_no,
+                        "etkinlik_adi": document.etkinlik_adi,
+                        "kodu": document.kodu,
+                        "etkinklik_tarihi": document.etkinklik_tarihi,
+                        "etkinlik_aciklamasi": document.etkinlik_aciklamasi,
+                        "ogretmen_adi": document.ogretmen_adi,
+                        "sinif": document.sinif,
+                        "sehir": document.sehir,
+                        "katilanlar": document.katilimcilar,
+                        "katilimci_sayisi": document.katilimci_sayisi,
+                        "sisteme_giris_tarihi": document.sisteme_giris_tarihi,
+                        "egitim_olusturma_tarihi": document.egitim_olusturma_tarihi,
+                        "katilimci_kodu": document.katilimci_kodu,
+                        "egitim_kayit_no_1": document.egitim_kayit_no_1,
+                        "egitim_kayit_no_2": document.egitim_kayit_no_2,
+                        "egitim_kayit_no_3": document.egitim_kayit_no_3,
+                        "description": document.description,
+                        "description_1": document.description_1,
+                        "description_2": document.description_2,
+                        "description_3": document.description_3,
+                        "created_at": document.created_at,
+                        "created_by": document.created_by.username if document.created_by else None,
+                        "warning_message": document_warning_message   
+                    })
+            
+            if len(documents_data)!=0:
+                course_warning_message = None                
+                if course_warning_counter > 0:
+                    teacher_warning_counter += 1
+                    course_warning_message = f"{course_warning_counter} döküman yüklenmeyi bekliyor"
+            
+                courses_data.append({
+                    "id": course.id,
+                    "name": course.name,
+                    "statu_pano": course.statu_pano,
+                    "statu_erp": course.statu_erp,
+                    "description": course.description,
+                    "start_date": course.start_date,
+                    "end_date": course.end_date,
+                    "dilekce_required": course.dilekce_required,
+                    "created_at": course.created_at,
+                    "created_by": course.created_by.username if course.created_by else None,
+                    "documents": documents_data,
+                    "document_statu_dict": document_statu_dict,
+                    "warning_message": course_warning_message
+                })
+        teacher_warning_message = None
+        
+        if len(courses_data)!=0:
+            if teacher_warning_counter > 0:
+                teacher_warning_message = f"{teacher_warning_counter} ders döküman yüklemeyi bekliyor"
+            teachers_data.append({
+                "id": teacher.id,
+                "name": teacher.name,
+                "surname": teacher.surname,
+                "title": teacher.title,
+                "description": teacher.description,
+                "telephone": teacher.telephone,
+                "telephone2": teacher.telephone2,
+                "mail": teacher.mail,
+                "adress": teacher.adress,
+                "created_at": teacher.created_at,
+                "created_by": teacher.created_by.username if teacher.created_by else None,
+                "courses": courses_data,
+                "course_statu_dict": course_statu_dict,
+                "warning_message": teacher_warning_message
+            })
+
+    return teachers_data
