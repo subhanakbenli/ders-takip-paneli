@@ -74,6 +74,7 @@ ERP Özet
                 <tr>
                     <th>Öğretmen Adı</th>
                     <th>Ders Adı</th>
+                    <th>Dönem</th>
                     <th>Uyarı</th>
                 </tr>
             </thead>
@@ -84,6 +85,7 @@ ERP Özet
                         <tr onclick="window.location.href='{% url 'erp' %}'" style="cursor: pointer;">
                             <td>{{ teacher.name }} {{ teacher.surname }}</td>
                             <td>{{ course.name }}</td>
+                            <td>{{course.start_year}}-{{course.end_year}}</td>
                             <td>
                                 {% if document.is_uploaded %}
                                     <span class="status-icon success">✔️</span>

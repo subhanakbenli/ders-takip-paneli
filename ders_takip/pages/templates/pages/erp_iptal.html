@@ -92,7 +92,7 @@ ERP İptal
     }
 
     .btn-success {
-        background-color: #48bb78;
+        background-color:rgb(20, 83, 47);
         color: white;
     }
 
@@ -790,12 +790,9 @@ ERP İptal
                                     <button 
                                         class="btn btn-warning"
                                         onclick="changeStatu('{{ course.id }}', 'aktif', 'true')"
+                                        style = "background-color:rgb(216, 23, 23);;
+                                        color:rgb(255, 255, 255);"
                                         id="course-form-{{ course.id }}">Aktif
-                                    </button>
-
-                                    <button class="btn btn-danger" 
-                                        onclick="deleteContent({{course.id}},'true')"
-                                        id="course-form-{{ course.id }}">Sil
                                     </button>
                                     <button 
                                         class="btn btn-primary" 

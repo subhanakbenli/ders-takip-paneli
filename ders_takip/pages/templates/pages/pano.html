@@ -564,6 +564,52 @@ Pano
     }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableRows = document.querySelectorAll('table tbody tr');
+
+        tableRows.forEach(row => {
+            const inputs = row.querySelectorAll('input, textarea');
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+
+            if (allFilled) {
+                row.style.backgroundColor = '#d4edda'; // Açık yeşil arka plan rengi
+            }
+
+            // Dinamik olarak değişimlerde kontrol için event listener ekleyin
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const allFilledNow = Array.from(inputs).every(input => input.value.trim() !== '');
+                    row.style.backgroundColor = allFilledNow ? '#d4edda' : '';
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+    function calculateEndDate(input) {
+        const row = input.closest('tr'); // İlgili tablo satırını bulun
+        const startDateInput = row.querySelector('input[name="start_date"]');
+        const dayCountInput = row.querySelector('input[name="gün_sayisi"]');
+        const endDateInput = row.querySelector('input[name="end_date"]');
+
+        if (startDateInput.value && dayCountInput.value) {
+            const startDate = new Date(startDateInput.value);
+            const dayCount = parseInt(dayCountInput.value, 10);
+
+            if (!isNaN(dayCount)) {
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + dayCount);
+
+                // Bitiş tarihini yyyy-mm-dd formatında yazdır
+                const formattedEndDate = endDate.toISOString().split('T')[0];
+                endDateInput.value = formattedEndDate;
+            }
+        }
+    }
+
+</script>
 <div class="container">
     <h1 class="text-center">Pano Takip</h1>
 
@@ -620,6 +666,7 @@ Pano
                                                     <th>Belge Adı</th>
                                                     <th>İşlemler</th>
                                                     <th>Başlangıç Tarihi</th>
+                                                    <th>Gün Sayısı</th>
                                                     <th>Bitiş Tarihi</th>
                                                     <th>Yüklenme Tarihi</th>                                                    
                                                     <th>Türü</th>
@@ -647,11 +694,41 @@ Pano
                                                                 document-data-id="{{ document.id }}">İçerik Gör</button>
                                                             </td> 
                                                             <td>
-                                                                <input type="date" name="start_date" class="form-control" value="{{ document.start_date }}">
+                                                                <label for="start_date">Başlangıç Tarihi</label>
+                                                                <input 
+                                                                    type="date" 
+                                                                    name="start_date" 
+                                                                    class="form-control" 
+                                                                    placeholder="YYYY-MM-DD" 
+                                                                    required 
+                                                                    value="{{ document.start_date }}"
+                                                                    oninput="calculateEndDate(this)"
+                                                                >
                                                             </td>
                                                             <td>
-                                                                <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
+                                                                <label for="gün_sayisi">Gün Sayısı</label>
+                                                                <input 
+                                                                    type="number" 
+                                                                    name="gün_sayisi" 
+                                                                    class="form-control" 
+                                                                    placeholder="Gün Sayısı" 
+                                                                    required 
+                                                                    value="{{ document.gün_sayisi }}" 
+                                                                    oninput="calculateEndDate(this)"
+                                                                >
                                                             </td>
+                                                            <td>
+                                                                <label for="end_date">Bitiş Tarihi</label>
+                                                                <input 
+                                                                    type="date" 
+                                                                    name="end_date" 
+                                                                    class="form-control" 
+                                                                    placeholder="YYYY-MM-DD" 
+                                                                    readonly 
+                                                                    value="{{ document.end_date }}"
+                                                                >
+                                                            </td>
+
                                                             <td>
                                                                 {% if document.is_uploaded %}
                                                                     <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
@@ -709,11 +786,11 @@ Pano
                                 <div class="action-buttons">
                                     <button class="btn btn-warning" 
                                         onclick="changeStatu({{course.id}},'iptal','true')"
-                                        id="course-form-{{ course.id }}">İptal
-                                    </button>
-                                    <button class="btn btn-danger" 
-                                        onclick="deleteContent({{course.id}},'true')"
-                                        id="course-form-{{ course.id }}">Sil
+                                        id="course-form-{{ course.id }}" style =
+                                         "background-color:red;
+                                          color:rgb(255, 255, 255);
+                                          "
+                                        >İptal
                                     </button>
                                     <button 
                                         class="btn btn-primary" 

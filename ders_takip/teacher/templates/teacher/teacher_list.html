@@ -41,18 +41,21 @@
 
     /* Tablo Stili */
     table {
-        width: 100%;
+        width: 100%; /* Tablo genişliğini artır */
         margin: 20px auto;
-        border-collapse: collapse;
+        border-collapse: separate; /* Çizgi için ayrı bordür modunu kullan */
+        border-spacing: 0; /* Hücre arası boşluk bırakma */
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     th, td {
         padding: 12px;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        
     }
-
+    td{
+        border: 1px solid rgb(205, 205, 205); /* Sütunlar arası çizgi ekle */
+    }
     /* Sıralanabilir Sütun Stili */
     th {
         background-color:rgb(98, 100, 101);
@@ -140,10 +143,10 @@
 
 <label for="per_page">Sayfa başına:</label>
 <select id="per_page" onchange="updatePerPage()">
-    <option value="5" {% if per_page == 5 %}selected{% endif %}>5</option>
-    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
-    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
-    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+    <option value="5" {% if per_page == 20 %}selected{% endif %}>20</option>
+    <option value="10" {% if per_page == 50 %}selected{% endif %}>50</option>
+    <option value="20" {% if per_page == 100 %}selected{% endif %}>100</option>
+    <option value="100" {% if per_page == 500 %}selected{% endif %}>500</option>
 </select>
 
 <!-- Client Listesi Tablosu -->
@@ -152,28 +155,30 @@
         <tr>
             <th><a href="?sort_by=name&sort_order={% if sort_by == 'name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Ad Soyad</a></th>
             <th><a href="?sort_by=surname&sort_order={% if sort_by == 'surname' and sort_order == 'asc' %}desc{% else %}asc{% endif %}&per_page={{ per_page }}">Unvan</a></th>
-            <th>Telefon</th>
+            <th>Telefon 1</th>
+            <th>Telefon 2</th>
             <th>Email</th>
+            <th>Firma</th>
+            <th>Adres</th>
         </tr>
     </thead>
     <tbody>
         {% for teacher in page_obj %}
             <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
-                <td>{{ teacher  }}</td>
+                <td>{{ teacher.name }} {{ teacher.surname }}</td>
                 <td>{{ teacher.title }}</td>
                 <td>{{ teacher.telephone }}</td>
+                <td>{{ teacher.telephone2 }}</td>
                 <td>{{ teacher.mail }}</td>
+                <td>{{teacher.firma_adi}}</td>
+                <td>{{teacher.adress}}</td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="7">Öğretmen bulunamadı.</td>
+                <td colspan="4">Öğretmen bulunamadı.</td>
             </tr>
         {% endfor %}
-        <div class="pdf-button-container">
-            <button class="pdf-download-button" onclick="downloadPDF()">PDF İndir</button>
-        </div>
     </tbody>
-
 </table>
 
 <!-- Sayfalama Kontrolleri -->

@@ -642,8 +642,7 @@ Arşiv İptal
                                                     <th>Açıklama 2</th> 
                                                     <th>Açıklama 3</th>
                                                     <th>Kaydet</th>
-                                                    <th>Arşivle</th>
-                                                    <th>İptal</th>
+                                                    <th>Aktif</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -745,7 +744,7 @@ Arşiv İptal
                                                             <td>
                                                                 <button 
                                                                     type="button"
-                                                                    class="btn btn-sm btn-warning" 
+                                                                    class="btn btn-primary" 
                                                                     onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
                                                                     id="document-form-{{ document.id }}"> Aktif
                                                                 </button>
@@ -765,14 +764,6 @@ Arşiv İptal
                                 {% endif %}
                                 <!-- Action Buttons -->
                                 <div class="action-buttons">
-                                    <button class="btn btn-warning" 
-                                        onclick="changeStatu({{course.id}},'iptal','true')"
-                                        id="course-form-{{ course.id }}">İptal
-                                    </button>
-                                    <button class="btn btn-danger" 
-                                        onclick="deleteContent({{course.id}},'true')"
-                                        id="course-form-{{ course.id }}">Sil
-                                    </button>
                                     <button 
                                         class="btn btn-primary" 
                                         onclick="changeStatu('{{ course.id }}', 'aktif', 'true')" 

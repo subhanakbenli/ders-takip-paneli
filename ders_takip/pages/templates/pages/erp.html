@@ -534,16 +534,34 @@ ERP
 </script>
 
 <script>
-    function downloadExcel(courseId=None, statu, page) {
-        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        if (courseId) {
-            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
-        } else {
-            window.location.href = `/excel/${statu}/${page}/`;
-        }
-    }
+function downloadExcel(courseId) {
+    window.location.href = `/dersler/excel_cikart/${courseId}/`;
+}
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableRows = document.querySelectorAll('table tbody tr');
+
+        tableRows.forEach(row => {
+            const inputs = row.querySelectorAll('input, textarea');
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+
+            if (allFilled) {
+                row.style.backgroundColor = '#d4edda'; // Açık yeşil arka plan rengi
+            }
+
+            // Dinamik olarak değişimlerde kontrol için event listener ekleyin
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const allFilledNow = Array.from(inputs).every(input => input.value.trim() !== '');
+                    row.style.backgroundColor = allFilledNow ? '#d4edda' : '';
+                });
+            });
+        });
+    });
+
+</script>
 
 <div class="container">
     <h1 class="text-center">ERP Takip</h1> 
@@ -748,11 +766,9 @@ ERP
                                 <div class="action-buttons">
                                     <button class="btn btn-warning" 
                                         onclick="changeStatu({{course.id}},'iptal','true')"
+                                        style = "background-color:red;
+                                        color:rgb(156, 33, 33);"
                                         id="course-form-{{ course.id }}">İptal
-                                    </button>
-                                    <button class="btn btn-danger" 
-                                        onclick="deleteContent({{course.id}},'true')"
-                                        id="course-form-{{ course.id }}">Sil
                                     </button>
                                     <button 
                                         class="btn btn-primary" 
@@ -761,7 +777,7 @@ ERP
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'aktif', 'erp')">Excel İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }})">Excel İndir</button>
                                 </div>
                             </div>
                         </div>

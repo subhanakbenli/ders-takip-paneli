@@ -62,6 +62,122 @@ from openpyxl.utils import get_column_letter
 from django.shortcuts import get_object_or_404
   # Dekoratörünüzü dahil edin
 
+@user_has_permission([SUPERUSER, ADMIN])
+def excel_view(request, course_id=None, statu=None, page=None):
+    """
+    Generate and return an Excel file for the given course or all courses.
+    """
+    # Course bilgisi alınır
+    if course_id:
+        course = get_object_or_404(Course, id=course_id)
+        data = [
+            {
+                "name": course.teacher.name,
+                "surname": course.teacher.surname,
+                "title": course.teacher.title,
+                "description": course.teacher.description,
+                "warning_message": "No issues",
+                "courses": [
+                    {
+                        "name": course.name,
+                        "description": course.description,
+                        # "warning_message": course.warning_message,
+                        "documents": [
+                            {
+                                # "belge_adi": document.name,
+                                # "warning_message": document.warning_message,
+                             } #for doc in course.documents.all()
+                        ],
+                    }
+                ]
+            }
+        ]
+        file_name = f"{statu}_{page}_{course.teacher.name}_{course.name}"
+    else:
+        # Tüm dersler için veri alınır
+        data = []
+        for course in Course.objects.all():
+            teacher = course.teacher
+            data.append({
+                "name": teacher.name,
+                "surname": teacher.surname,
+                "title": teacher.title,
+                "description": teacher.description,
+                "warning_message": "No issues",
+                "courses": [
+                    {
+                        "name": course.name,
+                        "description": course.description,
+                        "warning_message": course.warning_message,
+                        "documents": [
+                            {
+                                "belge_adi": document.name,
+                                "warning_message": doc.warning_message,
+                            } for doc in course.documents.all()
+                        ],
+                    }
+                ]
+            })
+        file_name = f"{statu}_{page}"
+
+    # Excel dosyasını oluştur ve indirilebilir hale getir
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename={file_name}.xlsx'
+
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Teachers Overview"
+
+    # Veriyi yaz
+    row_index = 1
+    column_width = 30
+    for teacher in data:
+        sheet.cell(row=row_index, column=1, value="Öğretmen Adı")
+        sheet.cell(row=row_index, column=2, value=f"{teacher['name']} {teacher['surname']}")
+        row_index += 1
+
+        sheet.cell(row=row_index, column=1, value="Unvan")
+        sheet.cell(row=row_index, column=2, value=teacher['title'])
+        row_index += 1
+
+        sheet.cell(row=row_index, column=1, value="Açıklama")
+        sheet.cell(row=row_index, column=2, value=teacher['description'])
+        row_index += 1
+
+        sheet.cell(row=row_index, column=1, value="Uyarı Mesaşı")
+        sheet.cell(row=row_index, column=2, value=teacher['warning_message'])
+        row_index += 2
+
+        for course in teacher['courses']:
+            sheet.cell(row=row_index, column=1, value="Ders Adı")
+            sheet.cell(row=row_index, column=2, value=course['name'])
+            row_index += 1
+
+            sheet.cell(row=row_index, column=1, value="Açıklama")
+            sheet.cell(row=row_index, column=2, value=course['description'])
+            row_index += 1
+
+            sheet.cell(row=row_index, column=1, value="Warning Message")
+            # sheet.cell(row=row_index, column=2, value=str(course['warning_message']))
+            row_index += 1
+
+            for document in course['documents']:
+                sheet.cell(row=row_index, column=1, value="Belge Adı")
+                # sheet.cell(row=row_index, column=2, value=document['belge_adi'])
+                sheet.cell(row=row_index, column=3, value=str(document['warning_message']))
+                row_index += 1
+
+            row_index += 1
+        row_index += 2
+
+    # Sütun genişliklerini ayarla
+    for col_index in range(1, sheet.max_column + 1):
+        col_letter = get_column_letter(col_index)
+        sheet.column_dimensions[col_letter].width = column_width
+
+    workbook.save(response)
+    return response
+
 
 
 @user_has_permission([SUPERUSER,ADMIN])
