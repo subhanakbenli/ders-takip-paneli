@@ -441,13 +441,13 @@ Pano
 </script>
 
 <script>
-    function downloadPDF(courseId) {
-        if (!courseId) {
-            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
-            return;
-        }
+    function downloadExcel(courseId=None, statu, page) {
         // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
     }
 </script>
 
@@ -823,8 +823,7 @@ Pano
                                                 cursor: pointer;
                                                 transition: background-color 0.3s ease;
                                             "                                             
-                                            onclick="downloadPDF({{ course.id }})">
-                                        Excel İndir
+                                            onclick="downloadExcel({{ course.id }},'aktif','pano')">Excel İndir
                                     </button>
 
 

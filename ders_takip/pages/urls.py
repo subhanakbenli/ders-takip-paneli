@@ -12,5 +12,8 @@ urlpatterns = [
     path('erp_ozet/', views.erp_ozet_view, name='erp_ozet'),  
     path('erp_iptal/', views.erp_iptal_view, name='erp_iptal'),  
     path('pano_iptal/',views.pano_iptal_view, name='pano_iptal'),
+    path('excel/<str:statu>/<str:page>/', views.excel_view, name='excel'),
+    path('excel/<int:course_id>/<str:statu>/<str:page>/', views.excel_view, name='excel'),
+
 ]  
 

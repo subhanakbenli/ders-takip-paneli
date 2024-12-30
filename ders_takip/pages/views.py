@@ -185,6 +185,19 @@ def erp_ozet_view(request):
     teachers_data = get_teachers_with_courses_and_documents(status="aktif", page="erp")
     return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})
 
+def excel_view(request,course_id=None, statu=None, page=None):
+    if course_id:
+        course = get_object_or_404(Course, id=course_id)
+        teacher_id = course.teacher.id
+        data=get_teachers_with_courses_and_documents(status=statu, page=page, teacher_id=teacher_id, course_id=course_id)
+        with open(f"{statu}.txt", "w",encoding="utf-8") as file:
+            file.write(str(data))
+        write_to_excel(data, f"{statu}_{page}_{course.teacher.name}_{course.name}")
+    else:
+        data=get_teachers_with_courses_and_documents(status=statu, page=page) 
+        write_to_excel(data, f"{statu}_{page}")
+    return JsonResponse({"status": "success"})
+
 @login_required
 def index(request):
     user, created = User.objects.get_or_create(
