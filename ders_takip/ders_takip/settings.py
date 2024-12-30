@@ -61,6 +61,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             BASE_DIR / "templates"
+    
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -128,6 +129,10 @@ LOGIN_URL = '/account/login/'
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 # Statik dosya URL'si
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "ders_takip" / "static",
+]
+
 
 # Statik dosyalar için ek klasörler
 

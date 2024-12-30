@@ -221,6 +221,23 @@ def erp_pdf(request, teacher_id):
     return render_to_pdf("pdf/erp_pdf.html", context)
 
 
+def edit_teacher(request, id):
+    teacher = get_object_or_404(Teacher, id=id)
+    if request.method == 'POST':
+        # Formdan gelen verileri kaydet
+        teacher.name = request.POST['name']
+        teacher.surname = request.POST['surname']
+        teacher.title = request.POST['title']
+        teacher.mail = request.POST['mail']
+        teacher.telephone = request.POST['telephone']
+        teacher.telephone2 = request.POST['telephone2']
+        teacher.adress = request.POST['adress']
+        teacher.description = request.POST['description']
+        teacher.save()
+        return redirect('teacher_list')  # Liste sayfasına dön
+
+    return render(request, 'teacher/edit_teacher.html', {'teacher': teacher})
+
 
 
 

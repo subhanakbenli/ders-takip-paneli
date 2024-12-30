@@ -4,6 +4,22 @@
 
 {% block content %}
 <style>
+    .edit-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+.edit-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
     .pdf-button-container {
         text-align: right;
         margin: 10px 20px;
@@ -160,11 +176,12 @@
             <th>Email</th>
             <th>Firma</th>
             <th>Adres</th>
+            <th>Düzenle</th>
         </tr>
     </thead>
     <tbody>
         {% for teacher in page_obj %}
-            <tr onclick="window.location.href='/ogretmen/{{ teacher.id }}';">
+            <tr>
                 <td>{{ teacher.name }} {{ teacher.surname }}</td>
                 <td>{{ teacher.title }}</td>
                 <td>{{ teacher.telephone }}</td>
@@ -172,6 +189,7 @@
                 <td>{{ teacher.mail }}</td>
                 <td>{{teacher.firma_adi}}</td>
                 <td>{{teacher.adress}}</td>
+                <td><button class="edit-button" onclick="window.location.href='/ogretmen/{{ teacher.id }}/edit_teacher';">Düzenle</button></td>
             </tr>
         {% empty %}
             <tr>

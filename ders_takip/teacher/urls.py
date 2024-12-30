@@ -15,4 +15,5 @@ urlpatterns = [
     path('<int:course_id>/pano_ozet_pdf/', views.pano_ozet_pdf, name='pano_ozet_pdf'),
     path('<int:course_id>/pdf_arsiv/', views.pdf_arsiv, name='pdf_arsiv'),
     path('<int:teacher_id>/erp_pdf/', views.erp_pdf, name='erp_pdf'),
+    path('<int:id>/edit_teacher/', views.edit_teacher, name='edit_teacher'),
 ]
