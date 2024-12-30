@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-ERP
+ERP İptal
 {% endblock title %}
 
 {% block content %}
@@ -586,7 +586,7 @@ ERP
 
 
 <div class="container">
-    <h1 class="text-center">ERP Takip İptal</h1>
+    <h1 class="text-center">ERP İptal</h1>
 
 
 
@@ -762,8 +762,8 @@ ERP
                                                             <button 
                                                                 type="button"
                                                                 class="btn btn-sm btn-warning" 
-                                                                onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
-                                                                id="document-form-{{ document.id }}"> İptal
+                                                                onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
+                                                                id="document-form-{{ document.id }}"> Aktif
                                                             </button>
                                                         </td>
 

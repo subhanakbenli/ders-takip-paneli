@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Pano
+Pano İptal
 {% endblock title %}
 
 {% block content %}
@@ -562,7 +562,7 @@ Pano
 </script>
 
 <div class="container">
-    <h1 class="text-center">Pano Takip</h1>
+    <h1 class="text-center">Pano İptal</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
@@ -680,8 +680,8 @@ Pano
                                                                 <button 
                                                                     type="button"
                                                                     class="btn btn-sm btn-warning" 
-                                                                    onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
-                                                                    id="document-form-{{ document.id }}"> İptal
+                                                                    onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
+                                                                    id="document-form-{{ document.id }}"> Aktif
                                                                 </button>
                                                             </td>
                                                         </tr>
@@ -699,8 +699,8 @@ Pano
                                 <!-- Action Buttons -->
                                 <div class="action-buttons">
                                     <button class="btn btn-warning" 
-                                        onclick="changeStatu({{course.id}},'iptal','true')"
-                                        id="course-form-{{ course.id }}">İptal
+                                        onclick="changeStatu({{course.id}},'aktif','true')"
+                                        id="course-form-{{ course.id }}">Aktif
                                     </button>
                                     <button class="btn btn-danger" 
                                         onclick="deleteContent({{course.id}},'true')"

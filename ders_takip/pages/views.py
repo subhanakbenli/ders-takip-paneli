@@ -16,6 +16,11 @@ def pano_view(request):
     return render(request, 'pages/pano.html', {'teachers': teachers_data})
 
 @login_required
+def pano_iptal_view(request):
+    teachers_data = get_teachers_with_courses_and_documents(status="iptal", page="pano")
+    return render(request, 'pages/pano_iptal.html', {'teachers': teachers_data})
+
+@login_required
 def pano_ozet_view(request):
     teachers = get_teachers_with_courses_and_documents(status="aktif", page="pano")
     return render(request, 'pages/pano_ozet.html', {'teachers': teachers})
