@@ -6,6 +6,9 @@ Pano Özet
 
 {% block content %}
 <style>
+    .green-error{
+        background-color:rgb(233, 250, 227) !important;
+    }
     body {
         background-color:rgb(239, 252, 234) !important; /* Hafif mavi renk */
     }
@@ -110,9 +113,9 @@ Pano Özet
                             </td>
                             <td>
                                 {% if document.is_uploaded %}
-                                    <span class="status-icon success">✔️</span>
+                                    <span class="status-icon success green-error">✔️</span>
                                 {% else %}
-                                    <span class="status-icon error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
+                                    <span class="status-icon error green-error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
                                 {% endif %}
                             </td>
                         </tr>
