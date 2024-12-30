@@ -7,6 +7,16 @@ Pano
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+
+    input[type="number"] {
+        font-size: 15px;
+        color: #000; /* Siyah */
+        background-color: #fff; /* Beyaz */
+        padding: 22px; /* Daha az iç boşluk */
+        border: 1px solid #ced4da; /* Hafif gri çerçeve */
+        border-radius: 4px; /* Yuvarlak köşeler */
+        outline: none; /* Odaklandığında keskin kenar yok */
+    }
     .green-error{
         background-color:rgb(233, 250, 227) !important;
     }
@@ -441,13 +451,13 @@ Pano
 </script>
 
 <script>
-    function downloadExcel(courseId=None, statu, page) {
-        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        if (courseId) {
-            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
-        } else {
-            window.location.href = `/excel/${statu}/${page}/`;
+    function downloadPDF(courseId) {
+        if (!courseId) {
+            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
+            return;
         }
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
     }
 </script>
 
@@ -694,7 +704,7 @@ Pano
                                                                 document-data-id="{{ document.id }}">İçerik Gör</button>
                                                             </td> 
                                                             <td>
-                                                                <label for="start_date">Başlangıç Tarihi</label>
+                                                                
                                                                 <input 
                                                                     type="date" 
                                                                     name="start_date" 
@@ -706,19 +716,20 @@ Pano
                                                                 >
                                                             </td>
                                                             <td>
-                                                                <label for="gün_sayisi">Gün Sayısı</label>
+                                                                
                                                                 <input 
                                                                     type="number" 
                                                                     name="gün_sayisi" 
                                                                     class="form-control" 
                                                                     placeholder="Gün Sayısı" 
+                                                                    
                                                                     required 
                                                                     value="{{ document.gün_sayisi }}" 
                                                                     oninput="calculateEndDate(this)"
                                                                 >
                                                             </td>
                                                             <td>
-                                                                <label for="end_date">Bitiş Tarihi</label>
+                                                                
                                                                 <input 
                                                                     type="date" 
                                                                     name="end_date" 
@@ -823,7 +834,8 @@ Pano
                                                 cursor: pointer;
                                                 transition: background-color 0.3s ease;
                                             "                                             
-                                            onclick="downloadExcel({{ course.id }},'aktif','pano')">Excel İndir
+                                            onclick="downloadPDF({{ course.id }})">
+                                        Excel İndir
                                     </button>
 
 

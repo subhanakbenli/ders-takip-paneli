@@ -15,17 +15,70 @@ from ders_takip.settings import USER,SUPERUSER,ADMIN
 
 INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
+# @login_required
+# def add_course_view(request):
+#     if request.method == 'POST':
+#         # Öğretmen seçimini al
+#         teacher_id = request.POST.get('teacher')
+#         try:
+#             teacher = Teacher.objects.get(id=teacher_id)
+#         except Teacher.DoesNotExist:
+#             # Eğer geçerli bir öğretmen seçilmemişse hata döndür
+#             return render(request, "courses/add_course.html", {
+#                 "error": "Geçersiz öğretmen seçimi!",
+#                 "teachers": Teacher.objects.all(),
+#                 "sections": get_default_sections()
+#             })
+
+#         # Kurs bilgilerini al ve kaydet
+#         course_name = request.POST.get('lesson_name')
+#         description = request.POST.get('description', "")
+#         dilekce_required = request.POST.get('is_dilekce_required',"")
+#         if dilekce_required == "yes":
+#             dilekce_required = True
+#         else:
+#             dilekce_required = False
+#         course = Course(name=course_name, teacher=teacher, description=description,dilekce_required=dilekce_required)
+#         course.save()
+
+#         # Dinamik tabloda gönderilen verileri işleyin
+#         data = {}
+#         for key, value in request.POST.items():
+#             if key.startswith('uploads') and value.isdigit():  # Yükleme miktarı kontrolü
+#                 # Satır numarasını ve bölüm adını çıkart
+#                 row_data = key.split('[')[1].split(']')[0]
+#                 label_key = f"uploads[{row_data}][label]"
+#                 label = request.POST.get(label_key, f"Bölüm {row_data}")
+
+#                 # Bölüm adını ve yükleme miktarını kaydet
+#                 data[label] = int(value)
+
+#         # Bölümlere göre CourseFile kaydet
+#         for bolum_adi, yukleme_miktari in data.items():
+#             for _ in range(yukleme_miktari):
+#                 CourseFile.objects.create(course=course, category=bolum_adi)
+
+#         return redirect('courses_list')
+
+#     else:
+#         # GET isteğinde öğretmen ve varsayılan bölümleri render et
+#         return render(request, "courses/add_course.html", {
+#             "teachers": Teacher.objects.all(),
+#             "sections": get_default_sections()
+#         })
+
 @login_required
 def add_course_view(request):
     if request.method == 'POST':
-        # Öğretmen seçimini al
-        teacher_id = request.POST.get('teacher')
-        try:
-            teacher = Teacher.objects.get(id=teacher_id)
-        except Teacher.DoesNotExist:
-            # Eğer geçerli bir öğretmen seçilmemişse hata döndür
+        # Kullanıcıdan gelen öğretmen adını al
+        teacher_name = request.POST.get('teacher_name')  # Yeni: Öğretmen adı
+        if teacher_name:
+            # Öğretmeni ada göre bul veya oluştur
+            teacher, created = Teacher.objects.get_or_create(name=teacher_name.strip())
+        else:
+            # Eğer öğretmen adı girilmemişse hata döndür
             return render(request, "courses/add_course.html", {
-                "error": "Geçersiz öğretmen seçimi!",
+                "error": "Geçerli bir öğretmen adı girilmelidir!",
                 "teachers": Teacher.objects.all(),
                 "sections": get_default_sections()
             })
@@ -33,12 +86,10 @@ def add_course_view(request):
         # Kurs bilgilerini al ve kaydet
         course_name = request.POST.get('lesson_name')
         description = request.POST.get('description', "")
-        dilekce_required = request.POST.get('is_dilekce_required',"")
-        if dilekce_required == "yes":
-            dilekce_required = True
-        else:
-            dilekce_required = False
-        course = Course(name=course_name, teacher=teacher, description=description,dilekce_required=dilekce_required)
+        dilekce_required = request.POST.get('is_dilekce_required', "").lower() == "yes"  # True/False olarak ayarla
+
+        # Ders kaydı oluştur
+        course = Course(name=course_name, teacher=teacher, description=description, dilekce_required=dilekce_required)
         course.save()
 
         # Dinamik tabloda gönderilen verileri işleyin
@@ -66,6 +117,7 @@ def add_course_view(request):
             "teachers": Teacher.objects.all(),
             "sections": get_default_sections()
         })
+
 
 @login_required
 def course_detail_view(request, id):
