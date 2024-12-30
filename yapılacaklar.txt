@@ -1,13 +1,31 @@
-+++++++++++erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
-++++++++++++belge türü iki taraftan da girilebilir
-+++++++++++dersin belgesi yüklenmediyse uyarı verme işlemini bağla 
-excel cıktıları için işlemler düzeltilecek
-++erpde eklemediğim sütunları eklemeliyim 
-++iptale giden belgeleri göster
-++ders  başlangıç bitiş tarihi göster
-++ders belgelerin durumları hakkında bir cümlede bilgi ver
-arşiv sayfası butonlar kontrol edilecek
---------------------------------------------------------------------------
+erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
+ders bazlı dilekçe girilmesi zorunlu tutulabilecek bunu ders ekle sayfasında bir checkbox ile kontrol et eğer true ise belgeler dilekçe adı girilemden arşivlenemez!!!
+belge türü iki taraftan da girilebilir
+panodaki arşive al  ile erpdeki arşive al birbirinden ayrı çalışacak 
+pano özet sayfası bağlantıları yapılacak
+bitiş tarihi kısmı  direkt gün sayısı ile hesaplansın 
+yükleme tarihi sisteme griş tarihinden alınacak erp sayfasında yükleme ile sisteme giriş sütunununu birleştir panoya aktar
+öğretmen düzenleme sayfası  eklenecek 
+öğretmen ekleme sayfasına sadece admin girebilecek 
+özet sayfasında basınca basılan özetin ozelliğindeki tabloya gönderileliim
+arşiv sayfası erp ve panoya ayrı ayrı  gönderilecek 
+navbar parlement mavisi olacak 
+satırlar da datalar tamamlandıysa satırların renklendirmesini tamamla
+
+
+drop down içeriği düzeltilecek  (pano da  çalışmıyor erpde çalışıyor)
+Bütün butonlar çalışır hale gelecek 
+dosya ekleme işlemi frontendden backende bitirilecek  
+
+erp sayfası :
+    belgele gözükmüyor kontrol et 
+    iptal arşivle çalışmıyor 
+    butonlar çalışır hale getirilecek 
+    dropdownda tüm öğretmenler seçilemiyor 
+
+
+
+
 
 
 
@@ -16,6 +34,12 @@ arşiv sayfası butonlar kontrol edilecek
 Hamza:
     Bilidirimler ana sayfaya taşınacak!
 
+
+
+
+
+
+    
     Ders Detay sayfasında ders ile ilgili aldığımız birgiler (başlangıç bitiş açıklam vb ) gösterilecek
     ders detay sayfasında da buton olacak ve popup ile ders düzenlenebilecek 
     Ders detay sayfasında da arşiive al butonu sil buyonu vb olacak 
