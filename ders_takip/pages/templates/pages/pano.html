@@ -601,7 +601,7 @@ Pano
     function calculateEndDate(input) {
         const row = input.closest('tr'); // İlgili tablo satırını bulun
         const startDateInput = row.querySelector('input[name="start_date"]');
-        const dayCountInput = row.querySelector('input[name="gün_sayisi"]');
+        const dayCountInput = row.querySelector('input[name="gun_sayisi"]');
         const endDateInput = row.querySelector('input[name="end_date"]');
 
         if (startDateInput.value && dayCountInput.value) {
@@ -710,23 +710,18 @@ Pano
                                                                     name="start_date" 
                                                                     class="form-control" 
                                                                     placeholder="YYYY-MM-DD" 
-                                                                    required 
                                                                     value="{{ document.start_date }}"
                                                                     oninput="calculateEndDate(this)"
                                                                 >
                                                             </td>
                                                             <td>
-                                                                
                                                                 <input 
                                                                     type="number" 
-                                                                    name="gün_sayisi" 
-                                                                    class="form-control" 
+                                                                    name="gun_sayisi" 
                                                                     placeholder="Gün Sayısı" 
-                                                                    
-                                                                    required 
-                                                                    value="{{ document.gün_sayisi }}" 
-                                                                    oninput="calculateEndDate(this)"
-                                                                >
+                                                                    value="{{ document.gun_sayisi|default:0 }}" 
+                                                                    style="font-size: 0.9rem; padding: 0.2rem 0.2rem; width: 90px;"
+                                                                    oninput="calculateEndDate(this)">
                                                             </td>
                                                             <td>
                                                                 
@@ -736,8 +731,7 @@ Pano
                                                                     class="form-control" 
                                                                     placeholder="YYYY-MM-DD" 
                                                                     readonly 
-                                                                    value="{{ document.end_date }}"
-                                                                >
+                                                                    value="{{ document.end_date }}">
                                                             </td>
 
                                                             <td>

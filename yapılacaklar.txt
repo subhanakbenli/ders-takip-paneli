@@ -1,3 +1,13 @@
+özetten basınca basılan özet belgesini erp/pano da göstersin
+tarihler sayfalara düzgün gelmiyor kontrol edilsin 
+belge ekleme işlemi kontrol edilsin 
+belge uyarıları pano ve erpye de yönlendirilsin
+eklenen belgeleri görüntüleme işlemi tamamlansın
+ozetlerde kontroller yapılsın 
+pano sayfasında gün sayısı doğru gelmiyor
+
+
+
 erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
 ders bazlı dilekçe girilmesi zorunlu tutulabilecek bunu ders ekle sayfasında bir checkbox ile kontrol et eğer true ise belgeler dilekçe adı girilemden arşivlenemez!!!
 belge türü iki taraftan da girilebilir
@@ -11,6 +21,8 @@ yükleme tarihi sisteme griş tarihinden alınacak erp sayfasında yükleme ile 
 arşiv sayfası erp ve panoya ayrı ayrı  gönderilecek 
 navbar parlement mavisi olacak 
 satırlar da datalar tamamlandıysa satırların renklendirmesini tamamla
+belge ekleme işlemi yalıacak bitirelecek
+belgeye uyarı tarihi eklenerek bu tarihe göre uyarı verilecek
 
 
 drop down içeriği düzeltilecek  (pano da  çalışmıyor erpde çalışıyor)

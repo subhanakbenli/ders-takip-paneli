@@ -3,7 +3,8 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from teacher.models import Teacher
 from django.contrib.auth.models import User
-
+from datetime import datetime
+from django.utils import timezone
 
 class Course(models.Model):
     STATU_CHOICES = [
@@ -54,6 +55,8 @@ class CourseFile(models.Model):
     start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
     is_uploaded = models.BooleanField(default=False)
     uploaded_date = models.DateField(verbose_name="uploaded_at", null=True, blank=True)
+    gun_sayisi = models.CharField(max_length=255, verbose_name="gun_sayisi", null=True, blank=True)
+    uyari_date = models.DateField(verbose_name="uyari_date", null=True, blank=True)
     end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
 
     dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
@@ -86,7 +89,19 @@ class CourseFile(models.Model):
 
     def __str__(self):
         return f"{self.category} - {self.name}"
-
+    @classmethod
+    def get_files_in_warning_period(cls):
+        today = timezone.now().date()
+        try:
+            warning_files = cls.objects.filter(
+                uyari_date__lte=today,
+                end_date__gt=today.strftime('%Y-%m-%d'),
+                is_uploaded=False
+            )
+            return warning_files
+        except Exception as e:
+            print(f"Hata oluştu: {str(e)}")
+            return cls.objects.none()
 
 class CourseFileVersion(models.Model):
     course_file = models.ForeignKey(CourseFile, on_delete=models.CASCADE, related_name="versions")

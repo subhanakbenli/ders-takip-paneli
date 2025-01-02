@@ -12,60 +12,11 @@ from .utils import get_default_sections, get_course_with_documents, get_course_d
 from .models import Course ,CourseFile,CourseFileVersion # Veritabanı modeli
 from account.views import user_has_permission
 from ders_takip.settings import USER,SUPERUSER,ADMIN
+from datetime import datetime, timedelta
 
 INVALID_REQUEST_METHOD_MESSAGE = 'Geçersiz istek yöntemi.'
 
-# @login_required
-# def add_course_view(request):
-#     if request.method == 'POST':
-#         # Öğretmen seçimini al
-#         teacher_id = request.POST.get('teacher')
-#         try:
-#             teacher = Teacher.objects.get(id=teacher_id)
-#         except Teacher.DoesNotExist:
-#             # Eğer geçerli bir öğretmen seçilmemişse hata döndür
-#             return render(request, "courses/add_course.html", {
-#                 "error": "Geçersiz öğretmen seçimi!",
-#                 "teachers": Teacher.objects.all(),
-#                 "sections": get_default_sections()
-#             })
 
-#         # Kurs bilgilerini al ve kaydet
-#         course_name = request.POST.get('lesson_name')
-#         description = request.POST.get('description', "")
-#         dilekce_required = request.POST.get('is_dilekce_required',"")
-#         if dilekce_required == "yes":
-#             dilekce_required = True
-#         else:
-#             dilekce_required = False
-#         course = Course(name=course_name, teacher=teacher, description=description,dilekce_required=dilekce_required)
-#         course.save()
-
-#         # Dinamik tabloda gönderilen verileri işleyin
-#         data = {}
-#         for key, value in request.POST.items():
-#             if key.startswith('uploads') and value.isdigit():  # Yükleme miktarı kontrolü
-#                 # Satır numarasını ve bölüm adını çıkart
-#                 row_data = key.split('[')[1].split(']')[0]
-#                 label_key = f"uploads[{row_data}][label]"
-#                 label = request.POST.get(label_key, f"Bölüm {row_data}")
-
-#                 # Bölüm adını ve yükleme miktarını kaydet
-#                 data[label] = int(value)
-
-#         # Bölümlere göre CourseFile kaydet
-#         for bolum_adi, yukleme_miktari in data.items():
-#             for _ in range(yukleme_miktari):
-#                 CourseFile.objects.create(course=course, category=bolum_adi)
-
-#         return redirect('courses_list')
-
-#     else:
-#         # GET isteğinde öğretmen ve varsayılan bölümleri render et
-#         return render(request, "courses/add_course.html", {
-#             "teachers": Teacher.objects.all(),
-#             "sections": get_default_sections()
-#         })
 
 @login_required
 def add_course_view(request):
@@ -310,6 +261,12 @@ def save_pano(request, id):
         
         # Form verilerini al
         start_date = request.POST.get('start_date')
+        gun_sayisi =int(request.POST.get('gun_sayisi'))
+
+        if start_date and gun_sayisi:
+            start_date_obj = datetime.strptime(start_date, '%Y-%m-%d')
+            warning_date = start_date_obj + timedelta(days=int(gun_sayisi//2))
+            warning_date = warning_date.strftime('%Y-%m-%d')
         end_date = request.POST.get('end_date')
         turu = request.POST.get('turu')
         dilekce_name = request.POST.get('dilekce_name')
@@ -317,8 +274,11 @@ def save_pano(request, id):
         # Belge bilgilerini güncelle
         if start_date:
             related_courseFile.start_date = start_date
-        if end_date:
-            related_courseFile.end_date = end_date
+            if gun_sayisi:
+                related_courseFile.gun_sayisi = gun_sayisi
+                related_courseFile.uyari_date = warning_date
+                if end_date:
+                    related_courseFile.end_date = end_date
         if turu:
             related_courseFile.type = turu
         if dilekce_name:
