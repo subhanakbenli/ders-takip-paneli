@@ -14,6 +14,8 @@ urlpatterns = [
     path('pano_iptal/',views.pano_iptal_view, name='pano_iptal'),
     path('excel/<str:statu>/<str:page>/', views.excel_view, name='excel'),
     path('excel/<int:course_id>/<str:statu>/<str:page>/', views.excel_view, name='excel'),
+    path('erp_arsiv/', views.archive_page, name='archive_page'),
+    path("pano_arsiv/", views.pano_arsiv, name="pano_arsiv"),
 
 ]  
 

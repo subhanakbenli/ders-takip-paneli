@@ -1,6 +1,10 @@
+{% load static %}
 <nav class="navbar navbar-expand-lg" style="background-color:rgb(2, 60, 108); z-index: 1050;">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-white" href="/">Ders Takip Sistemi</a>
+    <link rel="icon" type="image/x-icon" href="{% static 'images/ders_takip_logo.png' %}">
+    <a class="navbar-brand fw-bold text-white" href="/">
+    <img src="{% static 'images/ders_takip_logo.png' %}" alt="Ders Takip Logo" style="height: 60px; width: 60px; margin-right: 15px;">
+    Ders Takip Sistemi</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -42,16 +46,7 @@
             <li><a class="dropdown-item" href="/pano_ozet">Pano Özet</a></li>
             <li><a class="dropdown-item" href="/pano">Pano Takip</a></li>
             <li><a class="dropdown-item" href="/pano_iptal">Pano İptal</a></li>
-          </ul>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-white" href="#" id="arsivDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Arşiv
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="arsivDropdown">
-            <li><a class="dropdown-item" href="/arsiv">Arşiv Sayfası</a></li>
-            <li><a class="dropdown-item" href="/arsiv_iptal">Arşiv İptal</a></li>
+            <li><a class="dropdown-item" href="/pano_arsiv">Pano Arsiv</a></li>
           </ul>
         </li>
 
@@ -63,6 +58,7 @@
             <li><a class="dropdown-item" href="/erp_ozet">ERP Özet</a></li>
             <li><a class="dropdown-item" href="/erp">ERP Takip</a></li>
             <li><a class="dropdown-item" href="/erp_iptal">ERP İptal</a></li>
+            <li><a class="dropdown-item" href="/erp_arsiv">ERP Arşiv</a></li>
           </ul>
         </li>
         <li>
@@ -72,12 +68,6 @@
       <ul class="navbar-nav">
         <!-- Bildirim Butonu -->
         <div class="notification-wrapper me-3">
-          <button class="btn notification-btn position-relative" onclick="toggleNotifications()">
-            🔔
-            <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{ notifications|length }}
-            </span>
-          </button>
           <div id="notificationPanel" class="notification-panel" style="display: none;">
             <ul class="list-group">
               {% for notification in notifications %}

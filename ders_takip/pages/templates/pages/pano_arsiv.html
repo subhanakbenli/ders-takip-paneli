@@ -1,0 +1,876 @@
+{% extends "base.html" %}
+
+{% block title %}
+Pano Arşiv
+{% endblock title %}
+
+{% block content %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+    input[type="number"] {
+        font-size: 15px;
+        color: #000; /* Siyah */
+        background-color: #fff; /* Beyaz */
+        padding: 22px; /* Daha az iç boşluk */
+        border: 1px solid #ced4da; /* Hafif gri çerçeve */
+        border-radius: 4px; /* Yuvarlak köşeler */
+        outline: none; /* Odaklandığında keskin kenar yok */
+    }
+    .green-error{
+        background-color:rgb(233, 250, 227) !important;
+    }
+    body {
+        background-color:rgb(239, 252, 234) !important; /* Hafif mavi renk */
+    }
+    .container {
+        width: 100%;
+        min-width: 98%;
+        margin: 0 auto;
+        padding: 0.25rem;
+    }
+
+    /* Typography */
+    h1 {
+        font-size: 1.35rem;  /* Reduced from 1.5rem */
+        color: #2d3748;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    h6 {
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        color: #4a5568;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Table Styles */
+    .table-container {
+        overflow-x: auto;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .table {
+        width: 100%;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        border-collapse: collapse;
+    }
+
+    .table th {
+        background-color: #4a5568;
+        color: white;
+        padding: 0.75rem;
+        text-align: left;
+    }
+
+    .table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* Status Indicators */
+    .status-icon {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        color: white;
+    }
+
+    .status-icon.success {
+        background-color: #48bb78;
+    }
+
+    .status-icon.error {
+        background-color: #e53e3e;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+        transition: all 0.15s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-success {
+        background-color: #48bb78;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #38a169;
+    }
+
+    .btn-danger {
+        background-color: #e53e3e;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #c53030;
+    }
+
+    .btn-primary {
+        background-color: #4299e1;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #3182ce;
+    }
+
+    .btn-warning {
+        background-color: #ecc94b;
+        color: #2d3748;
+    }
+
+    .btn-warning:hover {
+        background-color: #d69e2e;
+    }
+
+    /* Cards */
+    .card {
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    /* Form Elements */
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 0.7875rem;  /* Reduced from 0.875rem */
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    }
+
+    /* Modal */
+    .custom-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1050;
+    }
+
+    .custom-modal-content {
+        background-color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        width: 90%;
+        max-width: 400px;
+        margin: 15% auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Action Buttons Container */
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    }
+
+    /* Teacher Select */
+    .teacher-select-container {
+        margin-bottom: 1rem;
+    }
+
+    .teacher-select-container select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        border: 1px solid #e2e8f0;
+        font-size: 1.1rem;  /* Added font size reduction for select */
+        background-color:rgb(227, 227, 227);
+    }
+</style>
+<script>
+    function sendSelectedDocuments() {
+        // Seçili tüm checkboxları bul
+        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
+        
+        if (selectedCheckboxes.length === 0) {
+            alert('Lütfen indirilecek belgeleri seçiniz.');
+            return;
+        }
+    
+        // Seçili belgelerin URL'lerini topla
+        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
+            return {
+                url: checkbox.getAttribute('data-document-url'),
+                isUploaded: checkbox.closest('tr').querySelector('.status-icon.success') !== null
+            };
+        });
+    
+        // Yüklenmemiş belge kontrolü
+        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
+        if (notUploadedDocs.length > 0) {
+            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
+            return;
+        }
+    
+        // Yüklenmiş belgeleri indir
+        selectedDocuments.forEach(doc => {
+            if (doc.url) {
+                // Yeni bir sekmede belgeyi aç
+                const link = document.createElement('a');
+                link.href = doc.url;
+                link.target = '_blank';
+                link.download = ''; // Tarayıcının dosya adını kullanmasına izin ver
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+    }
+    
+    function toggleAllDocuments(courseId) {
+        // Tüm belgeleri seç checkbox'ı
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        
+        // İlgili tablodaki tüm belge checkbox'larını bul
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'ları ana checkbox'ın durumuna göre işaretle
+        documentCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    }
+    
+    // Belge checkbox'larının durumuna göre "Tümünü Seç" checkbox'ını güncelle
+    function updateSelectAllCheckbox(courseId) {
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+        
+        // Tüm checkbox'lar seçili mi kontrol et
+        const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
+        const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
+        
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = anyChecked && !allChecked;
+    }
+    
+    // Her belge checkbox'ına event listener ekle
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.document-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const courseId = this.closest('.card').getAttribute('data-course-id');
+                updateSelectAllCheckbox(courseId);
+            });
+        });
+    });
+</script>
+<script>
+    // Öğretmen seçim işlemleri
+    document.addEventListener('DOMContentLoaded', function() {
+        const teacherSelect = document.getElementById('teacherSelect');
+        
+        if (teacherSelect) {
+            teacherSelect.addEventListener('change', function() {
+                const selectedTeacherId = this.value;
+                
+                // Tüm öğretmen detaylarını gizle
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+                
+                if (selectedTeacherId) {
+                    // Seçilen öğretmenin detaylarını göster
+                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                    if (selectedTeacherDetails) {
+                        selectedTeacherDetails.style.display = 'block';
+                    }
+                } else {
+                    // Hiçbir öğretmen seçili değilse tüm detayları göster
+                    document.querySelectorAll('.teacher-details').forEach(detail => {
+                        detail.style.display = 'block';
+                    });
+                }
+            });
+        }
+    });
+</script>
+<script>
+    async function sendRequest(url, method, formData = null) {
+        try {
+            // CSRF token'ı al
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    // JSON yanıt beklediğimizi belirt
+                    'Accept': 'application/json',
+                }
+            };
+    
+            // Eğer formData varsa ekle
+            if (formData) {
+                options.body = formData;
+            }
+    
+            const response = await fetch(url, options);
+            
+            // Yanıt türünü kontrol et
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Sunucudan beklenmeyen yanıt türü geldi');
+            }
+    
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || "Sunucu hatası oluştu");
+            }
+    
+            return data;
+        } catch (error) {
+            console.error('İstek hatası:', error);
+            alert(error.message);
+            return null;
+        }
+    }
+    
+    async function saveDocument(documentId) {
+        try {
+            const form = document.getElementById(`document-form-${documentId}`);
+            if (!form) {
+                throw new Error('Form bulunamadı');
+            }
+    
+            // Form verilerini topla
+            const formData = new FormData(form);
+            
+            // İsteği gönder
+            const data = await sendRequest(`/dersler/kaydet_pano/${documentId}/`, 'POST', formData);
+            
+            if (data && data.success) {  // success kontrolü ekledik
+                alert(data.message || 'Belge başarıyla kaydedildi');
+                // Başarılı kayıt sonrası UI güncellemesi yapılabilir
+            }
+        } catch (error) {
+            console.error('Kaydetme hatası:', error);
+            alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    async function changeStatu(documentId, statu, isCourse) {
+        try {
+            const url = `/dersler/durum_degis_pano/${documentId}/${statu}/${isCourse}/`;
+            const data = await sendRequest(url, 'POST');
+            
+            if (data && data.success) {
+                
+                if (isCourse === 'true') {
+                    console.log(documentId);
+                    // Ders iptal/arşiv işlemi - tüm card'ı kaldır
+                    const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
+                    }
+                } else {
+                    const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
+                    const row = button?.closest('tr');
+                    if (row) {
+                        row.remove();
+                    }
+                }
+                
+                // Eğer sunucudan yönlendirme talebi gelirse
+                if (data.redirect) {
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error('Durum değiştirme hatası:', error);
+            alert('İşlem sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    async function deleteContent(id, isCourse) {
+        try {
+            if (isCourse === 'true') {
+                url = `/dersler/ders_sil/${id}/`;
+            } else {
+                url = `/dersler/belge_sil/${id}/`;
+            }
+            
+            const data = await sendRequest(url, 'POST');
+            
+            if (data && data.success) {
+                alert(data.message || 'İşlem başarıyla tamamlandı');
+                
+                if (isCourse === 'true') {
+                    // id değişkenini kullan, documentId değil
+                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
+                    if (courseCard) {
+                        courseCard.remove();
+                    }
+                } else {
+                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
+                    if (documentRow) {
+                        documentRow.remove();
+                    }
+                }
+                
+                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
+                // window.location.reload();
+            }
+        } catch (error) {
+            console.error('Silme hatası:', error);
+            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+</script>
+
+<script>
+    function downloadPDF(courseId) {
+        if (!courseId) {
+            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
+            return;
+        }
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
+    }
+</script>
+
+<script>
+    // Modal açma/kapama işlemleri
+    document.addEventListener('DOMContentLoaded', function() {
+        // Modal elementlerini seçme
+        const modal = document.getElementById('addDocumentModal');
+        const uploadForm = document.getElementById('documentUploadForm');
+        
+        // Modal kapatma butonu işlemi
+        const closeButtons = document.querySelectorAll('.btn-danger');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modal.style.display = 'none';
+                uploadForm.reset();
+            });
+        });
+        
+        // Modal dışına tıklandığında kapatma
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                uploadForm.reset();
+            }
+        });
+        
+        // Form submit işlemi
+        document.querySelector('.btn-success[onclick=""]').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            const courseId = document.getElementById('modalCourseId').value;
+            const documentId = document.getElementById('modalDocumentId').value;
+            
+            const fileInput = document.getElementById('modalDocumentFile');
+            
+            // Dosya kontrolü
+            if (!fileInput.files[0]) {
+                alert('Lütfen bir dosya seçin!');
+                return;
+            }
+            
+            formData.append('document_file', fileInput.files[0]);
+            
+            // AJAX ile dosya yükleme
+            fetch(`/dersler/${courseId}/belge_ekle/${documentId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken') // Django için CSRF token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Dosya başarıyla yüklendi!');
+                    modal.style.display = 'none';
+                    uploadForm.reset();
+                    // Opsiyonel: Sayfayı yenile veya dosya listesini güncelle
+                    location.reload();
+                } else {
+                    alert('Dosya yüklenirken bir hata oluştu: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Dosya yüklenirken bir hata oluştu!');
+            });
+        });
+    });
+
+    // Modal açma fonksiyonu
+    function openDocumentModal(button) {
+        const courseId = button.getAttribute('course-data-id');
+        const documentId = button.getAttribute('document-data-id');
+        if (!courseId) {
+            console.error('Course ID not found!');
+            return;
+        }
+        if (!documentId) {
+            console.error('Document ID not found!');
+            return;
+        } 
+        
+        // Course ID'yi form içindeki gizli input'a set et
+        document.getElementById('modalCourseId').value = courseId;
+        document.getElementById('modalDocumentId').value = documentId;
+        
+        // Modal'ı göster
+        document.getElementById('addDocumentModal').style.display = 'block';
+    }
+
+    // Django CSRF token'ı almak için yardımcı fonksiyon
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tableRows = document.querySelectorAll('table tbody tr');
+
+        tableRows.forEach(row => {
+            const inputs = row.querySelectorAll('input, textarea');
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+
+            if (allFilled) {
+                row.style.backgroundColor = '#d4edda'; // Açık yeşil arka plan rengi
+            }
+
+            // Dinamik olarak değişimlerde kontrol için event listener ekleyin
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const allFilledNow = Array.from(inputs).every(input => input.value.trim() !== '');
+                    row.style.backgroundColor = allFilledNow ? '#d4edda' : '';
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+    function calculateEndDate(input) {
+        const row = input.closest('tr'); // İlgili tablo satırını bulun
+        const startDateInput = row.querySelector('input[name="start_date"]');
+        const dayCountInput = row.querySelector('input[name="gün_sayisi"]');
+        const endDateInput = row.querySelector('input[name="end_date"]');
+
+        if (startDateInput.value && dayCountInput.value) {
+            const startDate = new Date(startDateInput.value);
+            const dayCount = parseInt(dayCountInput.value, 10);
+
+            if (!isNaN(dayCount)) {
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + dayCount);
+
+                // Bitiş tarihini yyyy-mm-dd formatında yazdır
+                const formattedEndDate = endDate.toISOString().split('T')[0];
+                endDateInput.value = formattedEndDate;
+            }
+        }
+    }
+
+</script>
+<div class="container">
+    <h1 class="text-center">Pano Arşiv</h1>
+
+    <!-- Öğretmen Seçim Dropdown -->
+    <!-- Daha erişilebilir versiyon -->
+    
+    <div class="teacher-select-container ">
+        <label for="teacherSelect">Öğretmen Seçiniz</label>
+        <select 
+            id="teacherSelect" 
+            class="form-control"
+            data-search="true"
+            data-placeholder="Öğretmen seçiniz...">
+            <option value="">Seçiniz...</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}">
+                    {{ teacher.name }} {{ teacher.surname }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Öğretmen Detayları ve Ders Listesi -->
+    <div id="teacherDetailsContainer">
+        {% for teacher in teachers %}
+            <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
+                {% if teacher.courses %}
+                    {% for course in teacher.courses %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                                <p><strong>Durum:</strong> {{ course.statu_pano }}</p>
+                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                                <p><strong>Dönem:</strong> {{ course.start_date|default:'' }} - {{ course.end_date|default:'' }}</p>
+                                <div style="display: flex; gap: 20px;">
+                                    {% for key, value in course.document_statu_dict.items %}
+                                        <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
+                                    {% endfor %}
+                                </div>
+                                <!-- Documents Table -->
+                                <h6>Belgeler:</h6>
+                                {% if course.documents %}
+                                    <div class="table-container">
+                                        <table class="table table-bordered table-responsive text-wrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
+                                                        Seç
+                                                    </th>
+                                                    <th>Kategori</th>
+                                                    <th>Belge Adı</th>
+                                                    <th>İşlemler</th>
+                                                    <th>Başlangıç Tarihi</th>
+                                                    <th>Gün Sayısı</th>
+                                                    <th>Bitiş Tarihi</th>
+                                                    <th>Yüklenme Tarihi</th>                                                    
+                                                    <th>Türü</th>
+                                                    <th>Dilekçe</th>
+                                                    <th>Uyarı</th>
+                                                    <th>Kaydet</th>
+                                                    <th>İptal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for document in course.documents %}
+                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                            </td>
+                                                            <td>{{ document.category }}</td>
+                                                            <td>{{ document.belge_adi}}</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-success" 
+                                                                onclick="openDocumentModal(this)" 
+                                                                course-data-id="{{ course.id }}"
+                                                                document-data-id="{{ document.id }}">İçerik Gör</button>
+                                                            </td> 
+                                                            <td>
+                                                                
+                                                                <input 
+                                                                    type="date" 
+                                                                    name="start_date" 
+                                                                    class="form-control" 
+                                                                    placeholder="YYYY-MM-DD" 
+                                                                    required 
+                                                                    value="{{ document.start_date }}"
+                                                                    oninput="calculateEndDate(this)"
+                                                                >
+                                                            </td>
+                                                            <td>
+                                                                
+                                                                <input 
+                                                                    type="number" 
+                                                                    name="gün_sayisi" 
+                                                                    class="form-control" 
+                                                                    placeholder="Gün Sayısı" 
+                                                                    
+                                                                    required 
+                                                                    value="{{ document.gün_sayisi }}" 
+                                                                    oninput="calculateEndDate(this)"
+                                                                >
+                                                            </td>
+                                                            <td>
+                                                                
+                                                                <input 
+                                                                    type="date" 
+                                                                    name="end_date" 
+                                                                    class="form-control" 
+                                                                    placeholder="YYYY-MM-DD" 
+                                                                    readonly 
+                                                                    value="{{ document.end_date }}"
+                                                                >
+                                                            </td>
+
+                                                            <td>
+                                                                {% if document.is_uploaded %}
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                                {% else %}
+                                                                    <span class="status-icon error green-error" >❌</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.type|default:'' }}">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe Adı Giriniz" value="{{ document.dilekce_name|default:'' }}">
+                                                            </td>
+                                                            <td>
+                                                                {% if document.is_uploaded %}
+                                                                    <span class="status-icon success green-error">✔️</span>
+                                                                {% else %}
+                                                                    <span class="status-icon error green-error">❌</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-danger" 
+                                                                onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                            </td>
+                                                            <td>
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-warning" 
+                                                                    onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
+                                                                    id="document-form-{{ document.id }}"> İptal
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </form>
+
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="12">Bu derse ait belge bulunmamaktadır.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div> 
+                                {% endif %}
+                                <!-- Action Buttons -->
+                                <div class="action-buttons">
+                                    <button class="btn btn-warning" 
+                                        onclick="changeStatu({{course.id}},'iptal','true')"
+                                        id="course-form-{{ course.id }}" style =
+                                         "background-color:red;
+                                          color:rgb(255, 255, 255);
+                                          "
+                                        >İptal
+                                    </button>
+                                    <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                    <button class="btn btn-success" 
+                                        style="
+                                                background-color:rgb(45, 204, 45); 
+                                                color: white; 
+                                                border: none; 
+                                                padding: 5px 10px; 
+                                                border-radius: 4px; 
+                                                cursor: pointer;
+                                                transition: background-color 0.3s ease;
+                                            " 
+                                        onmouseover="this.style.backgroundColor='#004d00'" 
+                                        onmouseout="this.style.backgroundColor='#006400'" 
+                                        onclick="sendSelectedDocuments()">
+                                    İndir
+                                    </button>
+                                    <button class="btn btn-success btn-sm" 
+                                            style="
+                                                background-color:rgb(15, 144, 15); 
+                                                color: white; 
+                                                border: none; 
+                                                padding: 5px 10px; 
+                                                border-radius: 4px; 
+                                                cursor: pointer;
+                                                transition: background-color 0.3s ease;
+                                            "                                             
+                                            onclick="downloadPDF({{ course.id }})">
+                                        Excel İndir
+                                    </button>
+
+
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                    <p>Bu Öğretmene Ait Ders Bulunamadı</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>Öğretmen Bulunamadı.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+
+<!-- Dosya Ekle Modal -->
+<div id="addDocumentModal" class="custom-modal">
+    <h6>Belge Ekle</h6>
+    <div class="custom-modal-content">
+        <h6>Kaydedilmiş Belgeler</h6>
+        <div id="uploadedDocumentsContainer">
+            <p>Hiç belge yüklenmedi.</p>
+        </div>
+        <form id="documentUploadForm">
+            <input type="hidden" id="modalCourseId" name="course_id">
+            <input type="hidden" id="modalDocumentId" name="document_id">
+            <div class="form-group">
+                <label for="documentFile">Dosya:</label>
+                <input type="file" id="modalDocumentFile" name="document_file" class="form-control" required>
+            </div>
+            <button type="button" class="btn btn-success" onclick="">Kaydet</button>
+            <button type="button" class="btn btn-danger" onclick="">İptal</button>
+        </form>
+        <hr>
+        
+    </div>
+</div>
+
+
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+{% endblock content %}

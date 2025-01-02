@@ -216,3 +216,19 @@ def index(request):
         user.save()
     login(request, user)
     return render(request, 'base.html')
+
+# erp arşiv
+@user_has_permission([SUPERUSER,ADMIN])
+def archive_page(request):
+    teachers_data= get_teachers_with_courses_and_documents(status="arsiv",page="erp")
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,  # Geçici öğretmen verileri
+    }
+    return render(request, 'pages/erp_arsiv.html', context)
+
+# pano arşiv
+@login_required
+def pano_arsiv(request):
+    teachers_data = get_teachers_with_courses_and_documents(status="arsiv", page="pano")
+    return render(request, 'pages/pano_arsiv.html', {'teachers': teachers_data})
