@@ -1,0 +1,201 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #353536; z-index: 1050;">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-white" href="/">Ders Takip Sistemi</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Ders Menüsü -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="dersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Ders
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dersDropdown">
+            <li><a class="dropdown-item" href="/dersler/ders_listesi">Ders Listesi</a></li>
+            <li><a class="dropdown-item" href="/dersler/ders_ekle">Ders Ekle</a></li>
+          </ul>
+        </li>
+        <!-- Öğretmen Menüsü -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="ogretmenDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Öğretmen
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="ogretmenDropdown">
+            <li><a class="dropdown-item" href="/ogretmen/ogretmen_list">Öğretmen Listesi</a></li>
+            <li><a class="dropdown-item" href="/ogretmen/ogretmen_ekle">Öğretmen Ekle</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" id="panoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Pano
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="panoDropdown">
+            <li><a class="dropdown-item" href="/dersler/pano">Pano Sayfası</a></li>
+            <li><a class="dropdown-item" href="/dersler/pano_ozet">Pano Özet</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/dersler/deneme_arsiv">Arşiv Sayfası</a>
+        </li class="navv-item">
+        <li>
+            <a class="nav-link text-white" href="/dersler/erp">Erp Takip</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <!-- Bildirim Butonu -->
+        <div class="notification-wrapper me-3">
+          <button class="btn notification-btn position-relative" onclick="toggleNotifications()">
+            🔔
+            <span id="notificationBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{ notifications|length }}
+            </span>
+          </button>
+          <div id="notificationPanel" class="notification-panel" style="display: none;">
+            <ul class="list-group">
+              {% for notification in notifications %}
+                <li class="list-group-item">{{ notification }}</li>
+              {% empty %}
+                <li class="list-group-item text-center text-muted">Bildirim yok.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-danger text-white" href="{% url 'register' %}">Üye Ekle</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-danger text-white" href="{% url 'logout' %}">Çıkış</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link btn btn-danger text-white" href="{% url 'login' %}">Giriş</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    background-color: rgb(53, 53, 54);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid #1e90ff;
+    margin-bottom: 0;
+    padding-bottom: 0; 
+  }
+
+  .navbar-brand {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .nav-link {
+    color: white;
+    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-link:hover {
+    background-color: #1e90ff;
+  }
+
+  .dropdown-menu {
+    background-color: #95a5a6;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .dropdown-item {
+    color: white;
+    padding: 8px 15px;
+    transition: background-color 0.3s ease;
+  }
+
+  .dropdown-item:hover {
+    background-color: #1e90ff;
+  }
+
+  .btn-danger {
+    background-color: #1e90ff;
+    border-radius: 20px;
+    padding: 5px 15px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-danger:hover {
+    background-color: #e74c3c;
+  }
+
+  .notification-wrapper {
+    position: relative;
+  }
+
+  .notification-btn {
+    
+    color: white;
+    border-radius: 50%;
+    padding: 8px 12px;
+    border: none;
+  }
+
+  .notification-btn:hover {
+    background-color: #e74c3c;
+  }
+
+  .notification-panel {
+    position: absolute;
+    right: 0; /* Sağ tarafa taşındı */
+    top: 50px;
+    width: 250px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1060;
+  }
+
+  .notification-panel .list-group-item {
+    font-size: 0.9rem;
+  }
+
+  #notificationBadge {
+    font-size: 12px;
+    color: white;
+    display: none;
+    padding: 5px 10px;
+  }
+</style>
+
+<script>
+  function toggleNotifications() {
+    const panel = document.getElementById('notificationPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  }
+
+  window.onload = function () {
+    const notificationsCount = {{ notifications|length }};
+    const badge = document.getElementById('notificationBadge');
+    if (notificationsCount > 0) {
+      badge.style.display = 'inline-block';
+      badge.textContent = notificationsCount; // Bildirim sayısını göster
+    } else {
+      badge.style.display = 'none';
+    }
+  };
+</script>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaydedilenler Sayfası</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      table th,
+      table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+      }
+      table th {
+        background-color: #f1f1f1;
+        font-weight: bold;
+      }
+      table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 5px;
+      }
+      a:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Kaydedilenler Sayfası</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Sıra No</th>
+          <th>Bölüm Adı</th>
+          <th>Yükleme Miktarı</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ders in dersler %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ ders.baslik }}</td>
+          <td>
+            {% if ders.yukleme_miktari %} {{ ders.yukleme_miktari }} {% else %}
+            None {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="/kayit/">Yeni Kayıt Eklemek İçin Tıklayın</a>
+  </body>
+</html>

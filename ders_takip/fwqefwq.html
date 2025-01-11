@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kaydedilenler Sayfası</title>
+    <style>
+      /* Tablolar ve butonlar için yukarıdaki CSS kodlarınızı kullanabilirsiniz */
+    </style>
+  </head>
+  <body>
+    <h1>Kaydedilenler Sayfası</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Sıra No</th>
+          <th>Bölüm Adı</th>
+          <th>Yükleme Miktarı</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ders in dersler %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ ders.baslik }}</td>
+          <td>{{ ders.yukleme_miktari }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">Henüz bir kayıt yok.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <a href="{% url 'kayit_sayfasi' %}">Yeni Kayıt Eklemek İçin Tıklayın</a>
+  </body>
+</html>

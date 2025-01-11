@@ -1,0 +1,103 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #1e90ff; z-index: 1050;">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-white" href="/">Ders Takip Sistemi</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        Menü
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/dersler/ders_listesi">Ders Listesi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/dersler/ders_ekle">Ders Ekle</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/ogretmen/ogretmen_list">Öğretmen Listesi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/ogretmen/ogretmen_ekle">Öğretmen Ekle</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/dersler/">Kayıt Sayfası</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/kaydedilen_dersler">Kaydedilenler Sayfası</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/arsiv">Arşiv Sayfası</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link btn btn-danger text-white" href="{% url 'register' %}">Üye Ekle</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn btn-danger text-white" href="{% url 'logout' %}">Çıkış</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link btn btn-danger text-white" href="{% url 'login' %}">Giriş</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <style>
+    .navbar {
+      background-color: #1e90ff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  
+    .navbar-brand {
+      font-size: 20px;
+      font-weight: bold;
+      color: white;
+    }
+  
+    .nav-link {
+      color: white;
+      margin-right: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+  
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  
+    .btn-danger {
+      background-color: #ff4d4d;
+      border-radius: 20px;
+      padding: 5px 15px;
+      margin-left: 10px;
+      transition: background-color 0.3s ease;
+    }
+  
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+  
+    .navbar-toggler {
+      background-color: white;
+      border: none;
+      color: #1e90ff;
+      font-weight: bold;
+    }
+  
+    .navbar-toggler:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+  </style>
+  
