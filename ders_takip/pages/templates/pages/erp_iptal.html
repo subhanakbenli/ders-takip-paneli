@@ -583,6 +583,16 @@ ERP İptal
         window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
     }
 </script>
+<script>
+    function downloadExcel(courseId=None, statu, page) {
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
+    }
+</script>
 
 
 <div class="container">
@@ -801,7 +811,7 @@ ERP İptal
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'iptal', 'erp')">Excel İndir</button>
                                 </div>
                             </div>
                         </div>

@@ -16,11 +16,23 @@ from courses.models import Course,CourseFile
 @login_required
 def pano_view(request, teacher_id=None):
     distinct_courses = Course.objects.values('name').distinct()
-
+    # GET parametrelerini al
+    selected_teacher_id = request.GET.get('teacher_id', teacher_id)
+    selected_course_name = request.GET.get('course_name', None)
     teachers_data = get_teachers_with_courses_and_documents(status="aktif", page="pano")
+    # Filtreleme işlemi
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [course for course in teacher['courses'] if course['name'] == selected_course_name]
+
     return render(request, 'pages/pano.html', {'teachers': teachers_data,
                                                'all_courses': distinct_courses,
-                                                'selected_teacher_id': teacher_id })
+                                                'selected_teacher_id': int(selected_teacher_id) if selected_teacher_id else None, 
+                                                'selected_course_name': selected_course_name})
 
 
 @login_required

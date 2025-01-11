@@ -209,6 +209,19 @@ Pano
         font-size: 1.1rem;  /* Added font size reduction for select */
         background-color:rgb(227, 227, 227);
     }
+    /* course Select */
+    .course-select-container {
+        margin-bottom: 1rem;
+    }
+
+    .course-select-container select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        border: 1px solid #e2e8f0;
+        font-size: 1.1rem;  /* Added font size reduction for select */
+        background-color:rgb(227, 227, 227);
+    }
 </style>
 <script>
     function sendSelectedDocuments() {
@@ -652,6 +665,17 @@ Pano
     }
 </script>
 
+<script>
+    function downloadExcel(courseId=None, statu, page) {
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
+    }
+</script>
+
 <div class="container">
     <h1 class="text-center">Pano Takip</h1>
 
@@ -664,10 +688,11 @@ Pano
             id="teacherSelect" 
             class="form-control"
             data-search="true"
+            onchange="document.getElementById('filterForm').submit();"
             data-placeholder="Öğretmen seçiniz...">
             <option value="">Seçiniz...</option>
             {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">
+                <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id|stringformat:"s" %}selected{% endif %}>
                     {{ teacher.name }} {{ teacher.surname }}
                 </option>
             {% endfor %}
@@ -679,10 +704,11 @@ Pano
             id="courseSelect" 
             class="form-control"
             data-search="true"
+            onchange="document.getElementById('filterForm').submit();"
             data-placeholder="Ders seçiniz...">
             <option value="">Seçiniz...</option>
             {% for course in all_courses %}
-                <option value="{{ course.name }}">
+                <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
                     {{ course.name }}
                 </option>
             {% endfor %}
@@ -882,8 +908,8 @@ Pano
                                                 border-radius: 4px; 
                                                 cursor: pointer;
                                                 transition: background-color 0.3s ease;
-                                            "                                             
-                                            onclick="downloadPDF({{ course.id }})">
+                                            "                        
+                                            onclick="downloadExcel({{ course.id }}, 'aktif', 'pano')">
                                         Excel İndir
                                     </button>
 
