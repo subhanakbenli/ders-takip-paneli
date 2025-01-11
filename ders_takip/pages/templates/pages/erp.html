@@ -534,9 +534,14 @@ ERP
 </script>
 
 <script>
-function downloadExcel(courseId) {
-    window.location.href = `/dersler/excel_cikart/${courseId}/`;
-}
+    function downloadExcel(courseId=None, statu, page) {
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
+    }
 </script>
 
 <script>
@@ -777,7 +782,7 @@ function downloadExcel(courseId) {
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }})">Excel İndir</button>
+                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'aktif', 'erp')">Excel İndir</button>
                                 </div>
                             </div>
                         </div>

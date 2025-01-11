@@ -441,17 +441,6 @@ Pano İptal
 </script>
 
 <script>
-    function downloadPDF(courseId) {
-        if (!courseId) {
-            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
-            return;
-        }
-        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
-    }
-</script>
-
-<script>
     // Modal açma/kapama işlemleri
     document.addEventListener('DOMContentLoaded', function() {
         // Modal elementlerini seçme
@@ -564,6 +553,16 @@ Pano İptal
     }
 </script>
 
+<script>
+    function downloadExcel(courseId=None, statu, page) {
+        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
+        if (courseId) {
+            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
+        } else {
+            window.location.href = `/excel/${statu}/${page}/`;
+        }
+    }
+</script>
 <div class="container">
     <h1 class="text-center">Pano İptal</h1>
 
@@ -734,20 +733,7 @@ Pano İptal
                                         onclick="sendSelectedDocuments()">
                                     İndir
                                     </button>
-                                    <button class="btn btn-success btn-sm" 
-                                            style="
-                                                background-color:rgb(15, 144, 15); 
-                                                color: white; 
-                                                border: none; 
-                                                padding: 5px 10px; 
-                                                border-radius: 4px; 
-                                                cursor: pointer;
-                                                transition: background-color 0.3s ease;
-                                            "                                             
-                                            onclick="downloadPDF({{ course.id }})">
-                                        Excel İndir
-                                    </button>
-
+                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'iptal', 'pano')">Excel İndir</button>
 
                                 </div>
                                 </div>

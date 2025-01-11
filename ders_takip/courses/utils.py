@@ -169,15 +169,19 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                 except:
                     document_warning_message = None
                     
-                versions = CourseFileVersion.objects.filter(course_file=document)
+                versions = CourseFileVersion.objects.filter(course_file=document).order_by('-uploaded_at')
                 
                 
                 documents_data.append(
                     {
                         "id": document.id,
                         "category": document.category,
-                        "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,    
-                        "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
+                        "belge_adi": versions[0].file.name if versions else None,    
+                        "belge_url": versions[0].file.url if versions else None,
+                        "versions": [{"id": version.id, 
+                                      "file": version.file.name.replace("uploads/",""), 
+                                      "uploaded_at": version.uploaded_at.strftime("%Y-%m-%dT%H:%M:%S"),
+                                      "download_url": version.file.url.replace("/uploads/uploads/", "/uploads/")} for version in versions],
                         "is_uploaded": document.is_uploaded,
                         "uploaded_at": document.uploaded_date,
                         "dilekce_name": document.dilekce_name,

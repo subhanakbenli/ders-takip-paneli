@@ -14,9 +14,14 @@ from courses.models import Course,CourseFile
 
 
 @login_required
-def pano_view(request):
+def pano_view(request, teacher_id=None):
+    distinct_courses = Course.objects.values('name').distinct()
+
     teachers_data = get_teachers_with_courses_and_documents(status="aktif", page="pano")
-    return render(request, 'pages/pano.html', {'teachers': teachers_data})
+    return render(request, 'pages/pano.html', {'teachers': teachers_data,
+                                               'all_courses': distinct_courses,
+                                                'selected_teacher_id': teacher_id })
+
 
 @login_required
 def pano_iptal_view(request):
@@ -46,6 +51,7 @@ def erp_view(request):
         'teachers': teachers_data,  # Geçici öğretmen verileri
     }
     return render(request, 'pages/erp.html', context)
+    
 
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_iptal_view(request):

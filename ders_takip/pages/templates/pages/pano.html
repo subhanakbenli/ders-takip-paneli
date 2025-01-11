@@ -462,54 +462,111 @@ Pano
 </script>
 
 <script>
-    // Modal açma/kapama işlemleri
+    // Modal açma fonksiyonu
+    function openDocumentModal(button) {
+        // Versiyonları al
+        const courseId = button.getAttribute('course-data-id');
+        const documentId = button.getAttribute('document-data-id');
+        console.log(courseId);
+        console.log(documentId);
+        const versionsRaw = button.getAttribute('versions');
+
+        if (!courseId) {
+            console.error('Course ID not found!');
+            return;
+        }
+        if (!documentId) {
+            console.error('Document ID not found!');
+            return;
+        }
+
+        let versionsData = [];
+        if (versionsRaw) {
+            try {
+                versionsData = JSON.parse(versionsRaw.replace(/'/g, '"')); // JSON formatına çevir
+            } catch (error) {
+                console.error('Invalid JSON format:', error);
+            }
+        }
+
+        // Modal form id'lerini ayarla
+        document.getElementById('modalCourseId').value = courseId;
+        document.getElementById('modalDocumentId').value = documentId;
+
+        // Modal içeriğini oluştur
+        const container = document.getElementById('uploadedDocumentsContainer');
+        container.innerHTML = ''; // Önceki içerikleri temizle
+
+        if (versionsData.length > 0) {
+            const list = document.createElement('ul');
+            versionsData.sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at)); // Tarihe göre sırala
+
+            versionsData.forEach(version => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.textContent = version.file; // Dosya adını ekle
+                link.href = version.download_url; // İndirme linkini ayarla
+                link.target = '_blank'; // Yeni sekmede aç
+                link.download = version.file; // İndirme adı
+                listItem.appendChild(link); // Linki liste öğesine ekle
+                list.appendChild(listItem); // Liste öğesini listeye ekle
+            });
+
+            container.appendChild(list); // Listeyi container'a ekle
+        } else {
+            container.innerHTML = '<p>Hiç belge yüklenmedi.</p>'; // Boş durum mesajı
+        }
+
+        // Modal'ı göster
+        document.getElementById('addDocumentModal').style.display = 'block';
+    }
+
+    // Modal kapatma işlemleri ve form submit
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Modal elementlerini seçme
         const modal = document.getElementById('addDocumentModal');
         const uploadForm = document.getElementById('documentUploadForm');
-        
-        // Modal kapatma butonu işlemi
-        const closeButtons = document.querySelectorAll('.btn-danger');
-        closeButtons.forEach(button => {
+
+        // Modal kapatma butonları
+        document.querySelectorAll('.btn-danger').forEach(button => {
             button.addEventListener('click', function() {
                 modal.style.display = 'none';
                 uploadForm.reset();
             });
         });
-        
-        // Modal dışına tıklandığında kapatma
+
+        // Modal dışına tıklanırsa kapatma
         window.addEventListener('click', function(e) {
             if (e.target === modal) {
                 modal.style.display = 'none';
                 uploadForm.reset();
             }
         });
-        
+
         // Form submit işlemi
         document.querySelector('.btn-success[onclick=""]').addEventListener('click', function(e) {
             e.preventDefault();
-            
-            const formData = new FormData();
+
+            const formData = new FormData(uploadForm);
             const courseId = document.getElementById('modalCourseId').value;
             const documentId = document.getElementById('modalDocumentId').value;
-            
-            const fileInput = document.getElementById('modalDocumentFile');
-            
+
             // Dosya kontrolü
+            const fileInput = document.getElementById('modalDocumentFile');
             if (!fileInput.files[0]) {
                 alert('Lütfen bir dosya seçin!');
                 return;
             }
-            
+
             formData.append('document_file', fileInput.files[0]);
-            
+
             // AJAX ile dosya yükleme
             fetch(`/dersler/${courseId}/belge_ekle/${documentId}/`, {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': getCookie('csrftoken') // Django için CSRF token
+                    'X-CSRFToken': getCookie('csrftoken')
                 }
             })
             .then(response => {
@@ -523,7 +580,6 @@ Pano
                     alert('Dosya başarıyla yüklendi!');
                     modal.style.display = 'none';
                     uploadForm.reset();
-                    // Opsiyonel: Sayfayı yenile veya dosya listesini güncelle
                     location.reload();
                 } else {
                     alert('Dosya yüklenirken bir hata oluştu: ' + data.error);
@@ -535,27 +591,10 @@ Pano
             });
         });
     });
+    
+    
+    
 
-    // Modal açma fonksiyonu
-    function openDocumentModal(button) {
-        const courseId = button.getAttribute('course-data-id');
-        const documentId = button.getAttribute('document-data-id');
-        if (!courseId) {
-            console.error('Course ID not found!');
-            return;
-        }
-        if (!documentId) {
-            console.error('Document ID not found!');
-            return;
-        } 
-        
-        // Course ID'yi form içindeki gizli input'a set et
-        document.getElementById('modalCourseId').value = courseId;
-        document.getElementById('modalDocumentId').value = documentId;
-        
-        // Modal'ı göster
-        document.getElementById('addDocumentModal').style.display = 'block';
-    }
 
     // Django CSRF token'ı almak için yardımcı fonksiyon
     function getCookie(name) {
@@ -641,7 +680,21 @@ Pano
             {% endfor %}
         </select>
     </div>
-
+    <div class="course-select-container ">
+        <label for="courseSelect">Ders Seçiniz</label>
+        <select 
+            id="courseSelect" 
+            class="form-control"
+            data-search="true"
+            data-placeholder="Ders seçiniz...">
+            <option value="">Seçiniz...</option>
+            {% for course in all_courses %}
+                <option value="{{ course.name }}">
+                    {{ course.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
@@ -701,6 +754,7 @@ Pano
                                                                 <button type="button" class="btn btn-success" 
                                                                 onclick="openDocumentModal(this)" 
                                                                 course-data-id="{{ course.id }}"
+                                                                versions='{{ document.versions }}'
                                                                 document-data-id="{{ document.id }}">İçerik Gör</button>
                                                             </td> 
                                                             <td>

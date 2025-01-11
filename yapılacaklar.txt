@@ -1,11 +1,15 @@
-özetten basınca basılan özet belgesini erp/pano da göstersin
-tarihler sayfalara düzgün gelmiyor kontrol edilsin 
-belge ekleme işlemi kontrol edilsin 
-belge uyarıları pano ve erpye de yönlendirilsin
-eklenen belgeleri görüntüleme işlemi tamamlansın
-ozetlerde kontroller yapılsın 
-pano sayfasında gün sayısı doğru gelmiyor
-
+++ eklenen belgeleri görüntüleme işlemi tamamlansın
+    erpde belge ekleceke mi ?
+++ belge ekleme işlemi kontrol edilsin 
+H ?? özetten basınca basılan özet belgesini erp/pano da göstersin
+?? tarihler sayfalara düzgün gelmiyor kontrol edilsin 
+?? belge uyarıları pano ve erpye de yönlendirilsin
+?? ozetlerde kontroller yapılsın 
+?? ozet sayfasında filtreleme yapılacak 
+?? pano sayfasında gün sayısı doğru gelmiyor
+?? gerekli sayfalara excel butonları ekle 
+?? özet sayfasına ders tarihini de ekle 
+?? öğretmenlere firma adı ekle 
 
 
 erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak

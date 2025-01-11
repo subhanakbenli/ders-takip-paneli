@@ -5,6 +5,7 @@ from teacher.models import Teacher
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
+import os
 
 class Course(models.Model):
     STATU_CHOICES = [
@@ -103,9 +104,26 @@ class CourseFile(models.Model):
             print(f"Hata oluştu: {str(e)}")
             return cls.objects.none()
 
+def unique_file_path(instance, filename):
+    base_name, extension = os.path.splitext(filename)
+    base_name = base_name.replace(' ', '_')  # Dosya adında boşlukları kaldır
+    folder_path = 'uploads/'  # Dosyanın kaydedileceği klasör
+
+    full_path = os.path.join(folder_path, filename)
+    counter = 2
+
+    # Aynı adda bir dosya varsa sıra numarası ekle
+    while os.path.exists(full_path):
+        new_filename = f"{base_name}_{counter}{extension}"
+        print(new_filename)
+        full_path = os.path.join(folder_path, new_filename)
+        counter += 1
+
+    return os.path.join(folder_path, os.path.basename(full_path))
+
 class CourseFileVersion(models.Model):
     course_file = models.ForeignKey(CourseFile, on_delete=models.CASCADE, related_name="versions")
-    file = models.FileField(upload_to='uploads/', verbose_name="file", null=True, blank=True)
+    file = models.FileField(upload_to=unique_file_path, verbose_name="file", null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name="uploaded_at")
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
