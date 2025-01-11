@@ -118,7 +118,7 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
     Returns:
         list: A list of dictionaries containing teacher details, their courses, and documents.
     """
-    today = datetime.today()
+    today = datetime.today().date()
     teachers_data = []
     if teacher_id:
         teachers = Teacher.objects.filter(id=teacher_id)
@@ -156,18 +156,13 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         if document.statu_erp != status:
                             continue
                 
-                if document.start_date and document.end_date:
-                    start_date = datetime.strptime(document.start_date, '%Y-%m-%d')
-                    end_date = datetime.strptime(document.end_date, '%Y-%m-%d')
-                    days_to_end = (end_date - today).days
-                    days_from_start = (today - start_date).days
-                    document_warning_message = None
-                    if days_from_start < days_to_end and document.is_uploaded == False:
-                        document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
+                if document.uyari_date:
+                    uyari_date = document.uyari_date
+                    if uyari_date < today and document.is_uploaded == False:
+                        document_warning_message = "Yüklenme Tarihi Yaklaştı"
                         course_warning_counter += 1
                 else:
                     document_warning_message = None
-                
                     
                 versions = CourseFileVersion.objects.filter(course_file=document).order_by('-uploaded_at')
                 
@@ -183,7 +178,6 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                                       "uploaded_at": version.uploaded_at.strftime("%Y-%m-%dT%H:%M:%S"),
                                       "download_url": version.file.url.replace("/uploads/uploads/", "/uploads/")} for version in versions],
                         "is_uploaded": document.is_uploaded,
-                        "uploaded_at": document.uploaded_date,
                         "dilekce_name": document.dilekce_name,
                         "dilekce_is_uploaded": document.dilekce_is_uploaded,
                         "start_date": document.start_date,

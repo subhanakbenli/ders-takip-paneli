@@ -672,6 +672,9 @@ Pano Arşiv
                                         <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
                                     {% endfor %}
                                 </div>
+                                {% if course.warning_message %}
+                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                {% endif %}
                                 <!-- Documents Table -->
                                 <h6>Belgeler:</h6>
                                 {% if course.documents %}
@@ -735,8 +738,7 @@ Pano Arşiv
                                                                     
                                                                     required 
                                                                     value="{{ document.gün_sayisi }}" 
-                                                                    oninput="calculateEndDate(this)"
-                                                                >
+                                                                    oninput="calculateEndDate(this)">
                                                             </td>
                                                             <td>
                                                                 
@@ -752,9 +754,9 @@ Pano Arşiv
 
                                                             <td>
                                                                 {% if document.is_uploaded %}
-                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                                    <span class="status-icon success green-error">✔️</span>
                                                                 {% else %}
-                                                                    <span class="status-icon error green-error" >❌</span>
+                                                                    <span class="status-icon error">{{document.warning_message|default:"Yüklenmedi"}}</span>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
@@ -765,9 +767,9 @@ Pano Arşiv
                                                             </td>
                                                             <td>
                                                                 {% if document.is_uploaded %}
-                                                                    <span class="status-icon success green-error">✔️</span>
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.sisteme_giris_tarihi }}">
                                                                 {% else %}
-                                                                    <span class="status-icon error green-error">❌</span>
+                                                                    <span class="status-icon error green-error" >❌</span>
                                                                 {% endif %}
                                                             </td>
                                                             <td>

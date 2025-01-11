@@ -787,15 +787,16 @@ Pano
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                                 <p><strong>Dönem:</strong> {{ course.start_date|default:'' }} - {{ course.end_date|default:'' }}</p>
-                                {% if course.warning_message %}
-                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
-                                {% endif %}
-
-                                <div style="display: flex; gap: 20px;">
+                                
+                                <div style="display: flex; gap: 15px;">
                                     {% for key, value in course.document_statu_dict.items %}
                                         <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
                                     {% endfor %}
                                 </div>
+                                {% if course.warning_message %}
+                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                {% endif %}
+
                                 <!-- Documents Table -->
                                 <h6>Belgeler:</h6>
                                 {% if course.documents %}
@@ -879,8 +880,8 @@ Pano
                                                             </td>
 
                                                             <td>
-                                                                {% if document.is_uploaded %}
-                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_date }}">
+                                                                {% if document.sisteme_giris_tarihi %}
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.sisteme_giris_tarihi }}">
                                                                 {% else %}
                                                                     <span class="status-icon error green-error" >❌</span>
                                                                 {% endif %}

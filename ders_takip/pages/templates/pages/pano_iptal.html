@@ -604,6 +604,9 @@ Pano İptal
                                         <p><strong>{{ key }}:</strong> {{ value }}</p>
                                     {% endfor %}
                                 </div>
+                                {% if course.warning_message %}
+                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                {% endif %}
                                 <!-- Documents Table -->
                                 <h6>Belgeler:</h6>
                                 {% if course.documents %}
@@ -652,10 +655,10 @@ Pano İptal
                                                                 <input type="date" name="end_date" class="form-control" value="{{ document.end_date }}">
                                                             </td>
                                                             <td>
-                                                                {% if document.is_uploaded %}
-                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                                {% if document.sisteme_giris_tarihi %}
+                                                                    <span class="status-icon success green-error">✔️</span>
                                                                 {% else %}
-                                                                    <span class="status-icon error">❌</span>
+                                                                    <span class="status-icon error">{{document.warning_message|default:"Yüklenmedi"}}</span>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
@@ -663,10 +666,10 @@ Pano İptal
                                                             </td>
                                                             <td>{{document.dilekce_name|default:'Dilekçe Girilmedi'}}</td>
                                                             <td>
-                                                                {% if document.is_uploaded %}
-                                                                    <span class="status-icon success green-error">✔️</span>
+                                                                {% if document.sisteme_giris_tarihi %}
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.sisteme_giris_tarihi }}">
                                                                 {% else %}
-                                                                    <span class="status-icon error green-error">❌</span>
+                                                                    <span class="status-icon error green-error" >❌</span>
                                                                 {% endif %}
                                                             </td>
                                                             <td>
@@ -726,8 +729,7 @@ Pano İptal
                                             " 
                                         onmouseover="this.style.backgroundColor='#004d00'" 
                                         onmouseout="this.style.backgroundColor='#006400'" 
-                                        onclick="sendSelectedDocuments()">
-                                    İndir
+                                        onclick="sendSelectedDocuments()">İndir
                                     </button>
                                     <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'iptal', 'pano')">Excel İndir</button>
                                 </div>

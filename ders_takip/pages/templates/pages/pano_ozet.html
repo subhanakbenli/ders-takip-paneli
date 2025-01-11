@@ -104,7 +104,7 @@ Pano Özet
                         <td>{{ course_file.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
                         <td>
                             {% if course_file.is_uploaded %}
-                                <span type="date" name="end_date" class="form-control" value="{{ course_file.uploaded_date }}"></span>
+                                <span type="date" name="end_date" class="form-control" value="{{ course_file.sisteme_giris_tarihi }}"></span>
                             {% else %}
                                 <span class="status-icon error">Yükleme tarihi girilmedi</span>
                             {% endif %}

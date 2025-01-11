@@ -55,8 +55,7 @@ class CourseFile(models.Model):
     
     
     start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
-    is_uploaded = models.BooleanField(default=False)
-    uploaded_date = models.DateField(verbose_name="uploaded_date", null=True, blank=True)
+    sisteme_giris_tarihi  = models.DateField(verbose_name="sisteme_giris_tarihi", null=True, blank=True)
     gun_sayisi = models.CharField(max_length=255, verbose_name="gun_sayisi", null=True, blank=True)
     uyari_date = models.DateField(verbose_name="uyari_date", null=True, blank=True)
     end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)
@@ -70,7 +69,6 @@ class CourseFile(models.Model):
     sinif= models.CharField(max_length=255, verbose_name="sinif", null=True, blank=True)
     sehir = models.CharField(max_length=255, verbose_name="sehir", null=True, blank=True)
     katilimcilar = models.CharField(max_length=255, verbose_name="katilanlar", null=True, blank=True)
-    sisteme_giris_tarihi  = models.DateField(verbose_name="sisteme_giris_tarihi", null=True, blank=True)
     etkinlik_adi = models.CharField(max_length=255, verbose_name="etkinlik_adi", null=True, blank=True)
     egitim_olusturma_tarihi = models.DateField(verbose_name="egitim_olusturma_tarihi", null=True, blank=True)
     katilimci_kodu = models.CharField(max_length=255, verbose_name="katilimci_kodu", null=True, blank=True)

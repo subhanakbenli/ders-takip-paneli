@@ -758,6 +758,9 @@ ERP
                                         <p><strong>{{ key }}:</strong> {{ value }}</p>
                                     {% endfor %}
                                 </div>
+                                {% if course.warning_message %}
+                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                {% endif %}
                                 <div>
                                     <h6>Belgeler:</h6>
                                     <table class="table table-bordered table-responsive text-wrap">
@@ -826,10 +829,16 @@ ERP
                                                             versions='{{ document.versions }}'
                                                             document-data-id="{{ document.id }}">İçerik Gör</button>
                                                         </td> 
-                                                        <td>{{document.start_date|default:'' }}</td>
-                                                        <td>{{document.upload_date|default:'' }}</td>
-                                                        <td>{{ document.end_date|default:''  }}</td>
-                                                        <td>{{ document.warning|default:''  }}</td>
+                                                        <td>{{document.start_date}}</td>
+                                                        <td>{{document.sisteme_giris_tarihi}}</td>
+                                                        <td>{{ document.end_date }}</td>
+                                                        <td>
+                                                            {% if document.sisteme_giris_tarihi %}
+                                                                <span class="status-icon success green-error">✔️</span>
+                                                            {% else %}
+                                                                <span class="status-icon error">{{document.warning_message|default:"Yüklenmedi"}}</span>
+                                                            {% endif %}
+                                                        </td>
                                                         <td>
                                                             <input type="text" name="turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                         </td>
@@ -844,7 +853,7 @@ ERP
                                                             <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
+                                                            <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|date:'Y-m-d' }}" />
                                                         </td>
                                                         <td>
                                                             <input type="text" name="ogretmen_adi" placeholder="Öğretmen Adı: " value="{{ document.ogretmen_adi|default:'' }} " />
@@ -859,13 +868,13 @@ ERP
                                                             <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="sisteme_giris_tarihi"  value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
+                                                            <input type="date" name="sisteme_giris_tarihi"  value="{{ document.sisteme_giris_tarihi|date:'Y-m-d' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="egitim_olusturma_tarihi"   value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
+                                                            <input type="date" name="egitim_olusturma_tarihi"   value="{{ document.egitim_olusturma_tarihi|date:'Y-m-d' }}"/>
                                                         </td>
                                                         <td>
                                                             <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
@@ -892,7 +901,7 @@ ERP
                                                             <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
                                                         </td>
                                                         <td>
-                                                            <input type="date" name="guncelleme_tarihi"  value="{{document.guncelleme_tarihi|default:''}}" />
+                                                            <input type="date" name="guncelleme_tarihi"  value="{{document.guncelleme_tarihi|date:'Y-m-d' }}" />
                                                         </td>
                                                         <td>
                                                             <textarea name="aciklama_1" placeholder="Açıklama yazın">{{ document.description_1|default:'' }}</textarea>
