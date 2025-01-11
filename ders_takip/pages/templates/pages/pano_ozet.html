@@ -96,7 +96,7 @@ Pano Özet
             </thead>
             <tbody>
                 {% for course_file in data %}
-                    <tr onclick="window.location.href='{% url 'pano'  %}'" style="cursor: pointer;">
+                    <tr onclick="window.location.href='{% url 'pano' %}?teacher_id={{ course_file.course.teacher.id }}'" style="cursor: pointer;">
                         <td>{{ course_file.course.teacher.name }} {{course_file.course.teacher.surname}}</td>
                         <td>{{ course_file.course.name }}</td>
 

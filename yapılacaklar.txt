@@ -10,6 +10,7 @@ S ++ öğretmenlere firma adı ekle
 S ++ dosya ekleme işemelerini indirme işlemleri tamamla
 S ++ Öğretmen Eklerken lowercase yap
 H ++ Pano iptalde aktife al butonu
+++ erp tarihlere bakılacak
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 erp de etkinlik tarihi sorulacak!!!!!!!!!

@@ -675,6 +675,26 @@ Pano
         }
     }
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const courseSelect = document.getElementById('courseSelect');
+
+        if (courseSelect) {
+            courseSelect.addEventListener('change', function () {
+                const selectedCourse = this.value;
+
+                // Eğer form varsa submit et
+                const filterForm = document.getElementById('filterForm');
+                if (filterForm) {
+                    filterForm.submit();
+                } else {
+                    console.warn("Filter form bulunamadı. Formun ID'sini kontrol edin.");
+                }
+            });
+        }
+    });
+</script>
+
 
 <div class="container">
     <h1 class="text-center">Pano Takip</h1>
@@ -692,13 +712,13 @@ Pano
             data-placeholder="Öğretmen seçiniz...">
             <option value="">Seçiniz...</option>
             {% for teacher in teachers %}
-                <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id|stringformat:"s" %}selected{% endif %}>
+                <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
                     {{ teacher.name }} {{ teacher.surname }}
                 </option>
             {% endfor %}
         </select>
     </div>
-    <div class="course-select-container ">
+    <div  id="filterForm" class="course-select-container ">
         <label for="courseSelect">Ders Seçiniz</label>
         <select 
             id="courseSelect" 
