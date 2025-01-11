@@ -204,8 +204,7 @@ def add_file(request, course_id,document_id):
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-
-       
+     
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -319,6 +318,7 @@ def save_erp(request, id):
         return JsonResponse({'success': True, 'message': 'Belge başarıyla güncellendi'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
 
 def get_form_data(request):
     return {

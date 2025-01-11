@@ -108,7 +108,7 @@ class CourseFile(models.Model):
 def unique_file_path(instance, filename):
     base_name, extension = os.path.splitext(filename)
     base_name = base_name.replace(' ', '_')  # Dosya adında boşlukları kaldır
-    folder_path = 'uploads/'  # Dosyanın kaydedileceği klasör
+    folder_path = ''  # Dosyanın kaydedileceği klasör
 
     full_path = os.path.join(folder_path, filename)
     counter = 2

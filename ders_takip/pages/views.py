@@ -64,8 +64,12 @@ def erp_view(request):
     }
     return render(request, 'pages/erp.html', context)
     
-
 @user_has_permission([SUPERUSER,ADMIN])
+def erp_ozet_view(request):
+    data = CourseFile.get_files_in_warning_period()
+    return render(request, 'pages/erp_ozet.html', {'data':data})
+@user_has_permission([SUPERUSER,ADMIN])
+
 def erp_iptal_view(request):
     teachers_data= get_teachers_with_courses_and_documents(status="iptal", page="erp")
     # Şablona gönderilecek veri
@@ -78,7 +82,6 @@ from django.http import HttpResponse
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from django.shortcuts import get_object_or_404
-  # Dekoratörünüzü dahil edin
 
 @user_has_permission([SUPERUSER, ADMIN])
 def excel_view(request, course_id=None, statu=None, page=None):
@@ -196,12 +199,6 @@ def excel_view(request, course_id=None, statu=None, page=None):
     workbook.save(response)
     return response
 
-
-
-@user_has_permission([SUPERUSER,ADMIN])
-def erp_ozet_view(request):
-    data = CourseFile.get_files_in_warning_period()
-    return render(request, 'pages/erp_ozet.html', {'data':data})
 
 def excel_view(request,course_id=None, statu=None, page=None):
     if course_id:

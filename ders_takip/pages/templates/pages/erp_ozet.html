@@ -74,28 +74,35 @@ ERP Özet
                 <tr>
                     <th>Öğretmen Adı</th>
                     <th>Ders Adı</th>
-                    <th>Dönem</th>
+                    <th>Başlangıç Tarihi</th>
+                    <th>Bitiş Tarihi</th>
+                    <th>Yükleme Tarihi</th>
                     <th>Uyarı</th>
                 </tr>
             </thead>
             <tbody>
-                {% for teacher in teachers %}
-                    {% for course in teacher.courses %}
-                        {% for document in course.documents %}
-                        <tr onclick="window.location.href='{% url 'erp' %}'" style="cursor: pointer;">
-                            <td>{{ teacher.name }} {{ teacher.surname }}</td>
-                            <td>{{ course.name }}</td>
-                            <td>{{course.start_year}}-{{course.end_year}}</td>
-                            <td>
-                                {% if document.is_uploaded %}
-                                    <span class="status-icon success">✔️</span>
-                                {% else %}
-                                    <span class="status-icon error">❌</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% endfor %}
+                {% for course_file in data %}
+                    <tr onclick="window.location.href='{% url 'pano'  %}'" style="cursor: pointer;">
+                        <td>{{ course_file.course.teacher.name }} {{course_file.course.teacher.surname}}</td>
+                        <td>{{ course_file.course.name }}</td>
+
+                        <td>{{ course_file.start_date|date:"d/m/Y"|default:'Başlangıç Tarihi Girilmedi' }}</td>
+                        <td>{{ course_file.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
+                        <td>
+                            {% if course_file.is_uploaded %}
+                                <span type="date" name="end_date" class="form-control" value="{{ course_file.uploaded_date }}"></span>
+                            {% else %}
+                                <span class="status-icon error">Yükleme tarihi girilmedi</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if course_file.is_uploaded %}
+                                <span class="status-icon success green-error">✔️</span>
+                            {% else %}
+                                <span class="status-icon error green-error" onclick="window.location.href='{% url 'pano' %}'">❌</span>
+                            {% endif %}
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -198,9 +198,9 @@ ERP
         background-color: rgba(233, 232, 232, 0.8);
     }
 </style>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-    function sendSelectedDocuments() {
+    async function sendSelectedDocuments() {
         const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
 
         if (selectedCheckboxes.length === 0) {
@@ -208,37 +208,44 @@ ERP
             return;
         }
 
+        const zip = new JSZip();
         const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
             const documentRow = checkbox.closest('tr');
             const documentName = documentRow.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
             const documentURL = checkbox.getAttribute('data-document-url') || '';
 
-            return {
-                name: documentName,
-                url: documentURL,
-                isUploaded: documentName !== '' && documentURL !== ''
-            };
+            return { name: documentName, url: documentURL };
         });
 
-        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
-        if (notUploadedDocs.length > 0) {
-            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
-            return;
+        for (const doc of selectedDocuments) {
+            if (doc.url) {
+                try {
+                    const response = await fetch(doc.url);
+                    const blob = await response.blob();
+                    zip.file(doc.name || 'unknown', blob);
+                } catch (error) {
+                    console.error(`Failed to download file: ${doc.name}`, error);
+                    alert(`Bir hata oluştu: ${doc.name}`);
+                    return;
+                }
+            }
         }
 
-        selectedDocuments.forEach(doc => {
-            if (doc.url) {
+        // Generate ZIP and download
+        zip.generateAsync({ type: 'blob' })
+            .then(content => {
                 const link = document.createElement('a');
-                link.href = doc.url;
-                link.target = '_blank';
-                link.download = '';
+                link.href = URL.createObjectURL(content);
+                link.download = 'belgeler.zip';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            }
-        });
+            })
+            .catch(error => {
+                console.error('ZIP oluşturulamadı:', error);
+                alert('Bir hata oluştu.');
+            });
     }
-
     function toggleAllDocuments(courseId) {
         const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
         const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
@@ -272,7 +279,6 @@ ERP
         });
     });
 </script>
-
 
 <script>
     // Modal İşlemleri

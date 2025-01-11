@@ -223,50 +223,55 @@ Pano
         background-color:rgb(227, 227, 227);
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-    function sendSelectedDocuments() {
-        // Seçili tüm checkboxları bul
+    async function sendSelectedDocuments() {
         const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-    
+
         if (selectedCheckboxes.length === 0) {
             alert('Lütfen indirilecek belgeleri seçiniz.');
             return;
         }
-    
-        // Seçili belgelerin URL'lerini topla ve yüklendiğini kontrol et
+
+        const zip = new JSZip();
         const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
-            const documentRow = checkbox.closest('tr'); // İlgili satırı bul
-            const documentName = documentRow.querySelector('td:nth-child(3) a').textContent.trim(); // Belge adı
-            const documentURL = checkbox.getAttribute('data-document-url'); // Belge URL'si
-    
-            return {
-                name: documentName,
-                url: documentURL,
-                isUploaded: documentName !== '' && documentURL !== ''
-            };
+            const documentRow = checkbox.closest('tr');
+            const documentName = documentRow.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
+            const documentURL = checkbox.getAttribute('data-document-url') || '';
+
+            return { name: documentName, url: documentURL };
         });
-    
-        // Yüklenmemiş belge kontrolü
-        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
-        if (notUploadedDocs.length > 0) {
-            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
-            return;
-        }
-    
-        // Yüklenmiş belgeleri indir
-        selectedDocuments.forEach(doc => {
+
+        for (const doc of selectedDocuments) {
             if (doc.url) {
-                // Yeni bir sekmede belgeyi aç
+                try {
+                    const response = await fetch(doc.url);
+                    const blob = await response.blob();
+                    zip.file(doc.name || 'unknown', blob);
+                } catch (error) {
+                    console.error(`Failed to download file: ${doc.name}`, error);
+                    alert(`Bir hata oluştu: ${doc.name}`);
+                    return;
+                }
+            }
+        }
+
+        // Generate ZIP and download
+        zip.generateAsync({ type: 'blob' })
+            .then(content => {
                 const link = document.createElement('a');
-                link.href = doc.url;
-                link.target = '_blank';
-                link.download = ''; // Tarayıcının dosya adını kullanmasına izin ver
+                link.href = URL.createObjectURL(content);
+                link.download = 'belgeler.zip';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            }
-        });
+            })
+            .catch(error => {
+                console.error('ZIP oluşturulamadı:', error);
+                alert('Bir hata oluştu.');
+            });
     }
+
     
     function toggleAllDocuments(courseId) {
         // Tüm belgeleri seç checkbox'ı
@@ -748,6 +753,10 @@ Pano
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
                                 <p><strong>Dönem:</strong> {{ course.start_date|default:'' }} - {{ course.end_date|default:'' }}</p>
+                                {% if course.warning_message %}
+                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                {% endif %}
+
                                 <div style="display: flex; gap: 20px;">
                                     {% for key, value in course.document_statu_dict.items %}
                                         <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
@@ -837,7 +846,7 @@ Pano
 
                                                             <td>
                                                                 {% if document.is_uploaded %}
-                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_at }}">
+                                                                    <span type="date" name="end_date" class="form-control" value="{{ document.uploaded_date }}">
                                                                 {% else %}
                                                                     <span class="status-icon error green-error" >❌</span>
                                                                 {% endif %}
@@ -852,7 +861,7 @@ Pano
                                                                 {% if document.is_uploaded %}
                                                                     <span class="status-icon success green-error">✔️</span>
                                                                 {% else %}
-                                                                    <span class="status-icon error green-error">❌</span>
+                                                                    <span class="status-icon error">{{document.warning_message|default:"Yüklenmedi"}}</span>
                                                                 {% endif %}
                                                             </td>
                                                             <td>

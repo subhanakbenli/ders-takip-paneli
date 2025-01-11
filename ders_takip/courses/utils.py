@@ -49,7 +49,6 @@ def get_course_with_documents(course):
         dict: A dictionary containing course details and a list of documents.
     """
     documents = CourseFile.objects.filter(course=course)
-
     documents_data = []
     documents_statu_dict={}
     for document in documents:
@@ -157,17 +156,18 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         if document.statu_erp != status:
                             continue
                 
-                try:
-                    start_date = document.start_date
-                    end_date = document.end_date
+                if document.start_date and document.end_date:
+                    start_date = datetime.strptime(document.start_date, '%Y-%m-%d')
+                    end_date = datetime.strptime(document.end_date, '%Y-%m-%d')
                     days_to_end = (end_date - today).days
                     days_from_start = (today - start_date).days
                     document_warning_message = None
-                    if days_from_start < days_to_end and document.is_uploaded==False:
+                    if days_from_start < days_to_end and document.is_uploaded == False:
                         document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
                         course_warning_counter += 1
-                except:
+                else:
                     document_warning_message = None
+                
                     
                 versions = CourseFileVersion.objects.filter(course_file=document).order_by('-uploaded_at')
                 
@@ -220,7 +220,7 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                 course_warning_message = None                
                 if course_warning_counter > 0:
                     teacher_warning_counter += 1
-                    course_warning_message = f"{course_warning_counter} döküman yüklenmeyi bekliyor"
+                    course_warning_message = f"{course_warning_counter} döküman yüklenmesi gerekiyor"
             
                 courses_data.append({
                     "id": course.id,
@@ -260,9 +260,6 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
             })
 
     return teachers_data
-
-
-
 
 def get_warnings( status=None, page = None):
     today = datetime.today()
