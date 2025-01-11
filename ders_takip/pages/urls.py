@@ -7,6 +7,7 @@ urlpatterns = [
     path("arsiv",views.arsiv_view,name = 'arsiv_view'),
     path("arsiv_iptal",views.iptal_arsiv_view,name = 'iptal_arsiv'),
     path("pano", views.pano_view, name="pano"),
+    path("pano/<int:teacher_id>", views.pano_view, name="pano"),
     path('pano_ozet/', views.pano_ozet_view, name='pano_ozet'),
     path('erp/', views.erp_view, name='erp'),
     path('erp_ozet/', views.erp_ozet_view, name='erp_ozet'),  

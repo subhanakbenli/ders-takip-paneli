@@ -7,7 +7,7 @@ H ?? özetten basınca basılan özet belgesini erp/pano da göstersin
 ?? ozetlerde kontroller yapılsın 
 ?? ozet sayfasında filtreleme yapılacak 
 ?? pano sayfasında gün sayısı doğru gelmiyor
-?? gerekli sayfalara excel butonları ekle 
+H ?? gerekli sayfalara excel butonları ekle 
 ?? özet sayfasına ders tarihini de ekle 
 ?? öğretmenlere firma adı ekle 
 
