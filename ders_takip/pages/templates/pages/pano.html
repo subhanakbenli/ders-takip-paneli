@@ -214,17 +214,22 @@ Pano
     function sendSelectedDocuments() {
         // Seçili tüm checkboxları bul
         const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-        
+    
         if (selectedCheckboxes.length === 0) {
             alert('Lütfen indirilecek belgeleri seçiniz.');
             return;
         }
     
-        // Seçili belgelerin URL'lerini topla
+        // Seçili belgelerin URL'lerini topla ve yüklendiğini kontrol et
         const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
+            const documentRow = checkbox.closest('tr'); // İlgili satırı bul
+            const documentName = documentRow.querySelector('td:nth-child(3) a').textContent.trim(); // Belge adı
+            const documentURL = checkbox.getAttribute('data-document-url'); // Belge URL'si
+    
             return {
-                url: checkbox.getAttribute('data-document-url'),
-                isUploaded: checkbox.closest('tr').querySelector('.status-icon.success') !== null
+                name: documentName,
+                url: documentURL,
+                isUploaded: documentName !== '' && documentURL !== ''
             };
         });
     
@@ -276,8 +281,7 @@ Pano
         
         selectAllCheckbox.checked = allChecked;
         selectAllCheckbox.indeterminate = anyChecked && !allChecked;
-    }
-    
+    } 
     // Her belge checkbox'ına event listener ekle
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.document-checkbox').forEach(checkbox => {
@@ -447,17 +451,6 @@ Pano
             console.error('Silme hatası:', error);
             alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
         }
-    }
-</script>
-
-<script>
-    function downloadPDF(courseId) {
-        if (!courseId) {
-            alert("Ders seçilemedi. Lütfen tekrar deneyiniz.");
-            return;
-        }
-        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        window.location.href = `/ogretmen/${courseId}/pdf_pano/`;
     }
 </script>
 
@@ -657,8 +650,8 @@ Pano
             }
         }
     }
-
 </script>
+
 <div class="container">
     <h1 class="text-center">Pano Takip</h1>
 
@@ -727,7 +720,7 @@ Pano
                                                     </th>
                                                     <th>Kategori</th>
                                                     <th>Belge Adı</th>
-                                                    <th>İşlemler</th>
+                                                    <th>Yükleme Alanı</th>
                                                     <th>Başlangıç Tarihi</th>
                                                     <th>Gün Sayısı</th>
                                                     <th>Bitiş Tarihi</th>
@@ -746,10 +739,18 @@ Pano
                                                         {% csrf_token %}
                                                         <tr>
                                                             <td>
-                                                                <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                                <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url |default:''}}">
                                                             </td>
                                                             <td>{{ document.category }}</td>
-                                                            <td>{{ document.belge_adi}}</td>
+                                                            <td>
+                                                                {% if document.belge_url %}
+                                                                    <a href="{{ document.belge_url }}" download>
+                                                                        {{ document.belge_adi|default:'' }}
+                                                                    </a>
+                                                                {% else %}
+                                                                    {{ document.belge_adi|default:'' }}
+                                                                {% endif %}
+                                                            </td>
                                                             <td>
                                                                 <button type="button" class="btn btn-success" 
                                                                 onclick="openDocumentModal(this)" 

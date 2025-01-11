@@ -204,7 +204,6 @@ def excel_view(request,course_id=None, statu=None, page=None):
         write_to_excel(data, f"{statu}_{page}")
     return JsonResponse({"status": "success"})
 
-@login_required
 def index(request):
     user, created = User.objects.get_or_create(
         username="test2_user",

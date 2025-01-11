@@ -1,17 +1,41 @@
 H ?? özetten basınca basılan özet belgesini erp/pano da göstersin
 ?? tarihler sayfalara düzgün gelmiyor kontrol edilsin  ?? erpden panoya tarih aktarımı yapılamıyor erpde sisteme giriş tarihi kaydedilemiyor                                                                                                                                                                
-S?? belge uyarıları pano ve erpye de yönlendirilsin
+?? belge uyarıları pano ve erpye de yönlendirilsin
 ?? ozetlerde kontroller yapılsın 
 +? ozet sayfasında filtreleme yapılacak 
 ?? pano sayfasında gün sayısı doğru gelmiyor
-
+S ++ Erpye belgeleri senkronize et
 H ?? gerekli sayfalara excel butonları ekle 
-S++ öğretmenlere firma adı ekle 
-dosya ekleme işemelerini indirme işlemleri tamamla
-++ eklenen belgeleri görüntüleme işlemi tamamlansın
-    erpde belge ekleceke mi ?
-++ belge ekleme işlemi kontrol edilsin 
-++ özet sayfasına ders tarihini de ekle 
+S ++ öğretmenlere firma adı ekle 
+S ++ dosya ekleme işemelerini indirme işlemleri tamamla
+S ++ Öğretmen Eklerken lowercase yap
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+erp de etkinlik tarihi sorulacak!!!!!!!!!
+Arşiv sayfası etkinlik tarihi sorulacak
+
+Görevler 1 :
+    Login işlemleri kontrol edileccek yetkilendirme işlemleri ile yetkili kullanıcı decaratörü oluşturulacak  +++
+    Navbar içine gerekli sayafalara bağlantılar eklenecek
+    Dersi veren kişilerin verdikleri dersleri göstereceğimiz bir sayfa +++
+    Gerekli tablolar oluşturulacak
+    
+    DErs Kayıt Sayfası Yapıalcak burada zorunlu ve opsiyonel kısımlar var bunu unutmayalım
+    Kaydedilen Dersleri listeleyeceğimiz bir sayfa olacak 
+
+
+
+    
+ders düzenleme sayfası eklenecek 
+ders listesi sayfasında bunun yılı gösterilecek
+ders ekle sayfasında dersin dönemi  eklenecek
+
+excele çıktı verilecek 
+iptal edilip arşive alınan dersler için geri al butonu 
+word ve pdf oalrak çıktı ver 
+öğretmen sayfasında verdiği dersleri göster
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
 ders bazlı dilekçe girilmesi zorunlu tutulabilecek bunu ders ekle sayfasında bir checkbox ile kontrol et eğer true ise belgeler dilekçe adı girilemden arşivlenemez!!!

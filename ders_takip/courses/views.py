@@ -24,6 +24,7 @@ def add_course_view(request):
         # Kullanıcıdan gelen öğretmen adını al
         teacher_name = request.POST.get('teacher_name')  # Yeni: Öğretmen adı
         if teacher_name:
+            teacher_name = str(teacher_name).capitalize()
             # Öğretmeni ada göre bul veya oluştur
             teacher, created = Teacher.objects.get_or_create(name=teacher_name.strip())
         else:
