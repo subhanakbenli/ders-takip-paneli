@@ -6,6 +6,7 @@ class Teacher(models.Model):
     name = models.CharField(max_length=255, verbose_name="name")
     surname = models.CharField(max_length=255, verbose_name="surname")
     title = models.CharField(max_length=255, verbose_name="title", blank=True, null=True)
+    firma_adi = models.CharField(max_length=255, verbose_name="firma_adi", blank=True, null=True)
     description = models.TextField(verbose_name="description", blank=True, null=True)
     telephone = models.CharField(max_length=255, verbose_name="telephone", blank=True, null=True)
     telephone2 = models.CharField(max_length=255, verbose_name="telephone2", blank=True, null=True)

@@ -133,6 +133,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "ders_takip" / "static",
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Statik dosyalar için ek klasörler
 

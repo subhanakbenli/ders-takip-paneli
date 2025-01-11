@@ -37,6 +37,7 @@ class CourseFile(models.Model):
         ("iptal", "İptal"),
         ("arsiv", "Arşiv"),
     ]
+    
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="course")
     category = models.CharField(max_length=255, verbose_name="category", null=True, blank=True)
     name = models.CharField(max_length=255, verbose_name="file_name", null=True, blank=True)
@@ -55,7 +56,7 @@ class CourseFile(models.Model):
     
     start_date = models.CharField(max_length=255, verbose_name="start_date", null=True, blank=True)
     is_uploaded = models.BooleanField(default=False)
-    uploaded_date = models.DateField(verbose_name="uploaded_at", null=True, blank=True)
+    uploaded_date = models.DateField(verbose_name="uploaded_date", null=True, blank=True)
     gun_sayisi = models.CharField(max_length=255, verbose_name="gun_sayisi", null=True, blank=True)
     uyari_date = models.DateField(verbose_name="uyari_date", null=True, blank=True)
     end_date = models.CharField(max_length=255, verbose_name="end_date", null=True, blank=True)

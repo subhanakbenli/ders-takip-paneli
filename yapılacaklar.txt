@@ -1,16 +1,17 @@
+H ?? özetten basınca basılan özet belgesini erp/pano da göstersin
+?? tarihler sayfalara düzgün gelmiyor kontrol edilsin  ?? erpden panoya tarih aktarımı yapılamıyor erpde sisteme giriş tarihi kaydedilemiyor                                                                                                                                                                
+S?? belge uyarıları pano ve erpye de yönlendirilsin
+?? ozetlerde kontroller yapılsın 
++? ozet sayfasında filtreleme yapılacak 
+?? pano sayfasında gün sayısı doğru gelmiyor
+
+H ?? gerekli sayfalara excel butonları ekle 
+S++ öğretmenlere firma adı ekle 
+dosya ekleme işemelerini indirme işlemleri tamamla
 ++ eklenen belgeleri görüntüleme işlemi tamamlansın
     erpde belge ekleceke mi ?
 ++ belge ekleme işlemi kontrol edilsin 
-H ?? özetten basınca basılan özet belgesini erp/pano da göstersin
-?? tarihler sayfalara düzgün gelmiyor kontrol edilsin 
-?? belge uyarıları pano ve erpye de yönlendirilsin
-?? ozetlerde kontroller yapılsın 
-?? ozet sayfasında filtreleme yapılacak 
-?? pano sayfasında gün sayısı doğru gelmiyor
-H ?? gerekli sayfalara excel butonları ekle 
-?? özet sayfasına ders tarihini de ekle 
-?? öğretmenlere firma adı ekle 
-
+++ özet sayfasına ders tarihini de ekle 
 
 erp sayfasında dilekçe adı girilmeyecek pano sayfasından otomatik alınacak
 ders bazlı dilekçe girilmesi zorunlu tutulabilecek bunu ders ekle sayfasında bir checkbox ile kontrol et eğer true ise belgeler dilekçe adı girilemden arşivlenemez!!!

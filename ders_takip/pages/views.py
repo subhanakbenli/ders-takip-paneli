@@ -188,8 +188,8 @@ def excel_view(request, course_id=None, statu=None, page=None):
 
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_ozet_view(request):
-    teachers_data = get_teachers_with_courses_and_documents(status="aktif", page="erp")
-    return render(request, 'pages/erp_ozet.html', {'teachers': teachers_data})
+    data = CourseFile.get_files_in_warning_period()
+    return render(request, 'pages/erp_ozet.html', {'data':data})
 
 def excel_view(request,course_id=None, statu=None, page=None):
     if course_id:
