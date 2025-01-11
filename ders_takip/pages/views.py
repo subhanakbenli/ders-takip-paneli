@@ -58,9 +58,16 @@ def iptal_arsiv_view(request):
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_view(request):
     teachers_data= get_teachers_with_courses_and_documents(status="aktif",page="erp")
+    selected_teacher_id = request.GET.get('teacher_id')  # Sorgu parametresinden öğretmen ID'sini al
+    # Eğer bir öğretmen seçilmişse, öğretmen detaylarını filtrele
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
     # Şablona gönderilecek veri
     context = {
         'teachers': teachers_data,  # Geçici öğretmen verileri
+        'selected_teacher_id': selected_teacher_id,  # Seçili öğretmeni şablona gönder
     }
     return render(request, 'pages/erp.html', context)
     

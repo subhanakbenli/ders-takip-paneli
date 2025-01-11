@@ -341,6 +341,39 @@ Pano
     });
 </script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const courseSelect = document.getElementById('courseSelect');
+        
+        if (courseSelect) {
+            courseSelect.addEventListener('change', function() {
+                const selectedCourseName = this.value;
+
+                // Tüm ders detaylarını gizle
+                document.querySelectorAll('.course-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+
+                if (selectedCourseName) {
+                    // Seçilen dersin detaylarını göster
+                    const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseName}"]`);
+                    if (selectedCourseDetails) {
+                        selectedCourseDetails.style.display = 'block';
+                    }
+                }
+            });
+
+            // Sayfa yüklendiğinde seçili ders varsa onu göster
+            const selectedCourseNameOnLoad = courseSelect.value;
+            if (selectedCourseNameOnLoad) {
+                const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseNameOnLoad}"]`);
+                if (selectedCourseDetails) {
+                    selectedCourseDetails.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+<script>
     async function sendRequest(url, method, formData = null) {
         try {
             // CSRF token'ı al
@@ -723,7 +756,7 @@ Pano
             {% endfor %}
         </select>
     </div>
-    <div  id="filterForm" class="course-select-container ">
+    <div class="course-select-container">
         <label for="courseSelect">Ders Seçiniz</label>
         <select 
             id="courseSelect" 
@@ -739,6 +772,7 @@ Pano
             {% endfor %}
         </select>
     </div>
+
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}

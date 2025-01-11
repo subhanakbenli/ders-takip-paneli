@@ -729,10 +729,11 @@ ERP
             id="teacherSelect" 
             class="form-control"
             data-search="true"
+            onchange="document.getElementById('filterForm').submit();"
             data-placeholder="Öğretmen seçiniz...">
             <option value="">Seçiniz...</option>
             {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">
+                <option value="{{ teacher.id }}" {% if teacher.id == selected_teacher_id %}selected{% endif %}>
                     {{ teacher.name }} {{ teacher.surname }}
                 </option>
             {% endfor %}
@@ -825,10 +826,10 @@ ERP
                                                             versions='{{ document.versions }}'
                                                             document-data-id="{{ document.id }}">İçerik Gör</button>
                                                         </td> 
-                                                        <td>{{document.start_date}}</td>
-                                                        <td>{{document.upload_date}}</td>
-                                                        <td>{{ document.end_date }}</td>
-                                                        <td>{{ document.warning }}</td>
+                                                        <td>{{document.start_date|default:'' }}</td>
+                                                        <td>{{document.upload_date|default:'' }}</td>
+                                                        <td>{{ document.end_date|default:''  }}</td>
+                                                        <td>{{ document.warning|default:''  }}</td>
                                                         <td>
                                                             <input type="text" name="turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                         </td>
