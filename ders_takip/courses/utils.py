@@ -155,10 +155,10 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         document_statu_dict[document.statu_erp] = document_statu_dict.get(document.statu_erp, 0) + 1                
                         if document.statu_erp != status:
                             continue
-                
+                document_warning_message = None
                 if document.uyari_date:
                     uyari_date = document.uyari_date
-                    if uyari_date < today and document.is_uploaded == False:
+                    if uyari_date < today and document.sisteme_giris_tarihi == None:
                         document_warning_message = "Yüklenme Tarihi Yaklaştı"
                         course_warning_counter += 1
                 else:
@@ -177,7 +177,6 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                                       "file": version.file.name.replace("uploads/",""), 
                                       "uploaded_at": version.uploaded_at.strftime("%Y-%m-%dT%H:%M:%S"),
                                       "download_url": version.file.url.replace("/uploads/uploads/", "/uploads/")} for version in versions],
-                        "is_uploaded": document.is_uploaded,
                         "dilekce_name": document.dilekce_name,
                         "dilekce_is_uploaded": document.dilekce_is_uploaded,
                         "start_date": document.start_date,

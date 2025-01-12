@@ -7,6 +7,9 @@ Pano
 {% block content %}
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
+    .course-details {
+        display: none; /* Tüm ders detayları başlangıçta gizli */
+    }
 
     input[type="number"] {
         font-size: 15px;
@@ -340,32 +343,35 @@ Pano
         }
     });
 </script>
+{% comment %} ders seçim işlemleri {% endcomment %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const courseSelect = document.getElementById('courseSelect');
-        
+
         if (courseSelect) {
-            courseSelect.addEventListener('change', function() {
-                const selectedCourseName = this.value;
+            courseSelect.addEventListener('change', function () {
+                const selectedCourse = this.value;
 
                 // Tüm ders detaylarını gizle
                 document.querySelectorAll('.course-details').forEach(detail => {
                     detail.style.display = 'none';
                 });
 
-                if (selectedCourseName) {
+                if (selectedCourse) {
                     // Seçilen dersin detaylarını göster
-                    const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseName}"]`);
+                    const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourse}"]`);
                     if (selectedCourseDetails) {
                         selectedCourseDetails.style.display = 'block';
+                    } else {
+                        console.warn("Seçilen ders detayları bulunamadı:", selectedCourse);
                     }
                 }
             });
 
             // Sayfa yüklendiğinde seçili ders varsa onu göster
-            const selectedCourseNameOnLoad = courseSelect.value;
-            if (selectedCourseNameOnLoad) {
-                const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseNameOnLoad}"]`);
+            const selectedCourseOnLoad = courseSelect.value;
+            if (selectedCourseOnLoad) {
+                const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseOnLoad}"]`);
                 if (selectedCourseDetails) {
                     selectedCourseDetails.style.display = 'block';
                 }
@@ -373,6 +379,8 @@ Pano
         }
     });
 </script>
+
+
 <script>
     async function sendRequest(url, method, formData = null) {
         try {
@@ -740,38 +748,48 @@ Pano
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
     
-    <div class="teacher-select-container ">
-        <label for="teacherSelect">Öğretmen Seçiniz</label>
-        <select 
-            id="teacherSelect" 
-            class="form-control"
-            data-search="true"
-            onchange="document.getElementById('filterForm').submit();"
-            data-placeholder="Öğretmen seçiniz...">
-            <option value="">Seçiniz...</option>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
-                    {{ teacher.name }} {{ teacher.surname }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="course-select-container">
-        <label for="courseSelect">Ders Seçiniz</label>
-        <select 
-            id="courseSelect" 
-            class="form-control"
-            data-search="true"
-            onchange="document.getElementById('filterForm').submit();"
-            data-placeholder="Ders seçiniz...">
-            <option value="">Seçiniz...</option>
-            {% for course in all_courses %}
-                <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
-                    {{ course.name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
+   <!-- Öğretmen ve Ders Seçimi -->
+    <form id="filterForm" method="GET" action="/pano">
+        <div style="display: flex; gap: 20px; align-items: flex-end;">
+            <div class="teacher-select-container" style="flex: 1;">
+                <label for="teacherSelect"></label>
+                <select 
+                    id="teacherSelect" 
+                    class="form-control"
+                    name="teacher_id"
+                    data-search="true"
+                    onchange="document.getElementById('filterForm').submit();"
+                    data-placeholder="Öğretmen seçiniz...">
+                    <option value="">Öğretmen Seçiniz</option>
+                    {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
+                            {{ teacher.name }} {{ teacher.surname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="course-select-container" style="flex: 1;">
+                <label for="courseSelect"></label>
+                <select 
+                    id="courseSelect" 
+                    class="form-control"
+                    name="course_name"
+                    data-search="true"
+                    onchange="document.getElementById('filterForm').submit();"
+                    data-placeholder="Ders seçiniz...">
+                    <option value="">Ders Seçiniz</option>
+                    {% for course in all_courses %}
+                        <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
+                            {{ course.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
+
+
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
@@ -893,7 +911,7 @@ Pano
                                                                 <input type="text" name="dilekce_name" placeholder="Dilekçe Adı Giriniz" value="{{ document.dilekce_name|default:'' }}">
                                                             </td>
                                                             <td>
-                                                                {% if document.is_uploaded %}
+                                                                {% if document.sisteme_giris_tarihi %}
                                                                     <span class="status-icon success green-error">✔️</span>
                                                                 {% else %}
                                                                     <span class="status-icon error">{{document.warning_message|default:"Yüklenmedi"}}</span>

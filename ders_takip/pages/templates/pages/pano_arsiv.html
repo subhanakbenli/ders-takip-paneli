@@ -209,6 +209,18 @@ Pano Arşiv
         font-size: 1.1rem;  /* Added font size reduction for select */
         background-color:rgb(227, 227, 227);
     }
+    .course-select-container {
+        margin-bottom: 1rem;
+    }
+
+    .course-select-container select {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        border: 1px solid #e2e8f0;
+        font-size: 1.1rem;  /* Added font size reduction for select */
+        background-color:rgb(227, 227, 227);
+    }
 </style>
 <script>
     function sendSelectedDocuments() {
@@ -288,36 +300,7 @@ Pano Arşiv
         });
     });
 </script>
-<script>
-    // Öğretmen seçim işlemleri
-    document.addEventListener('DOMContentLoaded', function() {
-        const teacherSelect = document.getElementById('teacherSelect');
-        
-        if (teacherSelect) {
-            teacherSelect.addEventListener('change', function() {
-                const selectedTeacherId = this.value;
-                
-                // Tüm öğretmen detaylarını gizle
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-                
-                if (selectedTeacherId) {
-                    // Seçilen öğretmenin detaylarını göster
-                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
-                    if (selectedTeacherDetails) {
-                        selectedTeacherDetails.style.display = 'block';
-                    }
-                } else {
-                    // Hiçbir öğretmen seçili değilse tüm detayları göster
-                    document.querySelectorAll('.teacher-details').forEach(detail => {
-                        detail.style.display = 'block';
-                    });
-                }
-            });
-        }
-    });
-</script>
+
 <script>
     async function sendRequest(url, method, formData = null) {
         try {
@@ -631,27 +614,117 @@ Pano Arşiv
     }
 </script>
 
+<script>
+    // Öğretmen seçim işlemleri
+    document.addEventListener('DOMContentLoaded', function() {
+        const teacherSelect = document.getElementById('teacherSelect');
+        
+        if (teacherSelect) {
+            teacherSelect.addEventListener('change', function() {
+                const selectedTeacherId = this.value;
+                
+                // Tüm öğretmen detaylarını gizle
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+                
+                if (selectedTeacherId) {
+                    // Seçilen öğretmenin detaylarını göster
+                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                    if (selectedTeacherDetails) {
+                        selectedTeacherDetails.style.display = 'block';
+                    }
+                } else {
+                    // Hiçbir öğretmen seçili değilse tüm detayları göster
+                    document.querySelectorAll('.teacher-details').forEach(detail => {
+                        detail.style.display = 'block';
+                    });
+                }
+            });
+        }
+    });
+</script>
+{% comment %} ders seçim işlemleri {% endcomment %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const courseSelect = document.getElementById('courseSelect');
+
+        if (courseSelect) {
+            courseSelect.addEventListener('change', function () {
+                const selectedCourse = this.value;
+
+                // Tüm ders detaylarını gizle
+                document.querySelectorAll('.course-details').forEach(detail => {
+                    detail.style.display = 'none';
+                });
+
+                if (selectedCourse) {
+                    // Seçilen dersin detaylarını göster
+                    const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourse}"]`);
+                    if (selectedCourseDetails) {
+                        selectedCourseDetails.style.display = 'block';
+                    } else {
+                        console.warn("Seçilen ders detayları bulunamadı:", selectedCourse);
+                    }
+                }
+            });
+
+            // Sayfa yüklendiğinde seçili ders varsa onu göster
+            const selectedCourseOnLoad = courseSelect.value;
+            if (selectedCourseOnLoad) {
+                const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseOnLoad}"]`);
+                if (selectedCourseDetails) {
+                    selectedCourseDetails.style.display = 'block';
+                }
+            }
+        }
+    });
+</script>
+
 <div class="container">
     <h1 class="text-center">Pano Arşiv</h1>
 
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
     
-    <div class="teacher-select-container ">
-        <label for="teacherSelect">Öğretmen Seçiniz</label>
-        <select 
-            id="teacherSelect" 
-            class="form-control"
-            data-search="true"
-            data-placeholder="Öğretmen seçiniz...">
-            <option value="">Seçiniz...</option>
-            {% for teacher in teachers %}
-                <option value="{{ teacher.id }}">
-                    {{ teacher.name }} {{ teacher.surname }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
+    <form id="filterForm" method="GET" action="/pano_arsiv/">
+        <div style="display: flex; gap: 20px; align-items: flex-end;">
+            <div class="teacher-select-container" style="flex: 1;">
+                <label for="teacherSelect"></label>
+                <select 
+                    id="teacherSelect" 
+                    class="form-control"
+                    name="teacher_id"
+                    data-search="true"
+                    data-placeholder="Öğretmen seçiniz...">
+                    <option value="">Öğretmen Seçiniz</option>
+                    {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
+                            {{ teacher.name }} {{ teacher.surname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="course-select-container" style="flex: 1;">
+                <label for="courseSelect"></label>
+                <select 
+                    id="courseSelect" 
+                    class="form-control"
+                    name="course_name"
+                    data-search="true"
+                    onchange="document.getElementById('filterForm').submit();"
+                    data-placeholder="Ders seçiniz...">
+                    <option value="">Ders Seçiniz</option>
+                    {% for course in all_courses %}
+                        <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
+                            {{ course.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </form>
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">

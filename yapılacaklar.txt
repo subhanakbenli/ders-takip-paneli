@@ -3,7 +3,7 @@ H ?? tarihler sayfalara düzgün gelmiyor kontrol edilsin  ?? erpden panoya tari
 S ?? belge uyarıları pano ve erpye de yönlendirilsin
 H ?? ozetlerde kontroller yapılsın 
 S ++ ozet sayfasında filtreleme yapılacak 
-H ?? pano sayfasında gün sayısı doğru gelmiyor
+s ?? pano sayfasında gün sayısı doğru gelmiyor
 S ++ Erpye belgeleri senkronize et
 H ?? gerekli sayfalara excel butonları ekle 
 S ++ öğretmenlere firma adı ekle 

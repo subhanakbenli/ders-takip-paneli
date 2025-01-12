@@ -12,10 +12,163 @@ from ders_takip.settings import USER,SUPERUSER,ADMIN
 from .xlsxWriter import write_to_excel
 from courses.models import Course,CourseFile
 
+@user_has_permission([SUPERUSER,ADMIN])
+def erp_view(request):
+    teachers_data= get_teachers_with_courses_and_documents(status="aktif",page="erp")
+    selected_teacher_id = request.GET.get('teacher_id')  # Sorgu parametresinden öğretmen ID'sini al
+    distinct_courses = Course.objects.values('id','name').distinct()
+    selected_course_name = request.GET.get('course_name')
+    # Eğer bir öğretmen seçilmişse, öğretmen detaylarını filtrele
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+    
+    # Ders adı ile filtreleme
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [
+                course for course in teacher['courses']
+                if course['name'] == selected_course_name
+            ]
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,  # Geçici öğretmen verileri
+        'selected_teacher_id': selected_teacher_id,  # Seçili öğretmeni şablona gönder
+        'selected_course_name': selected_course_name,  # Seçilen ders adı
+        'all_courses': distinct_courses,  # Tüm dersleri alarak dropdown için gönder
+    }
+    return render(request, 'pages/erp.html', context)
+
+
+# erp arşiv
+@user_has_permission([SUPERUSER,ADMIN])
+def archive_page(request):
+    # "arsiv" durumundaki öğretmenleri ve dersleri alın
+    teachers_data = get_teachers_with_courses_and_documents(status="arsiv", page="erp")
+    distinct_courses = Course.objects.values('id','name').distinct()
+    # Öğretmen ve ders seçimi için sorgu parametrelerini alın
+    selected_teacher_id = request.GET.get('teacher_id')
+    selected_course_name = request.GET.get('course_name')
+    
+    # Öğretmen ve ders filtreleme
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
+    # Ders adı ile filtreleme
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [
+                course for course in teacher['courses']
+                if course['name'] == selected_course_name
+            ]
+
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,
+        'selected_teacher_id': selected_teacher_id,
+        'selected_course_name': selected_course_name,  # Seçilen ders adı
+        'all_courses': distinct_courses,  # Tüm dersleri alarak dropdown için gönder
+    }
+    return render(request, 'pages/erp_arsiv.html', context)
+
+# pano arşiv
+@login_required
+def pano_arsiv(request):
+    # Tüm öğretmen ve arşivlenmiş dersleri al
+    teachers_data = get_teachers_with_courses_and_documents(status="arsiv", page="pano")
+    distinct_courses = Course.objects.values('id', 'name').distinct()
+     # Öğretmen ve ders seçimi için sorgu parametrelerini alın
+    selected_teacher_id = request.GET.get('teacher_id')
+    selected_course_name = request.GET.get('course_name')
+    # Öğretmen ve ders filtreleme
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
+    # Ders adı ile filtreleme
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [
+                course for course in teacher['courses']
+                if course['name'] == selected_course_name
+            ]
+
+    # Şablona gönderilecek veri
+    context = {
+        'teachers': teachers_data,
+        'selected_teacher_id': selected_teacher_id,
+        'selected_course_name': selected_course_name,  # Seçilen ders adı
+        'all_courses': distinct_courses,  # Tüm dersleri alarak dropdown için gönder
+    }
+    return render(request, 'pages/pano_arsiv.html', context)
+
+
+
+
+@user_has_permission([SUPERUSER,ADMIN])
+def erp_iptal_view(request):
+    teachers_data = get_teachers_with_courses_and_documents(status="iptal", page="erp")
+    distinct_courses = Course.objects.values('id','name').distinct()
+    selected_teacher_id = request.GET.get('teacher_id')
+    selected_course_name = request.GET.get('course_name')
+
+    # Öğretmen ve ders filtreleme
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
+    # Ders adı ile filtreleme
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [
+                course for course in teacher['courses']
+                if course['name'] == selected_course_name
+            ]
+
+    context = {
+        'teachers': teachers_data,
+        'selected_teacher_id': selected_teacher_id,
+        'selected_course_name': selected_course_name,
+        'all_courses': distinct_courses,
+    }
+    return render(request, 'pages/erp_iptal.html', context)
+
+
 
 @login_required
+def pano_iptal_view(request):
+    teachers_data = get_teachers_with_courses_and_documents(status="iptal", page="pano")
+    distinct_courses = Course.objects.values('id','name').distinct()
+    selected_teacher_id = request.GET.get('teacher_id')
+    selected_course_name = request.GET.get('course_name')
+     # Öğretmen ve ders filtreleme
+    if selected_teacher_id:
+        selected_teacher_id = int(selected_teacher_id)
+        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
+
+    # Ders adı ile filtreleme
+    if selected_course_name:
+        for teacher in teachers_data:
+            teacher['courses'] = [
+                course for course in teacher['courses']
+                if course['name'] == selected_course_name
+            ]
+    
+    context = {
+        'teachers': teachers_data,
+        'selected_teacher_id': selected_teacher_id,
+        'selected_course_name': selected_course_name,
+        'all_courses': distinct_courses,
+    }
+    return render(request, 'pages/pano_iptal.html', context)
+
+
+
+    
+@login_required
 def pano_view(request, teacher_id=None):
-    distinct_courses = Course.objects.values('name').distinct()
+    distinct_courses = Course.objects.values('id','name').distinct()
     # GET parametrelerini al
     selected_teacher_id = request.GET.get('teacher_id', teacher_id)
     selected_course_name = request.GET.get('course_name', None)
@@ -24,21 +177,17 @@ def pano_view(request, teacher_id=None):
     if selected_teacher_id:
         selected_teacher_id = int(selected_teacher_id)
         teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
-
     if selected_course_name:
         for teacher in teachers_data:
             teacher['courses'] = [course for course in teacher['courses'] if course['name'] == selected_course_name]
-
     return render(request, 'pages/pano.html', {'teachers': teachers_data,
                                                'all_courses': distinct_courses,
                                                 'selected_teacher_id': int(selected_teacher_id) if selected_teacher_id else None, 
                                                 'selected_course_name': selected_course_name})
 
 
-@login_required
-def pano_iptal_view(request):
-    teachers_data = get_teachers_with_courses_and_documents(status="iptal", page="pano")
-    return render(request, 'pages/pano_iptal.html', {'teachers': teachers_data})
+
+
 
 @login_required
 def pano_ozet_view(request):
@@ -55,35 +204,13 @@ def iptal_arsiv_view(request):
     teachers_data = get_teachers_with_courses_and_documents()
     return render(request, 'pages/arsiv_iptal.html', {'teachers': teachers_data})
 
-@user_has_permission([SUPERUSER,ADMIN])
-def erp_view(request):
-    teachers_data= get_teachers_with_courses_and_documents(status="aktif",page="erp")
-    selected_teacher_id = request.GET.get('teacher_id')  # Sorgu parametresinden öğretmen ID'sini al
-    # Eğer bir öğretmen seçilmişse, öğretmen detaylarını filtrele
-    if selected_teacher_id:
-        selected_teacher_id = int(selected_teacher_id)
-        teachers_data = [teacher for teacher in teachers_data if teacher['id'] == selected_teacher_id]
 
-    # Şablona gönderilecek veri
-    context = {
-        'teachers': teachers_data,  # Geçici öğretmen verileri
-        'selected_teacher_id': selected_teacher_id,  # Seçili öğretmeni şablona gönder
-    }
-    return render(request, 'pages/erp.html', context)
-    
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_ozet_view(request):
     data = CourseFile.get_files_in_warning_period()
     return render(request, 'pages/erp_ozet.html', {'data':data})
-@user_has_permission([SUPERUSER,ADMIN])
 
-def erp_iptal_view(request):
-    teachers_data= get_teachers_with_courses_and_documents(status="iptal", page="erp")
-    # Şablona gönderilecek veri
-    context = {
-        'teachers': teachers_data,  # Geçici öğretmen verileri
-    }
-    return render(request, 'pages/erp_iptal.html', context)
+
 
 from django.http import HttpResponse
 from openpyxl import Workbook
@@ -238,18 +365,3 @@ def index(request):
     login(request, user)
     return render(request, 'base.html')
 
-# erp arşiv
-@user_has_permission([SUPERUSER,ADMIN])
-def archive_page(request):
-    teachers_data= get_teachers_with_courses_and_documents(status="arsiv",page="erp")
-    # Şablona gönderilecek veri
-    context = {
-        'teachers': teachers_data,  # Geçici öğretmen verileri
-    }
-    return render(request, 'pages/erp_arsiv.html', context)
-
-# pano arşiv
-@login_required
-def pano_arsiv(request):
-    teachers_data = get_teachers_with_courses_and_documents(status="arsiv", page="pano")
-    return render(request, 'pages/pano_arsiv.html', {'teachers': teachers_data})
