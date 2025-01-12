@@ -96,7 +96,7 @@ class CourseFile(models.Model):
             warning_files = cls.objects.filter(
                 uyari_date__lte=today,
                 end_date__gt=today.strftime('%Y-%m-%d'),
-                is_uploaded=False
+                sisteme_giris_tarihi__isnull=True
             )
             return warning_files
         except Exception as e:
