@@ -4,8 +4,6 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path("", views.index, name='index'),
-    path("arsiv",views.arsiv_view,name = 'arsiv_view'),
-    path("arsiv_iptal",views.iptal_arsiv_view,name = 'iptal_arsiv'),
     path("pano", views.pano_view, name="pano"),
     path("pano/<int:teacher_id>", views.pano_view, name="pano"),
     path('pano_ozet/', views.pano_ozet_view, name='pano_ozet'),
@@ -15,8 +13,8 @@ urlpatterns = [
     path('pano_iptal/',views.pano_iptal_view, name='pano_iptal'),
     path('excel/<str:statu>/<str:page>/', views.excel_view, name='excel'),
     path('excel/<int:course_id>/<str:statu>/<str:page>/', views.excel_view, name='excel'),
-    path('erp_arsiv/', views.archive_page, name='archive_page'),
-    path("pano_arsiv/", views.pano_arsiv, name="pano_arsiv"),
+    path('erp_arsiv/', views.erp_arsiv_view, name='archive_page'),
+    path("pano_arsiv/", views.pano_arsiv_view, name="pano_arsiv"),
 
 ]  
 

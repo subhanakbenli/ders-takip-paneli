@@ -397,40 +397,6 @@ Pano Arşiv
             alert('İşlem sırasında bir hata oluştu: ' + error.message);
         }
     }
-    async function deleteContent(id, isCourse) {
-        try {
-            if (isCourse === 'true') {
-                url = `/dersler/ders_sil/${id}/`;
-            } else {
-                url = `/dersler/belge_sil/${id}/`;
-            }
-            
-            const data = await sendRequest(url, 'POST');
-            
-            if (data && data.success) {
-                alert(data.message || 'İşlem başarıyla tamamlandı');
-                
-                if (isCourse === 'true') {
-                    // id değişkenini kullan, documentId değil
-                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
-                    if (courseCard) {
-                        courseCard.remove();
-                    }
-                } else {
-                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
-                    if (documentRow) {
-                        documentRow.remove();
-                    }
-                }
-                
-                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
-                // window.location.reload();
-            }
-        } catch (error) {
-            console.error('Silme hatası:', error);
-            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
-        }
-    }
 </script>
 
 <script>
@@ -615,68 +581,52 @@ Pano Arşiv
 </script>
 
 <script>
-    // Öğretmen seçim işlemleri
     document.addEventListener('DOMContentLoaded', function() {
         const teacherSelect = document.getElementById('teacherSelect');
-        
-        if (teacherSelect) {
-            teacherSelect.addEventListener('change', function() {
-                const selectedTeacherId = this.value;
-                
-                // Tüm öğretmen detaylarını gizle
+        const courseSelect = document.getElementById('courseSelect');
+    
+        function filterTeacherDetails() {
+            const selectedTeacherId = teacherSelect.value;
+            document.querySelectorAll('.teacher-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            if (selectedTeacherId) {
+                const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                if (selectedTeacherDetails) {
+                    selectedTeacherDetails.style.display = 'block';
+                }
+            } else {
                 document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
+                    detail.style.display = 'block';
                 });
-                
-                if (selectedTeacherId) {
-                    // Seçilen öğretmenin detaylarını göster
-                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
-                    if (selectedTeacherDetails) {
-                        selectedTeacherDetails.style.display = 'block';
+            }
+        }
+    
+        function filterCourseDetails() {
+            const selectedCourseName = courseSelect.value;
+            document.querySelectorAll('.course-details').forEach(detail => {
+                if (selectedCourseName) {
+                    // Seçili ders adını içeren tüm course-details elementlerini göster
+                    if (detail.id.includes(`course-details-${selectedCourseName}`)) {
+                        detail.style.display = 'block';
+                    } else {
+                        detail.style.display = 'none';
                     }
                 } else {
-                    // Hiçbir öğretmen seçili değilse tüm detayları göster
-                    document.querySelectorAll('.teacher-details').forEach(detail => {
-                        detail.style.display = 'block';
-                    });
+                    detail.style.display = 'block';
                 }
             });
         }
-    });
-</script>
-{% comment %} ders seçim işlemleri {% endcomment %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const courseSelect = document.getElementById('courseSelect');
-
+    
+        if (teacherSelect) {
+            filterTeacherDetails();
+            teacherSelect.addEventListener('change', filterTeacherDetails);
+        }
+    
         if (courseSelect) {
-            courseSelect.addEventListener('change', function () {
-                const selectedCourse = this.value;
-
-                // Tüm ders detaylarını gizle
-                document.querySelectorAll('.course-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-
-                if (selectedCourse) {
-                    // Seçilen dersin detaylarını göster
-                    const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourse}"]`);
-                    if (selectedCourseDetails) {
-                        selectedCourseDetails.style.display = 'block';
-                    } else {
-                        console.warn("Seçilen ders detayları bulunamadı:", selectedCourse);
-                    }
-                }
-            });
-
-            // Sayfa yüklendiğinde seçili ders varsa onu göster
-            const selectedCourseOnLoad = courseSelect.value;
-            if (selectedCourseOnLoad) {
-                const selectedCourseDetails = document.querySelector(`[data-course="${selectedCourseOnLoad}"]`);
-                if (selectedCourseDetails) {
-                    selectedCourseDetails.style.display = 'block';
-                }
-            }
+            filterCourseDetails();
+            courseSelect.addEventListener('change', filterCourseDetails);
         }
     });
 </script>
@@ -687,44 +637,43 @@ Pano Arşiv
     <!-- Öğretmen Seçim Dropdown -->
     <!-- Daha erişilebilir versiyon -->
     
-    <form id="filterForm" method="GET" action="/pano_arsiv/">
-        <div style="display: flex; gap: 20px; align-items: flex-end;">
-            <div class="teacher-select-container" style="flex: 1;">
-                <label for="teacherSelect"></label>
-                <select 
-                    id="teacherSelect" 
-                    class="form-control"
-                    name="teacher_id"
-                    data-search="true"
-                    data-placeholder="Öğretmen seçiniz...">
-                    <option value="">Öğretmen Seçiniz</option>
-                    {% for teacher in teachers %}
-                        <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
-                            {{ teacher.name }} {{ teacher.surname }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="course-select-container" style="flex: 1;">
-                <label for="courseSelect"></label>
-                <select 
-                    id="courseSelect" 
-                    class="form-control"
-                    name="course_name"
-                    data-search="true"
-                    onchange="document.getElementById('filterForm').submit();"
-                    data-placeholder="Ders seçiniz...">
-                    <option value="">Ders Seçiniz</option>
-                    {% for course in all_courses %}
-                        <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
-                            {{ course.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="select-container" style="display: flex; gap: 20px; align-items: flex-end;" >
+        <!-- Öğretmen Seçimi -->
+        <div class="teacher-select-container" style="flex: 1;">
+            <label for="teacherSelect" class="visually-hidden">Öğretmen Seçiniz</label>
+            <select
+                id="teacherSelect"
+                class="form-control"
+                name="teacher_id"
+                data-search="true"
+                data-placeholder="Öğretmen seçiniz...">
+                <option value="">Öğretmen Seçiniz:</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
+                        {{ teacher.name }} {{ teacher.surname }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
-    </form>
+    
+        <!-- Ders Seçimi -->
+        <div class="course-select-container" style="flex: 1;">
+            <label for="courseSelect" class="visually-hidden">Ders Seçiniz</label>
+            <select
+                id="courseSelect"
+                class="form-control"
+                name="course_name"
+                data-search="true"
+                data-placeholder="Ders seçiniz...">
+                <option value="">Ders Seçiniz:</option>
+                {% for course in set_of_courses %}
+                    <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
+                        {{ course.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">

@@ -83,12 +83,8 @@ WSGI_APPLICATION = 'ders_takip.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ders_takip',  # Uzaktaki veritabanı adı
-        'USER': 'ders_user',    # MySQL kullanıcı adı
-        'PASSWORD': 'HamaaSubhan!1',         # MySQL şifresi
-        'HOST': '77.92.154.83',    # Uzak MySQL sunucusunun IP adresi veya alan adı
-        'PORT': '3306',              # MySQL varsayılan portu (genelde 3306)
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

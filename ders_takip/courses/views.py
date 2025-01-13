@@ -24,7 +24,7 @@ def add_course_view(request):
         # Kullanıcıdan gelen öğretmen adını al
         teacher_name = request.POST.get('teacher_name')  # Yeni: Öğretmen adı
         if teacher_name:
-            teacher_name = str(teacher_name).capitalize()
+            teacher_name = str(teacher_name).capitalize().strip()
             # Öğretmeni ada göre bul veya oluştur
             teacher, created = Teacher.objects.get_or_create(name=teacher_name.strip())
         else:
@@ -36,7 +36,7 @@ def add_course_view(request):
             })
 
         # Kurs bilgilerini al ve kaydet
-        course_name = request.POST.get('lesson_name')
+        course_name = str(request.POST.get('lesson_name')).capitalize().strip() if request.POST.get('lesson_name') else None
         description = request.POST.get('description', "")
         dilekce_required = request.POST.get('is_dilekce_required', "").lower() == "yes"  # True/False olarak ayarla
 
@@ -354,6 +354,7 @@ def update_course_file(course_file, form_data):
             print(key, value)
             setattr(course_file, key, value)
     course_file.save()
+
 
 @login_required
 @csrf_exempt

@@ -383,36 +383,7 @@ ERP Arşiv
         ModalManager.hide('documentAddModal');
     }
 </script>
-<script>
-    // Öğretmen seçim işlemleri
-    document.addEventListener('DOMContentLoaded', function() {
-        const teacherSelect = document.getElementById('teacherSelect');
-        
-        if (teacherSelect) {
-            teacherSelect.addEventListener('change', function() {
-                const selectedTeacherId = this.value;
-                
-                // Tüm öğretmen detaylarını gizle
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'none';
-                });
-                
-                if (selectedTeacherId) {
-                    // Seçilen öğretmenin detaylarını göster
-                    const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
-                    if (selectedTeacherDetails) {
-                        selectedTeacherDetails.style.display = 'block';
-                    }
-                } else {
-                    // Hiçbir öğretmen seçili değilse tüm detayları göster
-                    document.querySelectorAll('.teacher-details').forEach(detail => {
-                        detail.style.display = 'block';
-                    });
-                }
-            });
-        }
-    });
-</script>
+
 <script>
     async function sendRequest(url, method, formData = null) {
         try {
@@ -555,7 +526,6 @@ ERP Arşiv
         }
     }
 </script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tableRows = document.querySelectorAll('table tbody tr');
@@ -579,47 +549,96 @@ ERP Arşiv
     });
 
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const teacherSelect = document.getElementById('teacherSelect');
+        const courseSelect = document.getElementById('courseSelect');
+    
+        function filterTeacherDetails() {
+            const selectedTeacherId = teacherSelect.value;
+            document.querySelectorAll('.teacher-details').forEach(detail => {
+                detail.style.display = 'none';
+            });
+            
+            if (selectedTeacherId) {
+                const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
+                if (selectedTeacherDetails) {
+                    selectedTeacherDetails.style.display = 'block';
+                }
+            } else {
+                document.querySelectorAll('.teacher-details').forEach(detail => {
+                    detail.style.display = 'block';
+                });
+            }
+        }
+    
+        function filterCourseDetails() {
+            const selectedCourseName = courseSelect.value;
+            document.querySelectorAll('.course-details').forEach(detail => {
+                if (selectedCourseName) {
+                    // Seçili ders adını içeren tüm course-details elementlerini göster
+                    if (detail.id.includes(`course-details-${selectedCourseName}`)) {
+                        detail.style.display = 'block';
+                    } else {
+                        detail.style.display = 'none';
+                    }
+                } else {
+                    detail.style.display = 'block';
+                }
+            });
+        }
+    
+        if (teacherSelect) {
+            filterTeacherDetails();
+            teacherSelect.addEventListener('change', filterTeacherDetails);
+        }
+    
+        if (courseSelect) {
+            filterCourseDetails();
+            courseSelect.addEventListener('change', filterCourseDetails);
+        }
+    });
+</script>
 
 <div class="container">
     <h1 class="text-center">ERP Arşiv</h1> 
-     <form id="filterForm" method="GET" action="/erp_arsiv/">
-        <div style="display: flex; gap: 20px; align-items: flex-end;">
-            <div class="teacher-select-container" style="flex: 1;">
-                <label for="teacherSelect"></label>
-                <select 
-                    id="teacherSelect" 
-                    class="form-control"
-                    name="teacher_id"
-                    data-search="true"
-                    data-placeholder="Öğretmen seçiniz...">
-                    <option value="">Öğretmen Seçiniz</option>
-                    {% for teacher in teachers %}
-                        <option value="{{ teacher.id }}"  {% if selected_teacher_id == teacher.id %}selected{% endif %} >
-                            {{ teacher.name }} {{ teacher.surname }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="course-select-container" style="flex: 1;">
-                <label for="courseSelect"></label>
-                <select 
-                    id="courseSelect" 
-                    class="form-control"
-                    name="course_name"
-                    data-search="true"
-                    onchange="document.getElementById('filterForm').submit();"
-                    data-placeholder="Ders seçiniz...">
-                    <option value="">Ders Seçiniz</option>
-                    {% for course in all_courses %}
-                        <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
-                            {{ course.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="select-container" style="display: flex; gap: 20px; align-items: flex-end;" >
+        <!-- Öğretmen Seçimi -->
+        <div class="teacher-select-container" style="flex: 1;">
+            <label for="teacherSelect" class="visually-hidden">Öğretmen Seçiniz</label>
+            <select
+                id="teacherSelect"
+                class="form-control"
+                name="teacher_id"
+                data-search="true"
+                data-placeholder="Öğretmen seçiniz...">
+                <option value="">Öğretmen Seçiniz:</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}" {% if selected_teacher_id == teacher.id %}selected{% endif %}>
+                        {{ teacher.name }} {{ teacher.surname }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
-    </form>
+    
+        <!-- Ders Seçimi -->
+        <div class="course-select-container" style="flex: 1;">
+            <label for="courseSelect" class="visually-hidden">Ders Seçiniz</label>
+            <select
+                id="courseSelect"
+                class="form-control"
+                name="course_name"
+                data-search="true"
+                data-placeholder="Ders seçiniz...">
+                <option value="">Ders Seçiniz:</option>
+                {% for course in set_of_courses %}
+                    <option value="{{ course.name }}" {% if selected_course_name == course.name %}selected{% endif %}>
+                        {{ course.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
 
     <div id="teacherDetailsContainer">
         {% for teacher in teachers %}
