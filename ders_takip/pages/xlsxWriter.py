@@ -28,7 +28,7 @@ def write_to_excel(teachers_data, file_name):
     
     Args:
         teachers_data (list): List of teacher data with courses and documents.
-        file_name (str): The name of the file (without the .xlsx extension) to save.
+        file_name (str): The name of the file (with the .xlsx extension) to save.
     """
     def safe_str(value):
         """Convert any value to string safely, handling None and datetime objects."""
@@ -156,8 +156,8 @@ def write_to_excel(teachers_data, file_name):
                                         safe_str(doc.get("id")),
                                         safe_str(doc.get("category")),
                                         safe_str(doc.get("belge_adi")),
-                                        "Evet" if doc.get("is_uploaded") else "Hayır",
-                                        safe_str(doc.get("uploaded_at")),
+                                        "Evet" if doc.get("sisteme_giris_tarihi") else "Hayır",
+                                        safe_str(doc.get("sisteme_giris_tarihi")),
                                         safe_str(doc.get("dilekce_name")),
                                         "Evet" if doc.get("dilekce_is_uploaded") else "Hayır",
                                         safe_str(doc.get("start_date")),
@@ -218,8 +218,8 @@ def write_to_excel(teachers_data, file_name):
                 continue
         
         try:
-            wb.save(f"{file_name}.xlsx")
-            print(f"Data successfully written to {file_name}.xlsx")
+            wb.save(f"media/{file_name}")
+            print(f"Data successfully written to {file_name}")
         except Exception as e:
             print(f"Error saving workbook: {str(e)}")
             raise

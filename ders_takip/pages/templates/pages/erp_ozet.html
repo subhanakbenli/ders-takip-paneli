@@ -85,9 +85,8 @@ ERP Özet
                     <tr onclick="window.location.href='{% url 'erp' %}?teacher_id={{ course_file.course.teacher.id }}&course_name={{ course_file.course.name }}'" style="cursor: pointer;">
                         <td>{{ course_file.course.teacher.name }} {{course_file.course.teacher.surname}}</td>
                         <td>{{ course_file.course.name }}</td>
-
-                        <td>{{ course_file.start_date|date:"d/m/Y"|default:'Başlangıç Tarihi Girilmedi' }}</td>
-                        <td>{{ course_file.end_date|date:"d/m/Y"|default:'Bitiş Tarihi Girilmedi' }}</td>
+                        <td>{{ course_file.start_date}}</td>
+                        <td>{{ course_file.end_date}}</td>
                         <td>
                             {% if course_file.sisteme_giris_tarihi %}
                                 <span type="date" name="end_date" class="form-control" value="{{ course_file.sisteme_giris_tarihi }}"></span>

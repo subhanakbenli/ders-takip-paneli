@@ -634,13 +634,9 @@ ERP
     }
 </script>
 <script>
-    function downloadExcel(courseId=None, statu, page) {
-        // Dinamik olarak doğru URL'yi oluştur ve yönlendir
-        if (courseId) {
-            window.location.href = `/excel/${courseId}/${statu}/${page}/`;
-        } else {
-            window.location.href = `/excel/${statu}/${page}/`;
-        }
+    function downloadExcel(courseId, statu, page) {
+        let url = courseId ? `/excel/${courseId}/${statu}/${page}/` : `/excel/${statu}/${page}/`;
+        window.location.href = url;
     }
 </script>
 
