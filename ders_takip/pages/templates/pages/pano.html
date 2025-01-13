@@ -843,12 +843,13 @@ Pano
                                                                         readonly 
                                                                         value="{{ document.end_date }}">
                                                                 </td>
-
                                                                 <td>
                                                                     {% if document.sisteme_giris_tarihi %}
-                                                                        <span type="date" name="end_date" class="form-control" value="{{ document.sisteme_giris_tarihi }}">
+                                                                        <span class="form-control" style="font-size: 15px;">
+                                                                            {{ document.sisteme_giris_tarihi|date:"d.m.Y" }}
+                                                                        </span>
                                                                     {% else %}
-                                                                        <span class="status-icon error green-error" >❌</span>
+                                                                        <span class="status-icon error green-error">❌</span>
                                                                     {% endif %}
                                                                 </td>
                                                                 <td>

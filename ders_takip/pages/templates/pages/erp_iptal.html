@@ -210,7 +210,87 @@ ERP İptal
         background-color: rgba(233, 232, 232, 0.8);
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+    async function sendSelectedDocuments() {
+        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
 
+        if (selectedCheckboxes.length === 0) {
+            alert('Lütfen indirilecek belgeleri seçiniz.');
+            return;
+        }
+
+        const zip = new JSZip();
+        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
+            const documentRow = checkbox.closest('tr');
+            const documentName = documentRow.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
+            const documentURL = checkbox.getAttribute('data-document-url') || '';
+
+            return { name: documentName, url: documentURL };
+        });
+
+        for (const doc of selectedDocuments) {
+            if (doc.url) {
+                try {
+                    const response = await fetch(doc.url);
+                    const blob = await response.blob();
+                    zip.file(doc.name || 'unknown', blob);
+                } catch (error) {
+                    console.error(`Failed to download file: ${doc.name}`, error);
+                    alert(`Bir hata oluştu: ${doc.name}`);
+                    return;
+                }
+            }
+        }
+
+        // Generate ZIP and download
+        zip.generateAsync({ type: 'blob' })
+            .then(content => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = 'belgeler.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('ZIP oluşturulamadı:', error);
+                alert('Bir hata oluştu.');
+            });
+    }
+    function toggleAllDocuments(courseId) {
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+
+        documentCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    }
+
+    function updateSelectAllCheckbox(courseId) {
+        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
+        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
+        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
+
+        const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
+        const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
+
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = anyChecked && !allChecked;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.document-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const courseId = this.closest('.card')?.getAttribute('data-course-id');
+                if (courseId) {
+                    updateSelectAllCheckbox(courseId);
+                }
+            });
+        });
+    });
+</script>
 <script>
     async function changeStatu(documentId, statu, isCourse) {
         try {
@@ -250,84 +330,7 @@ ERP İptal
     }
 
 </script>
-<script>
-    function sendSelectedDocuments() {
-        // Seçili tüm checkboxları bul
-        const selectedCheckboxes = document.querySelectorAll('.document-checkbox:checked');
-        
-        if (selectedCheckboxes.length === 0) {
-            alert('Lütfen indirilecek belgeleri seçiniz.');
-            return;
-        }
-    
-        // Seçili belgelerin URL'lerini topla
-        const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
-            return {
-                url: checkbox.getAttribute('data-document-url'),
-                isUploaded: checkbox.closest('tr').querySelector('.status-icon.success') !== null
-            };
-        });
-    
-        // Yüklenmemiş belge kontrolü
-        const notUploadedDocs = selectedDocuments.filter(doc => !doc.isUploaded);
-        if (notUploadedDocs.length > 0) {
-            alert('Seçtiğiniz belgelerden bazıları henüz sisteme yüklenmemiş. Lütfen sadece yüklenmiş belgeleri seçiniz.');
-            return;
-        }
-    
-        // Yüklenmiş belgeleri indir
-        selectedDocuments.forEach(doc => {
-            if (doc.url) {
-                // Yeni bir sekmede belgeyi aç
-                const link = document.createElement('a');
-                link.href = doc.url;
-                link.target = '_blank';
-                link.download = ''; // Tarayıcının dosya adını kullanmasına izin ver
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        });
-    }
-    
-    function toggleAllDocuments(courseId) {
-        // Tüm belgeleri seç checkbox'ı
-        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
-        
-        // İlgili tablodaki tüm belge checkbox'larını bul
-        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
-        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
-        
-        // Tüm checkbox'ları ana checkbox'ın durumuna göre işaretle
-        documentCheckboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
-        });
-    }
-    
-    // Belge checkbox'larının durumuna göre "Tümünü Seç" checkbox'ını güncelle
-    function updateSelectAllCheckbox(courseId) {
-        const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
-        const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
-        const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
-        
-        // Tüm checkbox'lar seçili mi kontrol et
-        const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
-        const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
-        
-        selectAllCheckbox.checked = allChecked;
-        selectAllCheckbox.indeterminate = anyChecked && !allChecked;
-    }
-    
-    // Her belge checkbox'ına event listener ekle
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.document-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const courseId = this.closest('.card').getAttribute('data-course-id');
-                updateSelectAllCheckbox(courseId);
-            });
-        });
-    });
-</script>
+
 
 <script>
     // Modal İşlemleri

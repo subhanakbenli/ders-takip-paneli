@@ -46,18 +46,10 @@
 
                             <!-- İsim alanı, yalnızca harf girilebilir -->
                             <div class="form-group mb-3">
-                                <label for="first_name" class="form-label">İsim:</label>
+                                <label for="first_name" class="form-label">Ad Soyad:</label>
                                 <input type="text" id="first_name" name="first_name" class="form-control" required 
                                         value="{{ teacher.name|default:'' }}"
                                        pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" title="İsim sadece harflerden oluşmalıdır." placeholder="İsim giriniz">
-                            </div>
-
-                            <!-- Soyisim alanı, yalnızca harf girilebilir -->
-                            <div class="form-group mb-3">
-                                <label for="last_name" class="form-label">Soyisim:</label>
-                                <input type="text" id="last_name" name="last_name" class="form-control" required 
-                                        value="{{ teacher.surname |default:''}}" 
-                                       pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" title="Soyisim sadece harflerden oluşmalıdır." placeholder="Soyisim giriniz">
                             </div>
 
                             <!-- Öğretmeni Ünvanı -->
