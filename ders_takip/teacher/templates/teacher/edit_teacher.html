@@ -40,7 +40,7 @@
             <div class="col-12 col-md-10 col-lg-8 offset-md-2 offset-lg-3">
                 <div class="main-content">
                     <div class="form-section my-5 p-4 shadow rounded bg-light">
-                        <h2 class="text-center mb-4 text-primary" style="color:rgb(67, 66, 66) !important;">Öğretmen Ekle</h2>
+                        <h2 class="text-center mb-4 text-primary" style="color:rgb(67, 66, 66) !important;">Öğretmen Düzenleme</h2>
                         <form method="POST" action="{% url 'edit_teacher' teacher.id %}" class="p-4">
                             {% csrf_token %}
 
@@ -48,7 +48,7 @@
                             <div class="form-group mb-3">
                                 <label for="first_name" class="form-label">İsim:</label>
                                 <input type="text" id="first_name" name="first_name" class="form-control" required 
-                                        value="{{ teacher.name }}"
+                                        value="{{ teacher.name|default:'' }}"
                                        pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" title="İsim sadece harflerden oluşmalıdır." placeholder="İsim giriniz">
                             </div>
 
@@ -56,49 +56,49 @@
                             <div class="form-group mb-3">
                                 <label for="last_name" class="form-label">Soyisim:</label>
                                 <input type="text" id="last_name" name="last_name" class="form-control" required 
-                                        value="{{ teacher.surname }}" 
+                                        value="{{ teacher.surname |default:''}}" 
                                        pattern="^[A-Za-zÇçĞğİıÖöŞşÜü\s]+$" title="Soyisim sadece harflerden oluşmalıdır." placeholder="Soyisim giriniz">
                             </div>
 
                             <!-- Öğretmeni Ünvanı -->
                             <div class="form-group mb-3">
                                 <label for="title" class="form-label">Ünvan:</label>
-                                <input type="text" id="title" name="title" class="form-control" value="{{ teacher.title }}" placeholder="Ünvan giriniz">
+                                <input type="text" id="title" name="title" class="form-control" value="{{ teacher.title|default:'' }}" placeholder="Ünvan giriniz">
                             </div>
 
                             <!-- Öğretmenin E-posta Adresi -->
                             <div class="form-group mb-3">
                                 <label for="email" class="form-label">E-posta Adresi:</label>
-                                <input type="email" id="email" name="email" class="form-control" value="{{ teacher.mail }}" placeholder="E-posta adresi giriniz">
+                                <input type="email" id="email" name="email" class="form-control" value="{{ teacher.mail|default:'' }}" placeholder="E-posta adresi giriniz">
                             </div>
 
                             <!-- Öğretmenin Telefon Numarası -->
                             <div class="form-group mb-3">
                                 <label for="phone" class="form-label">Telefon Numarası:</label>
-                                <input type="tel" id="phone" name="phone" class="form-control" value="{{ teacher.telephone }}" placeholder="Telefon numarası giriniz">
+                                <input type="tel" id="phone" name="phone" class="form-control" value="{{ teacher.telephone|default:'' }}" placeholder="Telefon numarası giriniz">
                             </div>
                             
                             <!-- Öğretmenin Telefon Numarası 2 -->
                             <div class="form-group mb-3">
                                 <label for="phone2" class="form-label">Telefon Numarası 2:</label>
-                                <input type="tel2" id="phone2" name="phone2" class="form-control" value="{{ teacher.telephone2 }}" placeholder="Telefon numarası giriniz">
+                                <input type="tel2" id="phone2" name="phone2" class="form-control" value="{{ teacher.telephone2|default:'' }}" placeholder="Telefon numarası giriniz">
                             </div>
                             <!-- Öğretmenin Firma Adı -->
                             <div class="form-group mb-3">
                                 <label for="firma_adi" class="form-label">Firma Adı:</label>
-                                <input type="text" id="firma_adi" name="firma_adi" class="form-control" value="{{ teacher.firma_adi }}" placeholder="Firma adı giriniz">
+                                <input type="text" id="firma_adi" name="firma_adi" class="form-control" value="{{ teacher.firma_adi|default:'' }}" placeholder="Firma adı giriniz">
                             </div>
 
                             <!-- Öğretmenin Adresi -->
                             <div class="form-group mb-3">
                                 <label for="address" class="form-label">Adres:</label>
-                                <textarea id="address" name="address" class="form-control" rows="3" placeholder="Adres giriniz">{{ teacher.adress }}</textarea>
+                                <textarea id="address" name="address" class="form-control" rows="3" placeholder="Adres giriniz">{{ teacher.adress|default:'' }}</textarea>
                             </div>
 
                             <!-- Öğretmenin Açıklama -->
                             <div class="form-group mb-3">
                                 <label for="description" class="form-label">Açıklama:</label>
-                                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Açıklama giriniz">{{ teacher.description }}</textarea>
+                                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Açıklama giriniz">{{ teacher.description |default:''}}</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 py-2 mt-3">Kaydet</button>
                         </form>

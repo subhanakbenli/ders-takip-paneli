@@ -200,14 +200,14 @@ Ders Detayı
                                 {% endif %}
                             </td>
                             <td>
-                                {{ document.start_date }} - {{ document.end_date }}
+                                {{ document.start_date|default:"" }} - {{ document.end_date|default:"" }}
                                 {% with document.end_date|date:"Y-m-d" as bitis_tarihi %}
                                     {% if bitis_tarihi|date:"U"|floatformat:0|add:"-now|date:'U'"|divisibleby:86400 <= 5 and bitis_tarihi|date:"U"|floatformat:0|add:"-now|date:'U'"|divisibleby:86400 > 0 %}
                                         <span class="badge badge-warning ml-2">5 Gün Kaldı</span>
                                     {% endif %}
                                 {% endwith %}
                             </td>
-                            <td>{{ document.description }}</td>
+                            <td>{{ document.description|default:"-" }}</td>
                         </tr>
                     {% empty %}
                         <tr>
@@ -223,8 +223,6 @@ Ders Detayı
 <div class="action-buttons">
     <button type="button" class="btn btn-success" onclick="downloadPDF({{ course.id }})">PDF İndir</button>
     <button type="button" class="btn btn-info" data-toggle="modal" data-target="#archiveConfirmationModal">Arşivle</button>    
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editCourseModal">Düzenle</button>
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">Sil</button>  
 </div>
 
 <!-- Arşiv Onayı Modalı -->

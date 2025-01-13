@@ -114,8 +114,8 @@
                                 <span class="text-muted">Belge Eklenmedi</span>
                             {% endif %}
                         </td>
-                        <td>{{ document.start_date }} - {{ document.end_date }}</td>
-                        <td>{{ document.description }}</td>
+                        <td>{{ document.start_date|default:"Tarih Eklenmedi." }} - {{ document.end_date|default:"" }}</td>
+                        <td>{{ document.description|default:"Açıklama Eklenmedi." }}</td>
                     </tr>
                 {% empty %}
                     <tr>

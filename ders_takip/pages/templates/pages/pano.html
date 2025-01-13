@@ -760,7 +760,7 @@ Pano
                     data-search="true"
                     onchange="document.getElementById('filterForm').submit();"
                     data-placeholder="Öğretmen seçiniz...">
-                    <option value="">Öğretmen Seçiniz</option>
+                    <option value="">Öğretmen Seçiniz:</option>
                     {% for teacher in teachers %}
                         <option value="{{ teacher.id }}" {% if request.GET.teacher_id|default:'' == teacher.id|stringformat:"s" %}selected{% endif %}>
                             {{ teacher.name }} {{ teacher.surname }}
@@ -778,7 +778,7 @@ Pano
                     data-search="true"
                     onchange="document.getElementById('filterForm').submit();"
                     data-placeholder="Ders seçiniz...">
-                    <option value="">Ders Seçiniz</option>
+                    <option value="">Ders Seçiniz:</option>
                     {% for course in all_courses %}
                         <option value="{{ course.name }}" {% if request.GET.course_name|default:'' == course.name|stringformat:"s" %}selected{% endif %}>
                             {{ course.name }}

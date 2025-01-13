@@ -59,8 +59,9 @@ def get_course_with_documents(course):
                         "category": document.category,
                         "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,
                         "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
-                        "is_uploaded": document.is_uploaded,
-                        "uploaded_at": document.uploaded_date,
+                        "is_uploaded": document.sisteme_giris_tarihi,
+                        "uploaded_at": document.sisteme_giris_tarihi
+                        ,
                         "dilekce_name": document.dilekce_name,
                         "dilekce_is_uploaded": document.dilekce_is_uploaded,
                         "start_date": document.start_date,
@@ -293,7 +294,7 @@ def get_warnings( status=None, page = None):
                     days_to_end = (end_date - today).days
                     days_from_start = (today - start_date).days
                     document_warning_message = None
-                    if days_from_start < days_to_end and document.is_uploaded==False:
+                    if days_from_start < days_to_end and document.sisteme_giris_tarihi==False:
                         document_warning_message = "Yükleme kalan gün: " + str(days_to_end)
                         course_warning_counter += 1
                 except:
@@ -308,8 +309,8 @@ def get_warnings( status=None, page = None):
                         "category": document.category,
                         "belge_adi": document.current_version.file.name if document.current_version and document.current_version.file else None,    
                         "belge_url": document.current_version.file.url if document.current_version and document.current_version.file else None,
-                        "is_uploaded": document.is_uploaded,
-                        "uploaded_at": document.uploaded_date,
+                        "is_uploaded": document.sisteme_giris_tarihi,
+                        "uploaded_at": document.sisteme_giris_tarihi,
                         "dilekce_name": document.dilekce_name,
                         "dilekce_is_uploaded": document.dilekce_is_uploaded,
                         "start_date": document.start_date,

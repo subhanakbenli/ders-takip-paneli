@@ -182,13 +182,13 @@
     <tbody>
         {% for teacher in page_obj %}
             <tr>
-                <td>{{ teacher.name }} {{ teacher.surname }}</td>
-                <td>{{ teacher.title }}</td>
-                <td>{{ teacher.telephone }}</td>
-                <td>{{ teacher.telephone2 }}</td>
-                <td>{{ teacher.mail }}</td>
-                <td>{{ teacher.firma_adi }}</td>
-                <td>{{teacher.adress}}</td>
+                <td>{{ teacher.name|default:'-' }} {{ teacher.surname }}</td>
+                <td>{{ teacher.title |default:'-'}}</td>
+                <td>{{ teacher.telephone|default:'-' }}</td>
+                <td>{{ teacher.telephone2|default:'-' }}</td>
+                <td>{{ teacher.mail|default:'-' }}</td>
+                <td>{{ teacher.firma_adi|default:'-' }}</td>
+                <td>{{teacher.adress|default:'-'}}</td>
                 <td><button class="edit-button" onclick="window.location.href='/ogretmen/{{ teacher.id }}/edit_teacher';">Düzenle</button></td>
             </tr>
         {% empty %}
