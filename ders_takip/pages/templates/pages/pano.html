@@ -239,7 +239,7 @@ Pano
         const zip = new JSZip();
         const selectedDocuments = Array.from(selectedCheckboxes).map(checkbox => {
             const documentRow = checkbox.closest('tr');
-            const documentName = documentRow.querySelector('td:nth-child(2) a')?.textContent.trim() || '';
+            const documentName = documentRow.querySelector('td:nth-child(3) a')?.textContent.trim() || '';
             const documentURL = checkbox.getAttribute('data-document-url') || '';
 
             return { name: documentName, url: documentURL };
@@ -275,37 +275,34 @@ Pano
             });
     }
     function toggleAllDocuments(courseId) {
-        // Tüm belgeleri seç checkbox'ı
         const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
-        
-        // İlgili tablodaki tüm belge checkbox'larını bul
         const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
         const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
-        
-        // Tüm checkbox'ları ana checkbox'ın durumuna göre işaretle
+
         documentCheckboxes.forEach(checkbox => {
             checkbox.checked = selectAllCheckbox.checked;
         });
     }
-    // Belge checkbox'larının durumuna göre "Tümünü Seç" checkbox'ını güncelle
+
     function updateSelectAllCheckbox(courseId) {
         const selectAllCheckbox = document.getElementById(`selectAll-${courseId}`);
         const tableBody = selectAllCheckbox.closest('table').querySelector('tbody');
         const documentCheckboxes = tableBody.querySelectorAll('.document-checkbox');
-        
-        // Tüm checkbox'lar seçili mi kontrol et
+
         const allChecked = Array.from(documentCheckboxes).every(checkbox => checkbox.checked);
         const anyChecked = Array.from(documentCheckboxes).some(checkbox => checkbox.checked);
-        
+
         selectAllCheckbox.checked = allChecked;
         selectAllCheckbox.indeterminate = anyChecked && !allChecked;
-    } 
-    // Her belge checkbox'ına event listener ekle
-    document.addEventListener('DOMContentLoaded', function() {
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.document-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const courseId = this.closest('.card').getAttribute('data-course-id');
-                updateSelectAllCheckbox(courseId);
+            checkbox.addEventListener('change', function () {
+                const courseId = this.closest('.card')?.getAttribute('data-course-id');
+                if (courseId) {
+                    updateSelectAllCheckbox(courseId);
+                }
             });
         });
     });
@@ -406,40 +403,6 @@ Pano
             alert('İşlem sırasında bir hata oluştu: ' + error.message);
         }
     }
-    async function deleteContent(id, isCourse) {
-        try {
-            if (isCourse === 'true') {
-                url = `/dersler/ders_sil/${id}/`;
-            } else {
-                url = `/dersler/belge_sil/${id}/`;
-            }
-            
-            const data = await sendRequest(url, 'POST');
-            
-            if (data && data.success) {
-                alert(data.message || 'İşlem başarıyla tamamlandı');
-                
-                if (isCourse === 'true') {
-                    // id değişkenini kullan, documentId değil
-                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
-                    if (courseCard) {
-                        courseCard.remove();
-                    }
-                } else {
-                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
-                    if (documentRow) {
-                        documentRow.remove();
-                    }
-                }
-                
-                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
-                // window.location.reload();
-            }
-        } catch (error) {
-            console.error('Silme hatası:', error);
-            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
-        }
-    }
 </script>
 <script>
     // Modal açma fonksiyonu
@@ -502,7 +465,6 @@ Pano
     }
 
     // Modal kapatma işlemleri ve form submit
-
     document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('addDocumentModal');
         const uploadForm = document.getElementById('documentUploadForm');

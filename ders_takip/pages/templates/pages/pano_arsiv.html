@@ -731,7 +731,15 @@ Pano Arşiv
                                                                 <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
                                                             </td>
                                                             <td>{{ document.category }}</td>
-                                                            <td>{{ document.belge_adi}}</td>
+                                                            <td>
+                                                                {% if document.belge_url %}
+                                                                    <a href="{{ document.belge_url }}" download>
+                                                                        {{ document.belge_adi|default:'' }}
+                                                                    </a>
+                                                                {% else %}
+                                                                    {{ document.belge_adi|default:'' }}
+                                                                {% endif %}
+                                                            </td>
                                                             <td>
                                                                 <button type="button" class="btn btn-success" 
                                                                 onclick="openDocumentModal(this)" 

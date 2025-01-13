@@ -484,40 +484,6 @@ ERP Arşiv
             alert('İşlem sırasında bir hata oluştu: ' + error.message);
         }
     }
-    async function deleteContent(id, isCourse) {
-        try {
-            if (isCourse === 'true') {
-                url = `/dersler/ders_sil/${id}/`;
-            } else {
-                url = `/dersler/belge_sil/${id}/`;
-            }
-            
-            const data = await sendRequest(url, 'POST');
-            
-            if (data && data.success) {
-                alert(data.message || 'İşlem başarıyla tamamlandı');
-                
-                if (isCourse === 'true') {
-                    // id değişkenini kullan, documentId değil
-                    const courseCard = document.querySelector(`#course-form-${id}`).closest('.card');
-                    if (courseCard) {
-                        courseCard.remove();
-                    }
-                } else {
-                    const documentRow = document.querySelector(`#document-form-${id}`).closest('tr');
-                    if (documentRow) {
-                        documentRow.remove();
-                    }
-                }
-                
-                // İsteğe bağlı: Silme işlemi sonrası sayfayı yenilemek isterseniz
-                // window.location.reload();
-            }
-        } catch (error) {
-            console.error('Silme hatası:', error);
-            alert('Silme işlemi sırasında bir hata oluştu: ' + error.message);
-        }
-    }
 </script>
 
 <script>
@@ -603,6 +569,154 @@ ERP Arşiv
         }
     });
 </script>
+<script>
+    // Modal açma fonksiyonu
+    function openDocumentModal(button) {
+        // Versiyonları al
+        const courseId = button.getAttribute('course-data-id');
+        const documentId = button.getAttribute('document-data-id');
+        console.log(courseId);
+        console.log(documentId);
+        const versionsRaw = button.getAttribute('versions');
+
+        if (!courseId) {
+            console.error('Course ID not found!');
+            return;
+        }
+        if (!documentId) {
+            console.error('Document ID not found!');
+            return;
+        }
+
+        let versionsData = [];
+        if (versionsRaw) {
+            try {
+                versionsData = JSON.parse(versionsRaw.replace(/'/g, '"')); // JSON formatına çevir
+            } catch (error) {
+                console.error('Invalid JSON format:', error);
+            }
+        }
+
+        // Modal form id'lerini ayarla
+        document.getElementById('modalCourseId').value = courseId;
+        document.getElementById('modalDocumentId').value = documentId;
+
+        // Modal içeriğini oluştur
+        const container = document.getElementById('uploadedDocumentsContainer');
+        container.innerHTML = ''; // Önceki içerikleri temizle
+
+        if (versionsData.length > 0) {
+            const list = document.createElement('ul');
+            versionsData.sort((a, b) => new Date(b.uploaded_at) - new Date(a.uploaded_at)); // Tarihe göre sırala
+
+            versionsData.forEach(version => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.textContent = version.file; // Dosya adını ekle
+                link.href = version.download_url; // İndirme linkini ayarla
+                link.target = '_blank'; // Yeni sekmede aç
+                link.download = version.file; // İndirme adı
+                listItem.appendChild(link); // Linki liste öğesine ekle
+                list.appendChild(listItem); // Liste öğesini listeye ekle
+            });
+
+            container.appendChild(list); // Listeyi container'a ekle
+        } else {
+            container.innerHTML = '<p>Hiç belge yüklenmedi.</p>'; // Boş durum mesajı
+        }
+
+        // Modal'ı göster
+        document.getElementById('addDocumentModal').style.display = 'block';
+    }
+
+    // Modal kapatma işlemleri ve form submit
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('addDocumentModal');
+        const uploadForm = document.getElementById('documentUploadForm');
+
+        // Modal kapatma butonları
+        document.querySelectorAll('.btn-danger').forEach(button => {
+            button.addEventListener('click', function() {
+                modal.style.display = 'none';
+                uploadForm.reset();
+            });
+        });
+
+        // Modal dışına tıklanırsa kapatma
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                uploadForm.reset();
+            }
+        });
+
+        // Form submit işlemi
+        document.querySelector('.btn-success[onclick=""]').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(uploadForm);
+            const courseId = document.getElementById('modalCourseId').value;
+            const documentId = document.getElementById('modalDocumentId').value;
+
+            // Dosya kontrolü
+            const fileInput = document.getElementById('modalDocumentFile');
+            if (!fileInput.files[0]) {
+                alert('Lütfen bir dosya seçin!');
+                return;
+            }
+
+            formData.append('document_file', fileInput.files[0]);
+
+            // AJAX ile dosya yükleme
+            fetch(`/dersler/${courseId}/belge_ekle/${documentId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('Dosya başarıyla yüklendi!');
+                    modal.style.display = 'none';
+                    uploadForm.reset();
+                    location.reload();
+                } else {
+                    alert('Dosya yüklenirken bir hata oluştu: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Dosya yüklenirken bir hata oluştu!');
+            });
+        });
+    });
+
+    // Django CSRF token'ı almak için yardımcı fonksiyon
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
 
 <div class="container">
     <h1 class="text-center">ERP Arşiv</h1> 
@@ -671,6 +785,7 @@ ERP Arşiv
                                                     <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
                                                     İndir
                                                 </th>
+                                                <th>Belge Adı</th>
                                                 <th>Yükleme Alanı</th>
                                                 <th>Etkinlik Tarihi</th>
                                                 <th>Yükleme Tarihi</th>
@@ -712,7 +827,22 @@ ERP Arşiv
                                                         <td>
                                                             <input type="checkbox" class="document-checkbox" >
                                                         </td>
-                                                        <td>Yükleme alanı</td>
+                                                        <td>
+                                                            {% if document.belge_url %}
+                                                                <a href="{{ document.belge_url }}" download>
+                                                                    {{ document.belge_adi|default:'' }}
+                                                                </a>
+                                                            {% else %}
+                                                                {{ document.belge_adi|default:'' }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-success" 
+                                                            onclick="openDocumentModal(this)" 
+                                                            course-data-id="{{ course.id }}"
+                                                            versions='{{ document.versions }}'
+                                                            document-data-id="{{ document.id }}">İçerik Gör</button>
+                                                        </td>
                                                         <td>{{document.start_date}}</td>
                                                         <td>{{document.sisteme_giris_tarihi}}</td>
                                                         <td>{{ document.end_date }}</td>
@@ -846,43 +976,29 @@ ERP Arşiv
 
 
 
-
-    <!-- Dosya Ekle Modal -->
-<div id="documentAddModal" class="custom-modal">
+<!-- Dosya Ekle Modal -->
+<div id="addDocumentModal" class="custom-modal">
+    <h6>Belge Ekle</h6>
     <div class="custom-modal-content">
-        <form id="addDocumentForm">
-            <input type="hidden" id="courseId" name="course_id">
+        <h6>Kaydedilmiş Belgeler</h6>
+        <div id="uploadedDocumentsContainer">
+            <p>Hiç belge yüklenmedi.</p>
+        </div>
+        <form id="documentUploadForm">
+            <input type="hidden" id="modalCourseId" name="course_id">
+            <input type="hidden" id="modalDocumentId" name="document_id">
             <div class="form-group">
-                <label for="documentName">Belge Adı:</label>
-                <input type="text" id="documentName" name="document_name" class="form-control" required>
+                <label for="documentFile">Dosya:</label>
+                <input type="file" id="modalDocumentFile" name="document_file" class="form-control" required>
             </div>
-            <div class="form-group">
-                <label for="file">Dosya:</label>
-                <input type="file" id="file" name="file" class="form-control" required>
-            </div>
-            <button type="button" class="btn btn-success" onclick="submitDocumentForm()">Kaydet</button>
-            <button type="button" class="btn btn-danger" onclick="ModalManager.hide('documentAddModal')">İptal</button>
+            <button type="button" class="btn btn-success" onclick="">Kaydet</button>
+            <button type="button" class="btn btn-danger" onclick="">İptal</button>
         </form>
+        <hr>
+        
     </div>
 </div>
 
-
-<!-- Silme Onay Modalı -->
-<div id="documentDeleteModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <p>Bu belgeyi silmek istediğinize emin misiniz?</p>
-        <!-- Button'da data-document-id olmalı -->
-        <button id="confirmDocumentDelete" data-document-id="123" class="btn btn-confirm" onclick="confirmDocumentDelete();">Evet</button>
-        <button class="btn btn-cancel" onclick="ModalManager.hide('documentDeleteModal');">Hayır</button>
-    </div>
-</div>
-<div id="courseDeleteModal" class="custom-modal">
-    <div class="custom-modal-content">
-        <p>Bu dersi silmek istediğinize emin misiniz?</p>
-        <button id="confirmCourseDelete" class="btn btn-confirm">Evet</button>
-        <button class="btn btn-cancel" onclick="ModalManager.hide('courseDeleteModal');">Hayır</button>
-    </div>
-</div>
 
 
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
