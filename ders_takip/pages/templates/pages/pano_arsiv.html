@@ -835,7 +835,15 @@ Pano Arşiv
                                          "background-color:red;
                                           color:rgb(255, 255, 255);
                                           "
-                                        >İptal
+                                        >Dersi İptal Et
+                                    </button>
+                                    <button class="btn btn-warning" 
+                                        onclick="changeStatu({{course.id}},'aktif','true')"
+                                        id="course-form-{{ course.id }}" style =
+                                         "background-color:rgb(94, 169, 240);
+                                          color:rgb(255, 255, 255);
+                                          "
+                                        >Dersi Aktif Et
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" 

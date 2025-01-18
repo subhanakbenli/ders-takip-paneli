@@ -116,7 +116,7 @@ Pano
     }
 
     .btn-danger {
-        background-color: #e53e3e;
+        background-color:rgb(34, 83, 133);
         color: white;
     }
 
@@ -830,6 +830,11 @@ Pano
                                                                 <td>
                                                                     <button type="button" 
                                                                     class="btn btn-sm btn-danger" 
+                                                                    style="
+                                                                        background-color:rgb(49, 192, 161); 
+                                                                        color: white; 
+                                                                        border: none; 
+                                                                    " 
                                                                     onclick="saveDocument({{ document.id }})">Kaydet</button>
                                                                 </td>
                                                                 <td>
@@ -865,10 +870,10 @@ Pano
                                         <button class="btn btn-warning" 
                                             onclick="changeStatu({{course.id}},'iptal','true')"
                                             id="course-form-{{ course.id }}" style =
-                                            "background-color:red;
+                                            "background-color:rgb(38, 194, 183);
                                             color:rgb(255, 255, 255);
                                             "
-                                            >İptal
+                                            >Dersi İptal Et
                                         </button>
                                         <button 
                                             class="btn btn-primary" 

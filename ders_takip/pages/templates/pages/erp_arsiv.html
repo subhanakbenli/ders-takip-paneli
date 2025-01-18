@@ -953,7 +953,13 @@ ERP Arşiv
                                         onclick="changeStatu({{course.id}},'iptal','true')"
                                         style = "background-color:red;
                                         color:rgb(255, 255, 255);"
-                                        id="course-form-{{ course.id }}">İptal
+                                        id="course-form-{{ course.id }}">Dersi İptal et
+                                    </button>
+                                    <button class="btn btn-warning" 
+                                        onclick="changeStatu({{course.id}},'aktif','true')"
+                                        style = "background-color:rgb(70, 140, 232);
+                                        color:rgb(255, 255, 255);"
+                                        id="course-form-{{ course.id }}">Dersi Aktif Et
                                     </button>
                                     <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
                                     <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>

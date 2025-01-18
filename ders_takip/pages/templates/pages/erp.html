@@ -782,6 +782,7 @@ ERP
                                                     <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
                                                     İndir
                                                 </th>
+                                                <th>Kategori</th>
                                                 <th>Belge Adı</th>
                                                 <th>Yükleme Alanı</th>
                                                 <th>Etkinlik Tarihi</th>
@@ -825,6 +826,7 @@ ERP
                                                         <td>
                                                             <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url |default:''}}">
                                                         </td>
+                                                         <td>{{ document.category }}</td>
                                                         <td>
                                                             {% if document.belge_url %}
                                                                 <a href="{{ document.belge_url }}" download>
@@ -964,7 +966,7 @@ ERP
                                         onclick="changeStatu({{course.id}},'iptal','true')"
                                         style = "background-color:red;
                                         color:rgb(255, 255, 255);"
-                                        id="course-form-{{ course.id }}">İptal
+                                        id="course-form-{{ course.id }}">Dersi iptal Et
                                     </button>
                                     <button 
                                         class="btn btn-primary" 

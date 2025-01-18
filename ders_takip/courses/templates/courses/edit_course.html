@@ -62,7 +62,7 @@ Ders Düzenleme
     color: #444; /* Başlık rengi */
     font-size: 2rem; /* Başlık boyutu */
     margin: 0px; /* Başlık ve altındaki içerik arası boşluk */
-    padding: 30px;
+    padding: 50px;
     margin-top: 20px;
   }
   table {
@@ -130,9 +130,16 @@ Ders Düzenleme
           {% endfor %}
       </select>
     </div>
-    <div class="form-group mb-3">
-      <label for="lesson-name" class="form-label">Ders Adı</label>
-      <p>{{ course.name }}</p>
+
+    <div class="form-group mb-3 me-3">
+          <label for="lesson-name" class="form-label">Ders Adı</label>
+          <input id="course-name" 
+                type="text" 
+                name="course_name" 
+                class="form-control"  
+                placeholder="Ders Adı Giriniz:" 
+                value="{{ course.name }}" 
+                required />
     </div>
     <div class="form-group-container d-flex">
       <div class="form-group mb-3 me-3">
@@ -144,20 +151,12 @@ Ders Düzenleme
                 min="1900" 
                 max="2100" 
                 placeholder="Yıl girin" 
-                value="{{ start_date }}" 
+                value="{{ start_year }}" 
                 required />
       </div>
       <div class="form-group mb-3">
           <label for="end-year" class="form-label">Bitiş Yılı</label>
-          <input id="end-year" 
-                type="number" 
-                name="end_year" 
-                class="form-control" 
-                min="1900" 
-                max="2100" 
-                placeholder="Yıl girin" 
-                value="{{ end_date }}" 
-                required />
+          <input id="end-year" type="number" name="end_year" class="form-control" min="2000" max="2200" placeholder="Yıl girin" required />
       </div>
     </div>
 

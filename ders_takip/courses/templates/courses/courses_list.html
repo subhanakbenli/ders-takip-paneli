@@ -5,6 +5,21 @@
 
 {% block content %}
 <style>
+    .edit-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        font-size: 0.9em;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .edit-button:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
     /* Genel Stil */
     body {
         font-family: Arial, sans-serif;
@@ -130,7 +145,7 @@
     </thead>
     <tbody>
         {% for course in page_obj %}
-            <tr onclick="window.location.href='/dersler/{{ course.id }}';">
+            <tr onclick="window.location.href='{% url 'pano' %}?teacher_id={{ course.teacher.id }}&course_name={{ course.name }}'" style="cursor: pointer;">
                 <td>{{ course.teacher.name }}</td>
                 <td>{{ course.name }}</td>
                 <td>{{ course.statu }}</td>
