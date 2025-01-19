@@ -60,7 +60,7 @@ class CourseFile(models.Model):
     dilekce_name = models.CharField(max_length=255, verbose_name="dilekce_name", null=True, blank=True)
     description = models.TextField(verbose_name="description", blank=True, null=True)    
     etkinlik_no = models.CharField(max_length=255, verbose_name="etkinlik_no", null=True, blank=True)
-    etkinlik_tarihi = models.DateField(verbose_name="etkinklik_tarihi", null=True, blank=True)
+    etkinlik_tarihi = models.DateField(verbose_name="etkinlik_tarihi", null=True, blank=True)
     ogretmen_adi = models.CharField(max_length=255, verbose_name="ogretmen_adi", null=True, blank=True)
     sinif= models.CharField(max_length=255, verbose_name="sinif", null=True, blank=True)
     sehir = models.CharField(max_length=255, verbose_name="sehir", null=True, blank=True)
