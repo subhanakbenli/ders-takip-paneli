@@ -197,7 +197,7 @@ def pano_iptal_view(request,teacher_id=None):
 
 @login_required
 def pano_ozet_view(request):
-    data = CourseFile.get_files_in_warning_period()
+    data = CourseFile.get_files_in_warning_period_ozet()
     # Bugünün tarihini alın
     current_date = datetime.now().date()
 
@@ -220,7 +220,7 @@ def pano_ozet_view(request):
 
 @user_has_permission([SUPERUSER,ADMIN])
 def erp_ozet_view(request):
-    data = CourseFile.get_files_in_warning_period()
+    data = CourseFile.get_files_in_warning_period_ozet()
     # Bugünün tarihini alın
     current_date = datetime.now().date()
 

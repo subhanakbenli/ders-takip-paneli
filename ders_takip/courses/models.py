@@ -99,7 +99,20 @@ class CourseFile(models.Model):
         except Exception as e:
             print(f"Hata oluştu: {str(e)}")
             return cls.objects.none()
-
+    
+    @classmethod
+    def get_files_in_warning_period_ozet(cls):
+        try:
+            warning_files = cls.objects.filter(
+                statu_pano="aktif",
+                sisteme_giris_tarihi__isnull=True
+            )
+            return warning_files
+        except Exception as e:
+            print(f"Hata oluştu: {str(e)}")
+            return cls.objects.none()
+    
+    
 def unique_file_path(instance, filename):
     base_name, extension = os.path.splitext(filename)
     base_name = base_name.replace(' ', '_')  # Dosya adında boşlukları kaldır
