@@ -938,7 +938,7 @@ ERP
                                                                 <input type="text" name="turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" name="dilekce_is_uploaded" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
+                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
                                                             </td>
                                                             <td>
                                                                 <textarea name="aciklama" placeholder="Açıklama yazın">{{ document.description|default:'' }}</textarea>
@@ -993,7 +993,7 @@ ERP
                                                                 <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.katilimci_sayisi|default:'' " />
                                                             </td>
                                                             <td>
-                                                                <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
+                                                                <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.verilen_not|default:'' }}" />
                                                             </td>
                                                             <td>
                                                                 <input type="date" name="guncelleme_tarihi"  value="{{document.guncelleme_tarihi|date:'Y-m-d' }}" />
