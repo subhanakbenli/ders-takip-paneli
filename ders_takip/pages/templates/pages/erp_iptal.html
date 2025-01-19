@@ -835,235 +835,237 @@ ERP İptal
             <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
                 {% if teacher.courses %}
                     {% for course in teacher.courses %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
-                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                                <p><strong>Durum:</strong> {{ course.statu_erp }}</p>
-                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
-                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                                <p><strong>Dönem:</strong> {{ course.start_year|default:'' }} - {{ course.end_year|default:'' }}</p>
-                                <div style="display: flex; gap: 10px;">
-                                    {% for key, value in course.document_statu_dict.items %}
-                                        <p><strong>{{ key }}:</strong> {{ value }}</p>
-                                    {% endfor %}
-                                </div>
-                                <div>
-                                    <h6>Belgeler:</h6>
-                                    <table class="table table-bordered table-responsive text-wrap">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
-                                                    İndir
-                                                </th>
-                                                <th>Belge Adı</th>
-                                                <th>Yükleme Alanı</th>
-                                                <th>Etkinlik Tarihi</th>
-                                                <th>Yükleme Tarihi</th>
-                                                <th>Bitiş Tarihi</th>
-                                                <th>Uyarı</th>
-                                                <th>Türü</th>
-                                                <th>Dilekçe Yazıldı mı?</th>
-                                                <th>Açıklama</th>
-                                                <th>Etkinlik No</th>
-                                                <th>Etkinlik Tarihi</th>
-                                                <th>Öğretmen</th>
-                                                <th>Sınıf</th>
-                                                <th>Şehir</th>
-                                                <th>Kimlerin Katıldığı</th>
-                                                <th>Sisteme Giriş Tarihi</th>
-                                                <th>Etkinliğin Adı</th>
-                                                <th>Eğitim Oluşturma Tarihi</th>
-                                                <th>Katılımcı Kodu</th>
-                                                <th>Eğitim Kayıt No 1</th>
-                                                <th>Eğitim Kayıt No 2</th>
-                                                <th>Eğitim Kayıt No 3</th>
-                                                <th>Etkinlik açıklaması</th>
-                                                <th>Kodu</th>
-                                                <th>Katılımcı sayısı</th>
-                                                <th>Verilen Not</th>
-                                                <th>Güncelleme Tarihi</th>
-                                                <th>Açıklama1</th>
-                                                <th>Açıklama2</th>
-                                                <th>Açıklama3</th>
-                                                <th>Kaydet</th>
-                                                <th>Arşivle</th>
-                                                <th>Aktif</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for document in course.documents %}
-                                                <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
-                                                    {% csrf_token %}
-                                                    <tr>
-                                                        <td>
-                                                            <input type="checkbox" class="document-checkbox" >
-                                                        </td>
-                                                        <td>
-                                                            {% if document.belge_url %}
-                                                                <a href="{{ document.belge_url }}" download>
-                                                                    {{ document.belge_adi|default:'' }}
-                                                                </a>
-                                                            {% else %}
-                                                                {{ document.belge_adi|default:'' }}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-success" 
-                                                            onclick="openDocumentModal(this)" 
-                                                            course-data-id="{{ course.id }}"
-                                                            versions='{{ document.versions }}'
-                                                            document-data-id="{{ document.id }}">İçerik Gör</button>
-                                                        </td> 
-                                                        <td>{{document.start_date}}</td>
-                                                        <td>{{document.sisteme_giris_tarihi}}</td>
-                                                        <td>{{ document.end_date }}</td>
-                                                        <td>
-                                                            {% if document.sisteme_giris_tarihi %}
-                                                                <!-- Belge yüklenmişse -->
-                                                                <span class="status-icon success green-error">Sisteme Yüklendi</span>
-                                                            {% else %}
-                                                                <!-- Belge yüklenmemişse -->
-                                                                {% if document.remaining_days is not None %}
-                                                                    {% if document.remaining_days > 5 %}
-                                                                        <span class="status-icon error">ACİL YÜKLE</span>
-                                                                    {% elif document.remaining_days > 0 %}
-                                                                        <span class="status-icon error">ACİL YÜKLE {{ document.remaining_days }} GÜN KALDI</span>
-                                                                    {% elif document.remaining_days == 0 %}
-                                                                        <span class="status-icon error">BUGÜN SON GÜN</span>
-                                                                    {% else %}
-                                                                        <span class="status-icon error">SÜRESİ DOLDU</span>
-                                                                    {% endif %}
-                                                                {% else %}
-                                                                    <!-- Bitiş tarihi yoksa veya geçersizse -->
-                                                                    <span class="status-icon error">Yüklenmedi</span>
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"value="{{ document.description|default:'' }}" ></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
-                                                        </td>
-                                                       <td>
-                                                            <input type="text" name = "ogretmen_adi" placeholder = "Öğretmen Adı:" value = "{{document.ogretmen_adi|default:'' }}">
-                                                       </td>
-                                                        <td>
-                                                            <input type="text" name="sinif" placeholder="Sınıf:" value="{{ document.sinif|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="sehir" placeholder="Şehir:" value="{{ document.sehir|default:'' }}" />
-                                                        </td>
-                                                         <td>
-                                                            <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="egitim_olusturma_tarihi" placeholder = "Eğitim Oluşturma Tarihi:"  value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="egitim_kayit_no_1" placeholder="Eğitim kayıt no 1 yazın"  value="{{ document.egitim_kayit_no_1|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="egitim_kayit_no_2" placeholder="Eğitim kayıt no 2 yazın"   value="{{ document.egitim_kayit_no_2|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın"   value="{{ document.egitim_kayit_no_3|default:'' }}"/>
-                                                        </td>
-                                                         <td>
-                                                            <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"  value="{{ document.description|default:'' }}"></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.etkinlik_kodu|default:'' }}"/>
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.etkinlik_sayisi|default:'' " />
-                                                        </td>
-                                                        <td>
-                                                            <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input type="date" name="guncelleme_tarihi"  value=" document.guncelleme_tarihi|default:'' " />
-                                                        </td>
-                                                        <td>
-                                                            <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
-                                                        </td>
-                                                         <td>
-                                                            <textarea name="aciklama_2" placeholder="Açıklama yazın"  value="{{ document.description_2|default:'' }}"></textarea>
-                                                        </td>
-                                                         <td>
-                                                            <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>
-                                                        </td>
-                                                        <td>
-                                                            <button type="button" 
-                                                            class="btn btn-sm btn-danger" 
-                                                            onclick="saveDocument({{ document.id }})">Kaydet</button>
-                                                        </td>
-                                                        <td>
-                                                            <button 
-                                                                type="button"
-                                                                class="btn btn-sm btn-primary" 
-                                                                onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
-                                                                id="document-form-{{ document.id }}"> Arşivle</button>
-                                                        </td>
-                                                        <td>
-                                                            <button 
-                                                                type="button"
-                                                                class="btn btn-sm btn-warning" 
-                                                                onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
-                                                                id="document-form-{{ document.id }}"> Aktif
-                                                            </button>
-                                                        </td>
-
-                                                    </tr>
-                                                </form>
-                                            {% empty %}
+                        <div id="course-details-{{ course.name }}-{{teacher.id}}" class="course-details">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+                                    <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                                    <p><strong>Durum:</strong> {{ course.statu_erp }}</p>
+                                    <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                                    <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                                    <p><strong>Dönem:</strong> {{ course.start_year|default:'' }} - {{ course.end_year|default:'' }}</p>
+                                    <div style="display: flex; gap: 10px;">
+                                        {% for key, value in course.document_statu_dict.items %}
+                                            <p><strong>{{ key }}:</strong> {{ value }}</p>
+                                        {% endfor %}
+                                    </div>
+                                    <div>
+                                        <h6>Belgeler:</h6>
+                                        <table class="table table-bordered table-responsive text-wrap">
+                                            <thead>
                                                 <tr>
-                                                    <td colspan="3">Henüz belge eklenmemiş.</td>
+                                                    <th>
+                                                        <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
+                                                        İndir
+                                                    </th>
+                                                    <th>Belge Adı</th>
+                                                    <th>Yükleme Alanı</th>
+                                                    <th>Etkinlik Tarihi</th>
+                                                    <th>Yükleme Tarihi</th>
+                                                    <th>Bitiş Tarihi</th>
+                                                    <th>Uyarı</th>
+                                                    <th>Türü</th>
+                                                    <th>Dilekçe Yazıldı mı?</th>
+                                                    <th>Açıklama</th>
+                                                    <th>Etkinlik No</th>
+                                                    <th>Etkinlik Tarihi</th>
+                                                    <th>Öğretmen</th>
+                                                    <th>Sınıf</th>
+                                                    <th>Şehir</th>
+                                                    <th>Kimlerin Katıldığı</th>
+                                                    <th>Sisteme Giriş Tarihi</th>
+                                                    <th>Etkinliğin Adı</th>
+                                                    <th>Eğitim Oluşturma Tarihi</th>
+                                                    <th>Katılımcı Kodu</th>
+                                                    <th>Eğitim Kayıt No 1</th>
+                                                    <th>Eğitim Kayıt No 2</th>
+                                                    <th>Eğitim Kayıt No 3</th>
+                                                    <th>Etkinlik açıklaması</th>
+                                                    <th>Kodu</th>
+                                                    <th>Katılımcı sayısı</th>
+                                                    <th>Verilen Not</th>
+                                                    <th>Güncelleme Tarihi</th>
+                                                    <th>Açıklama1</th>
+                                                    <th>Açıklama2</th>
+                                                    <th>Açıklama3</th>
+                                                    <th>Kaydet</th>
+                                                    <th>Arşivle</th>
+                                                    <th>Aktif</th>
                                                 </tr>
-                                            {% endfor %}
-                                            
+                                            </thead>
+                                            <tbody>
+                                                {% for document in course.documents %}
+                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_erp' document.id %}" method="post">
+                                                        {% csrf_token %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="document-checkbox" >
+                                                            </td>
+                                                            <td>
+                                                                {% if document.belge_url %}
+                                                                    <a href="{{ document.belge_url }}" download>
+                                                                        {{ document.belge_adi|default:'' }}
+                                                                    </a>
+                                                                {% else %}
+                                                                    {{ document.belge_adi|default:'' }}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-success" 
+                                                                onclick="openDocumentModal(this)" 
+                                                                course-data-id="{{ course.id }}"
+                                                                versions='{{ document.versions }}'
+                                                                document-data-id="{{ document.id }}">İçerik Gör</button>
+                                                            </td> 
+                                                            <td>{{document.start_date}}</td>
+                                                            <td>{{document.sisteme_giris_tarihi}}</td>
+                                                            <td>{{ document.end_date }}</td>
+                                                            <td>
+                                                                {% if document.sisteme_giris_tarihi %}
+                                                                    <!-- Belge yüklenmişse -->
+                                                                    <span class="status-icon success green-error">Sisteme Yüklendi</span>
+                                                                {% else %}
+                                                                    <!-- Belge yüklenmemişse -->
+                                                                    {% if document.remaining_days is not None %}
+                                                                        {% if document.remaining_days > 5 %}
+                                                                            <span class="status-icon error">ACİL YÜKLE</span>
+                                                                        {% elif document.remaining_days > 0 %}
+                                                                            <span class="status-icon error">ACİL YÜKLE {{ document.remaining_days }} GÜN KALDI</span>
+                                                                        {% elif document.remaining_days == 0 %}
+                                                                            <span class="status-icon error">BUGÜN SON GÜN</span>
+                                                                        {% else %}
+                                                                            <span class="status-icon error">SÜRESİ DOLDU</span>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        <!-- Bitiş tarihi yoksa veya geçersizse -->
+                                                                        <span class="status-icon error">Yüklenmedi</span>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="kullanici_turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="dilekce_yazildi_mi" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <textarea type = "text" name="aciklama" placeholder="Açıklama yazın"value="{{ document.description|default:'' }}" ></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="etkinlik_no" placeholder="Etkinlik No: " value="{{ document.etkinlik_no|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="etkinlik_tarihi" value="{{ document.etkinlik_tarihi|default:'' }}" />
+                                                            </td>
+                                                        <td>
+                                                                <input type="text" name = "ogretmen_adi" placeholder = "Öğretmen Adı:" value = "{{document.ogretmen_adi|default:'' }}">
+                                                        </td>
+                                                            <td>
+                                                                <input type="text" name="sinif" placeholder="Sınıf:" value="{{ document.sinif|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="sehir" placeholder="Şehir:" value="{{ document.sehir|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="katilimcilar" placeholder="Kimler Katıldı:" value="{{ document.katilanlar|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="sisteme_giris_tarihi"  placeholder="Sisteme giriş tarihi:" value="{{ document.sisteme_giris_tarihi|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="etkinlik_adi" placeholder="Etkinlik Adı:"  value="{{ document.etkinlik_adi|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="egitim_olusturma_tarihi" placeholder = "Eğitim Oluşturma Tarihi:"  value="{{ document.egitim_olusturma_tarihi|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="katilimci_kodu" placeholder = 'Katılımcı Kodu'  value="{{ document.katilimci_kodu|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="egitim_kayit_no_1" placeholder="Eğitim kayıt no 1 yazın"  value="{{ document.egitim_kayit_no_1|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="egitim_kayit_no_2" placeholder="Eğitim kayıt no 2 yazın"   value="{{ document.egitim_kayit_no_2|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="egitim_kayit_no_3" placeholder="Eğitim kayıt no 3 yazın"   value="{{ document.egitim_kayit_no_3|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <textarea name="etkinlik_aciklamasi" placeholder="Etkinlik açıklaması yazın"  value="{{ document.description|default:'' }}"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.etkinlik_kodu|default:'' }}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.etkinlik_sayisi|default:'' " />
+                                                            </td>
+                                                            <td>
+                                                                <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.etkinlik_notu|default:'' }}" />
+                                                            </td>
+                                                            <td>
+                                                                <input type="date" name="guncelleme_tarihi"  value=" document.guncelleme_tarihi|default:'' " />
+                                                            </td>
+                                                            <td>
+                                                                <textarea name="aciklama_1" placeholder="Açıklama yazın"  value="{{ document.description_1|default:'' }}"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <textarea name="aciklama_2" placeholder="Açıklama yazın"  value="{{ document.description_2|default:'' }}"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <textarea name="aciklama_3" placeholder="Açıklama yazın"  value="{{ document.description_3|default:'' }}"></textarea>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" 
+                                                                class="btn btn-sm btn-danger" 
+                                                                onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                            </td>
+                                                            <td>
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-primary" 
+                                                                    onclick="changeStatu('{{ document.id }}', 'arsiv', 'false')"
+                                                                    id="document-form-{{ document.id }}"> Arşivle</button>
+                                                            </td>
+                                                            <td>
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-sm btn-warning" 
+                                                                    onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
+                                                                    id="document-form-{{ document.id }}"> Aktif
+                                                                </button>
+                                                            </td>
 
-                                        </tbody>
-                                    </table>
-                                </div>
+                                                        </tr>
+                                                    </form>
+                                                {% empty %}
+                                                    <tr>
+                                                        <td colspan="3">Henüz belge eklenmemiş.</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                
 
-                                <!-- İşlem Butonları -->
-                                <div class="action-buttons">
-                                    <button 
-                                        class="btn btn-warning"
-                                        onclick="changeStatu('{{ course.id }}', 'aktif', 'true')"
-                                        style = "background-color:rgb(216, 23, 23);;
-                                        color:rgb(255, 255, 255);"
-                                        id="course-form-{{ course.id }}">Dersi Aktif Et
-                                    </button>
-                                    <button 
-                                        class="btn btn-primary" 
-                                        onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
-                                        id="course-form-{{ course.id }}"> Dersi Arşivle
-                                    </button>
-                                    <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
-                                    <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'iptal', 'erp')">Excel İndir</button>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- İşlem Butonları -->
+                                    <div class="action-buttons">
+                                        <button 
+                                            class="btn btn-warning"
+                                            onclick="changeStatu('{{ course.id }}', 'aktif', 'true')"
+                                            style = "background-color:rgb(216, 23, 23);;
+                                            color:rgb(255, 255, 255);"
+                                            id="course-form-{{ course.id }}">Dersi Aktif Et
+                                        </button>
+                                        <button 
+                                            class="btn btn-primary" 
+                                            onclick="changeStatu('{{ course.id }}', 'arsiv', 'true')" 
+                                            id="course-form-{{ course.id }}"> Dersi Arşivle
+                                        </button>
+                                        <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                        <button class="btn btn-success" onclick="sendSelectedDocuments()">İndir</button>
+                                        <button class="btn btn-success btn-sm" onclick="downloadExcel({{ course.id }}, 'iptal', 'erp')">Excel İndir</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -823,7 +823,6 @@ ERP
                 {% if teacher.courses %}
                     {% for course in teacher.courses %}
                         <div id="course-details-{{ course.name }}-{{teacher.id}}" class="course-details">
-
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
@@ -939,7 +938,7 @@ ERP
                                                                 <input type="text" name="turu" placeholder="Türü yazın"  value="{{ document.type|default:'' }}"/>
                                                             </td>
                                                             <td>
-                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
+                                                                <input type="text" name="dilekce_is_uploaded" placeholder="Dilekçe yazıldı mı?"  value = "{{document.dilekce_name|default:'' }}"/>
                                                             </td>
                                                             <td>
                                                                 <textarea name="aciklama" placeholder="Açıklama yazın">{{ document.description|default:'' }}</textarea>
