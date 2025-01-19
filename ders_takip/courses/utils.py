@@ -201,6 +201,9 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         "sisteme_giris_tarihi": document.sisteme_giris_tarihi,
                         "egitim_olusturma_tarihi": document.egitim_olusturma_tarihi,
                         "katilimci_kodu": document.katilimci_kodu,
+                        "verilen_not"   : document.verilen_not,
+                        "guncelleme_tarihi": document.guncelleme_tarihi,
+                        
                         "egitim_kayit_no_1": document.egitim_kayit_no_1,
                         "egitim_kayit_no_2": document.egitim_kayit_no_2,
                         "egitim_kayit_no_3": document.egitim_kayit_no_3,

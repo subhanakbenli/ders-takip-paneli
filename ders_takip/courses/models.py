@@ -76,7 +76,7 @@ class CourseFile(models.Model):
     kodu = models.CharField(max_length=255, verbose_name="kodu", null=True, blank=True)
     katilimci_sayisi = models.CharField(max_length=255, verbose_name="katilimci_sayisi", null=True, blank=True)        
     verilen_not = models.CharField(max_length=255, verbose_name="verilen_not", null=True, blank=True)
-    guncellenme_tarihi = models.DateField(verbose_name="guncellenme_tarihi", null=True, blank=True)
+    guncelleme_tarihi = models.DateField(verbose_name="guncellenme_tarihi", null=True, blank=True)
     description_1 = models.TextField(verbose_name="description_1", blank=True, null=True)
     description_2 = models.TextField(verbose_name="description_2", blank=True, null=True)
     description_3= models.TextField(verbose_name="description_3", blank=True, null=True)
