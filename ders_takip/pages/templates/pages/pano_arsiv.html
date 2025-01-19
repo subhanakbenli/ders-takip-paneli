@@ -784,6 +784,7 @@ Pano Arşiv
                                                         <th>Uyarı</th>
                                                         <th>Kaydet</th>
                                                         <th>İptal</th>
+                                                        <th>Aktif</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -894,6 +895,14 @@ Pano Arşiv
                                                                         class="btn btn-sm btn-warning" 
                                                                         onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
                                                                         id="document-form-{{ document.id }}"> İptal
+                                                                    </button>
+                                                                </td>
+                                                                <td>
+                                                                    <button 
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-warning" 
+                                                                        onclick="changeStatu('{{ document.id }}', 'aktif', 'false')"
+                                                                        id="document-form-{{ document.id }}"> Aktif
                                                                     </button>
                                                                 </td>
                                                             </tr>
