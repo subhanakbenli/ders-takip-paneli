@@ -141,16 +141,21 @@
             <th><a>Ders Adı</a></th>
             <th>Durum</th>
             <th>Başlangıç-Bitiş Yılı</th>
+            <th>Detay</th>
         </tr>
     </thead>
     <tbody>
         {% for course in page_obj %}
-            <tr onclick="window.location.href='{% url 'pano' %}?teacher_id={{ course.teacher.id }}&course_name={{ course.name }}'" style="cursor: pointer;">
+            <tr onclick="navigateToPage('{{ course.statu_pano }}', '{{ course.teacher.id }}', '{{ course.name }}')" style="cursor: pointer;">
                 <td>{{ course.teacher.name }}</td>
                 <td>{{ course.name }}</td>
-                <td>{{ course.statu }}</td>
+                <td>{{ course.statu_pano}}</td>
                 <td>{{ course.start_date|date:"Y"}} - {{ course.end_date|date:"Y" }}</td>
+                <td>
+                    <button class="edit-button" onclick="event.stopPropagation(); window.location.href='/dersler/{{ course.id }}';">Detay</button>
+                </td>
             </tr>
+                
         {% empty %}
             <tr>
                 <td colspan="7">Ders Bulunamadı</td>
@@ -173,6 +178,28 @@
         <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}">Son Sayfa</a>
     {% endif %}
 </div>
+
+<script>
+    // Duruma göre farklı URL'lere yönlendirme
+    function navigateToPage(status, teacherId, courseName) {
+        let baseUrl;
+        switch (status) {
+            case 'aktif':
+                baseUrl = "{% url 'pano' %}";
+                break;
+            case 'iptal':
+                baseUrl = "{% url 'pano_iptal' %}";
+                break;
+            case 'arsiv':
+                baseUrl = "{% url 'pano_arsiv' %}";
+                break;
+            default:
+                alert("Geçersiz durum");
+                return;
+        }
+        window.location.href = `${baseUrl}?teacher_id=${teacherId}&course_name=${courseName}`;
+    }
+</script>
 
 <script>
     // Kullanıcı sayfa başına gösterilecek öğe sayısını seçtiğinde sayfayı yenile
