@@ -39,9 +39,11 @@ def add_course_view(request):
         course_name = str(request.POST.get('lesson_name')).capitalize().strip() if request.POST.get('lesson_name') else None
         description = request.POST.get('description', "")
         dilekce_required = request.POST.get('is_dilekce_required', "").lower() == "yes"  # True/False olarak ayarla
-
+        start_year = request.POST.get('start_year', None)
+        end_year = request.POST.get('end_year', None)
+        
         # Ders kaydı oluştur
-        course = Course(name=course_name, teacher=teacher, description=description, dilekce_required=dilekce_required)
+        course = Course(name=course_name, teacher=teacher, description=description, dilekce_required=dilekce_required, start_year=start_year, end_year=end_year)
         course.save()
 
         # Dinamik tabloda gönderilen verileri işleyin
@@ -165,7 +167,6 @@ def update_course_files(request, id):
 def edit_course(request, course_id):
     # İlgili dersi getir
     course = get_object_or_404(Course, id=course_id)
-    teachers = Teacher.objects.all()  # Tüm öğretmenleri getirin
     files = get_course_details(course_id)
     
     # Varsayılan bölümleri kontrol ederek eksik olanları 0 ile tamamla
@@ -186,7 +187,6 @@ def edit_course(request, course_id):
         return redirect("teachers_with_courses.html")
     
     return render(request, "courses/edit_course.html", {
-        "teachers": teachers,
         "course": course,
         "files": files,
     })

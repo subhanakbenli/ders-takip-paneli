@@ -145,18 +145,18 @@ Ders Düzenleme
       <div class="form-group mb-3 me-3">
           <label for="start-year" class="form-label">Başlangıç Yılı</label>
           <input id="start-year" 
-                type="number" 
-                name="start_year" 
-                class="form-control" 
-                min="1900" 
-                max="2100" 
-                placeholder="Yıl girin" 
-                value="{{ start_year }}" 
-                required />
+            type="number" 
+            name="start_year" 
+            class="form-control" 
+            min="1900" 
+            max="2100" 
+            placeholder="Yıl girin" 
+            value="{{ course.start_year }}" 
+            required />
       </div>
       <div class="form-group mb-3">
           <label for="end-year" class="form-label">Bitiş Yılı</label>
-          <input id="end-year" type="number" name="end_year" class="form-control" min="2000" max="2200" placeholder="Yıl girin" required />
+          <input id="end-year" type="number" name="end_year" class="form-control" min="2000" max="2200" placeholder="Yıl girin" value="{{ course.end_year }}" required />
       </div>
     </div>
 
