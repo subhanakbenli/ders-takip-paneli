@@ -744,219 +744,221 @@ Pano Arşiv
             <div id="teacher-details-{{ teacher.id }}" class="teacher-details">
                 {% if teacher.courses %}
                     {% for course in teacher.courses %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
-                                <p><strong>Ders Adı:</strong> {{ course.name }}</p>
-                                <p><strong>Durum:</strong> {{ course.statu_pano }}</p>
-                                <p><strong>Açıklama:</strong> {{ course.description }}</p>
-                                <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                                <p><strong>Dönem:</strong> {{ course.start_year|default:'' }} - {{ course.end_year|default:'' }}</p>
-                                <div style="display: flex; gap: 20px;">
-                                    {% for key, value in course.document_statu_dict.items %}
-                                        <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
-                                    {% endfor %}
-                                </div>
-                                {% if course.warning_message %}
-                                    <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
-                                {% endif %}
-                                <!-- Documents Table -->
-                                <h6>Belgeler:</h6>
-                                {% if course.documents %}
-                                    <div class="table-container">
-                                        <table class="table table-bordered table-responsive text-wrap">
-                                            <thead>
-                                                <tr>
-                                                    <th>
-                                                        <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
-                                                        Seç
-                                                    </th>
-                                                    <th>Kategori</th>
-                                                    <th>Belge Adı</th>
-                                                    <th>İşlemler</th>
-                                                    <th>Başlangıç Tarihi</th>
-                                                    <th>Gün Sayısı</th>
-                                                    <th>Bitiş Tarihi</th>
-                                                    <th>Yüklenme Tarihi</th>                                                    
-                                                    <th>Türü</th>
-                                                    <th>Dilekçe</th>
-                                                    <th>Uyarı</th>
-                                                    <th>Kaydet</th>
-                                                    <th>İptal</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for document in course.documents %}
-                                                    <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
-                                                        {% csrf_token %}
-                                                        <tr>
-                                                            <td>
-                                                                <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
-                                                            </td>
-                                                            <td>{{ document.category }}</td>
-                                                            <td>
-                                                                {% if document.belge_url %}
-                                                                    <a href="{{ document.belge_url }}" download>
-                                                                        {{ document.belge_adi|default:'' }}
-                                                                    </a>
-                                                                {% else %}
-                                                                    {{ document.belge_adi|default:'' }}
-                                                                {% endif %}
-                                                            </td>
-                                                            <td>
-                                                                <button type="button" class="btn btn-success" 
-                                                                onclick="openDocumentModal(this)" 
-                                                                course-data-id="{{ course.id }}"
-                                                                document-data-id="{{ document.id }}">İçerik Gör</button>
-                                                            </td> 
-                                                            <td>
-                                                                
-                                                                <input 
-                                                                    type="date" 
-                                                                    name="start_date" 
-                                                                    class="form-control" 
-                                                                    placeholder="YYYY-MM-DD" 
-                                                                    required 
-                                                                    value="{{ document.start_date }}"
-                                                                    oninput="calculateEndDate(this)"
-                                                                >
-                                                            </td>
-                                                            <td>
-                                                                
-                                                                <input 
-                                                                    type="number" 
-                                                                    name="gün_sayisi" 
-                                                                    class="form-control" 
-                                                                    placeholder="Gün Sayısı" 
-                                                                    
-                                                                    required 
-                                                                    value="{{ document.gün_sayisi }}" 
-                                                                    oninput="calculateEndDate(this)">
-                                                            </td>
-                                                            <td>
-                                                                
-                                                                <input 
-                                                                    type="date" 
-                                                                    name="end_date" 
-                                                                    class="form-control" 
-                                                                    placeholder="YYYY-MM-DD" 
-                                                                    readonly 
-                                                                    value="{{ document.end_date }}"
-                                                                >
-                                                            </td>
-
-                                                            <td>
-                                                                {% if document.sisteme_giris_tarihi %}
-                                                                    <span class="form-control" style="font-size: 15px;">
-                                                                        {{ document.sisteme_giris_tarihi|date:"d.m.Y" }}
-                                                                    </span>
-                                                                {% else %}
-                                                                    <span class="status-icon error green-error">❌</span>
-                                                                {% endif %}
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.type|default:'' }}">
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" name="dilekce_name" placeholder="Dilekçe Adı Giriniz" value="{{ document.dilekce_name|default:'' }}">
-                                                            </td>
-                                                            <td>
-                                                                {% if document.sisteme_giris_tarihi %}
-                                                                    <!-- Belge yüklenmişse -->
-                                                                    <span class="status-icon success green-error">Sisteme Yüklendi</span>
-                                                                {% else %}
-                                                                    <!-- Belge yüklenmemişse -->
-                                                                    {% if document.remaining_days is not None %}
-                                                                        {% if document.remaining_days > 5 %}
-                                                                            <span class="status-icon error">ACİL YÜKLE</span>
-                                                                        {% elif document.remaining_days > 0 %}
-                                                                            <span class="status-icon error">ACİL YÜKLE {{ document.remaining_days }} GÜN KALDI</span>
-                                                                        {% elif document.remaining_days == 0 %}
-                                                                            <span class="status-icon error">BUGÜN SON GÜN</span>
-                                                                        {% else %}
-                                                                            <span class="status-icon error">SÜRESİ DOLDU</span>
-                                                                        {% endif %}
-                                                                    {% else %}
-                                                                        <!-- Bitiş tarihi yoksa veya geçersizse -->
-                                                                        <span class="status-icon error">Yüklenmedi</span>
-                                                                    {% endif %}
-                                                                {% endif %}
-                                                            </td>
-                                                            <td>
-                                                                <button type="button" 
-                                                                class="btn btn-sm btn-danger" 
-                                                                onclick="saveDocument({{ document.id }})">Kaydet</button>
-                                                            </td>
-                                                            <td>
-                                                                <button 
-                                                                    type="button"
-                                                                    class="btn btn-sm btn-warning" 
-                                                                    onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
-                                                                    id="document-form-{{ document.id }}"> İptal
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    </form>
-
-                                                    {% empty %}
+                        <div id="course-details-{{ course.name }}-{{teacher.id}}" class="course-details">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <p><strong>Öğretmen Adı:</strong> {{ teacher.name }} {{ teacher.surname }}</p>
+                                    <p><strong>Ders Adı:</strong> {{ course.name }}</p>
+                                    <p><strong>Durum:</strong> {{ course.statu_pano }}</p>
+                                    <p><strong>Açıklama:</strong> {{ course.description }}</p>
+                                    <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
+                                    <p><strong>Dönem:</strong> {{ course.start_year|default:'' }} - {{ course.end_year|default:'' }}</p>
+                                    <div style="display: flex; gap: 20px;">
+                                        {% for key, value in course.document_statu_dict.items %}
+                                            <p><strong>{{ key }}:</strong> {{ value }} Belge </p>
+                                        {% endfor %}
+                                    </div>
+                                    {% if course.warning_message %}
+                                        <p><strong>Uyarı:</strong> {{ course.warning_message|default:"" }}</p>
+                                    {% endif %}
+                                    <!-- Documents Table -->
+                                    <h6>Belgeler:</h6>
+                                    {% if course.documents %}
+                                        <div class="table-container">
+                                            <table class="table table-bordered table-responsive text-wrap">
+                                                <thead>
                                                     <tr>
-                                                        <td colspan="12">Bu derse ait belge bulunmamaktadır.</td>
+                                                        <th>
+                                                            <input type="checkbox" id="selectAll-{{ course.id }}" onclick="toggleAllDocuments('{{ course.id }}')" />
+                                                            Seç
+                                                        </th>
+                                                        <th>Kategori</th>
+                                                        <th>Belge Adı</th>
+                                                        <th>İşlemler</th>
+                                                        <th>Başlangıç Tarihi</th>
+                                                        <th>Gün Sayısı</th>
+                                                        <th>Bitiş Tarihi</th>
+                                                        <th>Yüklenme Tarihi</th>                                                    
+                                                        <th>Türü</th>
+                                                        <th>Dilekçe</th>
+                                                        <th>Uyarı</th>
+                                                        <th>Kaydet</th>
+                                                        <th>İptal</th>
                                                     </tr>
-                                                    {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div> 
-                                {% endif %}
-                                <!-- Action Buttons -->
-                                <div class="action-buttons">
-                                    <button class="btn btn-warning" 
-                                        onclick="changeStatu({{course.id}},'iptal','true')"
-                                        id="course-form-{{ course.id }}" style =
-                                         "background-color:red;
-                                          color:rgb(255, 255, 255);
-                                          "
-                                        >Dersi İptal Et
-                                    </button>
-                                    <button class="btn btn-warning" 
-                                        onclick="changeStatu({{course.id}},'aktif','true')"
-                                        id="course-form-{{ course.id }}" style =
-                                         "background-color:rgb(94, 169, 240);
-                                          color:rgb(255, 255, 255);
-                                          "
-                                        >Dersi Aktif Et
-                                    </button>
-                                    <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
-                                    <button class="btn btn-success" 
-                                        style="
-                                                background-color:rgb(45, 204, 45); 
-                                                color: white; 
-                                                border: none; 
-                                                padding: 5px 10px; 
-                                                border-radius: 4px; 
-                                                cursor: pointer;
-                                                transition: background-color 0.3s ease;
-                                            " 
-                                        onmouseover="this.style.backgroundColor='#004d00'" 
-                                        onmouseout="this.style.backgroundColor='#006400'" 
-                                        onclick="sendSelectedDocuments()">
-                                    İndir
-                                    </button>
-                                    <button class="btn btn-success btn-sm" 
+                                                </thead>
+                                                <tbody>
+                                                    {% for document in course.documents %}
+                                                        <form id="document-form-{{ document.id }}" action="{% url 'save_pano' document.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" class="document-checkbox" data-document-url="{{ document.belge_url }}">
+                                                                </td>
+                                                                <td>{{ document.category }}</td>
+                                                                <td>
+                                                                    {% if document.belge_url %}
+                                                                        <a href="{{ document.belge_url }}" download>
+                                                                            {{ document.belge_adi|default:'' }}
+                                                                        </a>
+                                                                    {% else %}
+                                                                        {{ document.belge_adi|default:'' }}
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-success" 
+                                                                    onclick="openDocumentModal(this)" 
+                                                                    course-data-id="{{ course.id }}"
+                                                                    document-data-id="{{ document.id }}">İçerik Gör</button>
+                                                                </td> 
+                                                                <td>
+                                                                    
+                                                                    <input 
+                                                                        type="date" 
+                                                                        name="start_date" 
+                                                                        class="form-control" 
+                                                                        placeholder="YYYY-MM-DD" 
+                                                                        required 
+                                                                        value="{{ document.start_date }}"
+                                                                        oninput="calculateEndDate(this)"
+                                                                    >
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                    <input 
+                                                                        type="number" 
+                                                                        name="gün_sayisi" 
+                                                                        class="form-control" 
+                                                                        placeholder="Gün Sayısı" 
+                                                                        
+                                                                        required 
+                                                                        value="{{ document.gün_sayisi }}" 
+                                                                        oninput="calculateEndDate(this)">
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                    <input 
+                                                                        type="date" 
+                                                                        name="end_date" 
+                                                                        class="form-control" 
+                                                                        placeholder="YYYY-MM-DD" 
+                                                                        readonly 
+                                                                        value="{{ document.end_date }}"
+                                                                    >
+                                                                </td>
+
+                                                                <td>
+                                                                    {% if document.sisteme_giris_tarihi %}
+                                                                        <span class="form-control" style="font-size: 15px;">
+                                                                            {{ document.sisteme_giris_tarihi|date:"d.m.Y" }}
+                                                                        </span>
+                                                                    {% else %}
+                                                                        <span class="status-icon error green-error">❌</span>
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="turu" placeholder="Belge Türünü Giriniz" value="{{ document.type|default:'' }}">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="dilekce_name" placeholder="Dilekçe Adı Giriniz" value="{{ document.dilekce_name|default:'' }}">
+                                                                </td>
+                                                                <td>
+                                                                    {% if document.sisteme_giris_tarihi %}
+                                                                        <!-- Belge yüklenmişse -->
+                                                                        <span class="status-icon success green-error">Sisteme Yüklendi</span>
+                                                                    {% else %}
+                                                                        <!-- Belge yüklenmemişse -->
+                                                                        {% if document.remaining_days is not None %}
+                                                                            {% if document.remaining_days > 5 %}
+                                                                                <span class="status-icon error">ACİL YÜKLE</span>
+                                                                            {% elif document.remaining_days > 0 %}
+                                                                                <span class="status-icon error">ACİL YÜKLE {{ document.remaining_days }} GÜN KALDI</span>
+                                                                            {% elif document.remaining_days == 0 %}
+                                                                                <span class="status-icon error">BUGÜN SON GÜN</span>
+                                                                            {% else %}
+                                                                                <span class="status-icon error">SÜRESİ DOLDU</span>
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            <!-- Bitiş tarihi yoksa veya geçersizse -->
+                                                                            <span class="status-icon error">Yüklenmedi</span>
+                                                                        {% endif %}
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>
+                                                                    <button type="button" 
+                                                                    class="btn btn-sm btn-danger" 
+                                                                    onclick="saveDocument({{ document.id }})">Kaydet</button>
+                                                                </td>
+                                                                <td>
+                                                                    <button 
+                                                                        type="button"
+                                                                        class="btn btn-sm btn-warning" 
+                                                                        onclick="changeStatu('{{ document.id }}', 'iptal', 'false')"
+                                                                        id="document-form-{{ document.id }}"> İptal
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </form>
+
+                                                        {% empty %}
+                                                        <tr>
+                                                            <td colspan="12">Bu derse ait belge bulunmamaktadır.</td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div> 
+                                    {% endif %}
+                                    <!-- Action Buttons -->
+                                    <div class="action-buttons">
+                                        <button class="btn btn-warning" 
+                                            onclick="changeStatu({{course.id}},'iptal','true')"
+                                            id="course-form-{{ course.id }}" style =
+                                            "background-color:red;
+                                            color:rgb(255, 255, 255);
+                                            "
+                                            >Dersi İptal Et
+                                        </button>
+                                        <button class="btn btn-warning" 
+                                            onclick="changeStatu({{course.id}},'aktif','true')"
+                                            id="course-form-{{ course.id }}" style =
+                                            "background-color:rgb(94, 169, 240);
+                                            color:rgb(255, 255, 255);
+                                            "
+                                            >Dersi Aktif Et
+                                        </button>
+                                        <button class="btn btn-warning" onclick="window.location.href='{% url 'edit_course' course.id %}'">Düzenle</button>
+                                        <button class="btn btn-success" 
                                             style="
-                                                background-color:rgb(15, 144, 15); 
-                                                color: white; 
-                                                border: none; 
-                                                padding: 5px 10px; 
-                                                border-radius: 4px; 
-                                                cursor: pointer;
-                                                transition: background-color 0.3s ease;
-                                            "               
-                                            onclick="downloadExcel({{ course.id }}, 'arsiv', 'pano')">
-                                        Excel İndir
-                                    </button>
+                                                    background-color:rgb(45, 204, 45); 
+                                                    color: white; 
+                                                    border: none; 
+                                                    padding: 5px 10px; 
+                                                    border-radius: 4px; 
+                                                    cursor: pointer;
+                                                    transition: background-color 0.3s ease;
+                                                " 
+                                            onmouseover="this.style.backgroundColor='#004d00'" 
+                                            onmouseout="this.style.backgroundColor='#006400'" 
+                                            onclick="sendSelectedDocuments()">
+                                        İndir
+                                        </button>
+                                        <button class="btn btn-success btn-sm" 
+                                                style="
+                                                    background-color:rgb(15, 144, 15); 
+                                                    color: white; 
+                                                    border: none; 
+                                                    padding: 5px 10px; 
+                                                    border-radius: 4px; 
+                                                    cursor: pointer;
+                                                    transition: background-color 0.3s ease;
+                                                "               
+                                                onclick="downloadExcel({{ course.id }}, 'arsiv', 'pano')">
+                                            Excel İndir
+                                        </button>
 
 
-                                </div>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
