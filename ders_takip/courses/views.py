@@ -41,8 +41,8 @@ def add_course_view(request):
         dilekce_required = request.POST.get('is_dilekce_required', "").lower() == "yes"  # True/False olarak ayarla
         start_year = request.POST.get('start_year', None)
         end_year = request.POST.get('end_year', None)
-        
-        # Ders kaydı oluştur
+        print(start_year, end_year)
+        # Ders kaydı oluştur 
         course = Course(name=course_name, teacher=teacher, description=description, dilekce_required=dilekce_required, start_year=start_year, end_year=end_year)
         course.save()
 

@@ -18,7 +18,6 @@ class Course(models.Model):
     name = models.CharField(max_length=255, verbose_name="name")
     description = models.TextField(verbose_name="description", blank=True, null=True)
     statu_pano = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_pano", default="aktif")
-    statu_erp = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_erp", default="aktif")
     start_year = models.CharField(max_length=255, verbose_name="start_year", null=True, blank=True)
     end_year = models.CharField(max_length=255, verbose_name="end_year", null=True, blank=True)    
     dilekce_required = models.BooleanField(default=False, verbose_name="dilekce_required")
