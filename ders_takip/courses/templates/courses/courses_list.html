@@ -141,7 +141,7 @@
             <th><a>Ders Adı</a></th>
             <th>Durum</th>
             <th>Başlangıç-Bitiş Yılı</th>
-            <th>Detay</th>
+            {% comment %} <th>Detay</th> {% endcomment %}
         </tr>
     </thead>
     <tbody>
@@ -150,10 +150,10 @@
                 <td>{{ course.teacher.name }}</td>
                 <td>{{ course.name }}</td>
                 <td>{{ course.statu_pano}}</td>
-                <td>{{ course.start_date|date:"Y"}} - {{ course.end_date|date:"Y" }}</td>
-                <td>
+                <td>{{ course.start_year}} - {{ course.end_year }}</td>
+                {% comment %} <td>
                     <button class="edit-button" onclick="event.stopPropagation(); window.location.href='/dersler/{{ course.id }}';">Detay</button>
-                </td>
+                </td> {% endcomment %}
             </tr>
                 
         {% empty %}

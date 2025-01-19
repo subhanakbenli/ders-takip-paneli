@@ -94,7 +94,6 @@ def courses_list_view(request):
 
     # Sadece giriş yapan kullanıcının müvekkilleri
     course_list = Course.objects.filter().order_by(sort_by)
-
     paginator = Paginator(course_list, per_page)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)

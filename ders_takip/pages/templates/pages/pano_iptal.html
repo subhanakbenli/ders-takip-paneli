@@ -657,7 +657,7 @@ Pano İptal
                                 <p><strong>Durum:</strong> {{ course.statu_pano }}</p>
                                 <p><strong>Açıklama:</strong> {{ course.description }}</p>
                                 <p><strong>Oluşturulma Tarihi:</strong> {{ course.created_at }}</p>
-                                <p><strong>Dönem:</strong> {{ course.start_date|default:'' }} - {{ course.end_date|default:'' }}</p>
+                                <p><strong>Dönem:</strong> {{ course.start_year|default:'' }} - {{ course.end_year|default:'' }}</p>
                                 <div style="display: flex; gap: 10px;">
                                     {% for key, value in course.document_statu_dict.items %}
                                         <p><strong>{{ key }}:</strong> {{ value }}</p>
