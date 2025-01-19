@@ -4,10 +4,11 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import redirect
-from .models import Teacher
-from courses.models import Course,CourseFile
+from .models import Contact
 from django.template.loader import render_to_string
-
+from xhtml2pdf import pisa
+from django.http import HttpResponse
+from django.template.loader import get_template
 
 
 
@@ -26,14 +27,14 @@ def add_teacher(request):
         adress = request.POST.get('address')
         aciklama = request.POST.get('description')
         
-        existing_teachers = Teacher.objects.filter(name=name,surname=surname).exists()
+        existing_teachers = Contact.objects.filter(name=name,surname=surname).exists()
 
         if existing_teachers:
             messages.warning(request, "Bu öğretmen zaten kayıtlı.")
             return render(request, 'teacher/add_teacher.html')
         else:
             # Yeni müvekkil kaydı oluştur
-            teacher = Teacher(
+            teacher = Contact(
                 name=name,
                 surname=surname,
                 title=title,
@@ -55,7 +56,7 @@ def add_teacher(request):
 def show_teacher_detail(request, id):
     
     # Sadece giriş yapan kullanıcının kayıtlarını getir
-    teacher =Teacher.objects.get(id=id)
+    teacher =Contact.objects.get(id=id)
     lessons_for_teacher = Course.objects.filter(teacher=teacher)
 
     context = {
@@ -67,7 +68,7 @@ def show_teacher_detail(request, id):
 @login_required()
 def show_teacher_list(request):
     # add teacher
-    # teacher = Teacher(
+    # teacher = Contact(
     #     name="John",
     #     surname="Doe",
     #     telephone="123456789")
@@ -79,7 +80,7 @@ def show_teacher_list(request):
         sort_by = '-' + sort_by
 
     # Sadece giriş yapan kullanıcının müvekkilleri
-    teacher_list = Teacher.objects.filter().order_by(sort_by)
+    teacher_list = Contact.objects.filter().order_by(sort_by)
 
     paginator = Paginator(teacher_list, per_page)
     page_number = request.GET.get('page')
@@ -94,14 +95,12 @@ def show_teacher_list(request):
     return render(request, "teacher/teacher_list.html", context)
 
 def delete_teacher(request, id):
-    teacher = get_object_or_404(Teacher, id=id)
+    teacher = get_object_or_404(Contact, id=id)
     teacher.delete()
     messages.success(request, "Öğretmen başarıyla silindi.")
     return redirect('ogretmen_list')    
 
-from xhtml2pdf import pisa
-from django.http import HttpResponse
-from django.template.loader import get_template
+
 def render_to_pdf(template_src, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
@@ -141,7 +140,7 @@ def get_course_with_documents(course):
 
 def teacher_pdf(request, teacher_id):
    
-    teacher = get_object_or_404(Teacher, id=teacher_id)
+    teacher = get_object_or_404(Contact, id=teacher_id)
     courses = Course.objects.filter(teacher=teacher)
 
     context = {
@@ -152,7 +151,7 @@ def teacher_pdf(request, teacher_id):
 
 def teacher_list_pdf(request):
    
-    teachers =Teacher.objects.all() 
+    teachers =Contact.objects.all() 
 
     context = {
         'teachers':teachers,
@@ -174,7 +173,6 @@ def generate_pdf(request, course_id):
     return render_to_pdf('pdf/pdf_template.html', context)
 
 
-
 def pano_ozet_pdf(request, course_id):
 
     course = get_object_or_404(Course, id=course_id)
@@ -184,7 +182,6 @@ def pano_ozet_pdf(request, course_id):
         
     }
     return render_to_pdf('pano_ozet_pdf.html', context)
-
 
 
 def pdf_pano(request, course_id):
@@ -211,18 +208,16 @@ def pdf_arsiv(request, course_id):
     return render_to_pdf('pdf/pdf_arsiv.html', context)
 
 
-
 def erp_pdf(request, teacher_id):
-    teacher = get_object_or_404(Teacher, id=teacher_id)
+    teacher = get_object_or_404(Contact, id=teacher_id)
     context = {
         "teacher": teacher,
         
     }
     return render_to_pdf("pdf/erp_pdf.html", context)
 
-
 def edit_teacher(request, id):
-    teacher = get_object_or_404(Teacher, id=id)
+    teacher = get_object_or_404(Contact, id=id)
     if request.method == 'POST':
         # Formdan gelen verileri kaydet
         teacher.name = request.POST['first_name']
