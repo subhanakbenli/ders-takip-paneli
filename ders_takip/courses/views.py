@@ -368,7 +368,7 @@ def statu_change(request, id, statu, isCourse="true"):
         # URL'ye göre statu alanını güncelle
         
         if statu == 'arsiv' and isCourse == "false":
-            if related.course.dilekce_required:
+            if related.course.dilekce_required and related.dilekce_name == None:
                 return JsonResponse({
                     'success': False,
                     'message': 'Bu dersde dilekçe adı girilmeden belge arşivlenemez!'
