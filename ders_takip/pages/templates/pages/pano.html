@@ -227,6 +227,48 @@ Pano
         background-color:rgb(227, 227, 227);
     }
 </style>
+<style>
+    /* Tablo Stili */
+    #course-table {
+        width: 100%;
+        margin: 10px auto;
+        border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #course-table th, #course-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #course-table th {
+        background-color: rgb(84, 84, 86);
+        color: white;
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.3s;
+    }
+
+    #course-table th:hover {
+        background-color: rgb(112, 114, 116);
+    }
+
+    #course-table th a {
+        color: white;
+        text-decoration: none;
+    }
+
+    #course-table tr:hover {
+        background-color: #e0e0e0; /* Daha koyu bir gri ton */
+    }
+
+    /* Tıklanabilir Satırlar */
+    #course-table tbody tr {
+        cursor: pointer;
+    }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
     async function sendSelectedDocuments() {
@@ -309,47 +351,7 @@ Pano
     });
 </script>
 <script>
-    async function sendRequest(url, method, formData = null) {
-        try {
-            // CSRF token'ı al
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            const options = {
-                method: method,
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                    // JSON yanıt beklediğimizi belirt
-                    'Accept': 'application/json',
-                }
-            };
-    
-            // Eğer formData varsa ekle
-            if (formData) {
-                options.body = formData;
-            }
-    
-            const response = await fetch(url, options);
-            
-            // Yanıt türünü kontrol et
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Sunucudan beklenmeyen yanıt türü geldi');
-            }
-    
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.error || "Sunucu hatası oluştu");
-            }
-    
-            return data;
-        } catch (error) {
-            console.error('İstek hatası:', error);
-            alert(error.message);
-            return null;
-        }
-    }
-    
+
     async function saveDocument(documentId) {
         try {
             const form = document.getElementById(`document-form-${documentId}`);
@@ -372,36 +374,83 @@ Pano
             alert('Kaydetme işlemi sırasında bir hata oluştu: ' + error.message);
         }
     }
+
     async function changeStatu(documentId, statu, isCourse) {
         try {
             const url = `/dersler/durum_degis_pano/${documentId}/${statu}/${isCourse}/`;
             const data = await sendRequest(url, 'POST');
             
-            if (data && data.success) {
-                
-                if (isCourse === 'true') {
-                    console.log(documentId);
-                    // Ders iptal/arşiv işlemi - tüm card'ı kaldır
-                    const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
-                    if (courseCard) {
-                        courseCard.remove();
+            // Check if we got a response
+            if (data) {
+                // If there's a success flag, check it
+                if (data.success) {
+                    // Show success message if present
+                    if (data.message) {
+                        alert(data.message);
+                    }
+                    
+                    if (isCourse === 'true') {
+                        // Ders iptal/arşiv işlemi - tüm card'ı kaldır
+                        const courseCard = document.querySelector(`#course-form-${documentId}`).closest('.card');
+                        if (courseCard) {
+                            courseCard.remove();
+                        }
+                    } else {
+                        const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
+                        const row = button?.closest('tr');
+                        if (row) {
+                            row.remove();
+                        }
+                    }
+                    
+                    // Handle redirect if needed
+                    if (data.redirect) {
+                        window.location.reload();
                     }
                 } else {
-                    const button = document.querySelector(`button[onclick*="changeStatu('${documentId}"]`);
-                    const row = button?.closest('tr');
-                    if (row) {
-                        row.remove();
+                    // Show error message and don't remove the row
+                    if (data.message) {
+                        alert(data.message);
+                    } else if (data.error) {
+                        alert(data.error);
                     }
-                }
-                
-                // Eğer sunucudan yönlendirme talebi gelirse
-                if (data.redirect) {
-                    window.location.reload();
                 }
             }
         } catch (error) {
+            // Show error message and don't remove the row
             console.error('Durum değiştirme hatası:', error);
             alert('İşlem sırasında bir hata oluştu: ' + error.message);
+        }
+    }
+    // Update sendRequest function to properly handle non-200 responses
+    async function sendRequest(url, method, formData = null) {
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const options = {
+                method: method,
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Accept': 'application/json',
+                }
+            };
+    
+            if (formData) {
+                options.body = formData;
+            }
+    
+            const response = await fetch(url, options);
+            
+            // Always try to parse JSON response
+            const data = await response.json();
+            
+            // Return the data even if response is not OK
+            // This allows us to handle error messages from the server
+            return data;
+            
+        } catch (error) {
+            console.error('İstek hatası:', error);
+            throw new Error('Sunucu ile iletişim kurulurken bir hata oluştu');
         }
     }
 </script>
@@ -604,34 +653,31 @@ Pano
         }
     }
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const teacherSelect = document.getElementById('teacherSelect');
         const courseSelect = document.getElementById('courseSelect');
-    
-        function filterTeacherDetails() {
+
+        // Global fonksiyonlar olarak tanımlanır
+        window.filterTeacherDetails = function() {
             const selectedTeacherId = teacherSelect.value;
             document.querySelectorAll('.teacher-details').forEach(detail => {
                 detail.style.display = 'none';
             });
-            
+
             if (selectedTeacherId) {
                 const selectedTeacherDetails = document.getElementById(`teacher-details-${selectedTeacherId}`);
                 if (selectedTeacherDetails) {
                     selectedTeacherDetails.style.display = 'block';
                 }
-            } else {
-                document.querySelectorAll('.teacher-details').forEach(detail => {
-                    detail.style.display = 'block';
-                });
-            }
-        }
-    
-        function filterCourseDetails() {
+            } 
+        };
+
+        window.filterCourseDetails = function() {
             const selectedCourseName = courseSelect.value;
             document.querySelectorAll('.course-details').forEach(detail => {
                 if (selectedCourseName) {
-                    // Seçili ders adını içeren tüm course-details elementlerini göster
                     if (detail.id.includes(`course-details-${selectedCourseName}`)) {
                         detail.style.display = 'block';
                     } else {
@@ -641,18 +687,42 @@ Pano
                     detail.style.display = 'block';
                 }
             });
-        }
-    
+        };
+
         if (teacherSelect) {
             filterTeacherDetails();
             teacherSelect.addEventListener('change', filterTeacherDetails);
         }
-    
+
         if (courseSelect) {
             filterCourseDetails();
             courseSelect.addEventListener('change', filterCourseDetails);
         }
     });
+
+    function selectCourse(teacherId, courseName) {
+        // Öğretmen seçimini ayarla
+        let teacherSelect = document.getElementById('teacherSelect');
+        for (let i = 0; i < teacherSelect.options.length; i++) {
+            if (teacherSelect.options[i].value == teacherId) {
+                teacherSelect.selectedIndex = i;
+                break;
+            }
+        }
+
+        // Ders seçimini ayarla
+        let courseSelect = document.getElementById('courseSelect');
+        for (let i = 0; i < courseSelect.options.length; i++) {
+            if (courseSelect.options[i].value == courseName) {
+                courseSelect.selectedIndex = i;
+                break;
+            }
+        }
+
+        // Detayları filtrele
+        filterTeacherDetails();
+        filterCourseDetails();
+    }
 </script>
 
 
@@ -697,8 +767,6 @@ Pano
             </select>
         </div>
     </div>
-
-
 
     <!-- Öğretmen Detayları ve Ders Listesi -->
     <div id="teacherDetailsContainer">
@@ -939,6 +1007,38 @@ Pano
         {% endfor %}
 
     </div>
+     
+    
+    <table  id="course-table">
+        <thead>
+            <tr>
+                <th><a>Dersi Veren</a></th>
+                <th><a>Ders Adı</a></th>
+                <th>Durum</th>
+                <th>Başlangıç-Bitiş Yılı</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teacher in teachers %}
+                {% if teacher.courses %}
+                    {% for course in teacher.courses %}
+                        <tr onclick="selectCourse('{{ teacher.id }}', '{{ course.name }}')" style="cursor: pointer;">
+                            <td>{{ teacher.name }}</td>
+                            <td>{{ course.name }}</td>
+                            <td>{{ course.statu_pano }}</td>
+                            <td>{{ course.start_year }} - {{ course.end_year }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            
+            {% empty %}
+                <tr>
+                    <td colspan="4">Ders Bulunamadı</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 
 

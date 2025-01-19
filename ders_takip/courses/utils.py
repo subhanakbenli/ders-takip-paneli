@@ -68,7 +68,7 @@ def get_course_with_documents(course):
                         "end_date": document.end_date,
                         "type": document.type,
                         "statu_pano": document.statu_pano,
-                        "statu_erp": document.statu_erp,
+                        "statu_erp": document.statu_pano,
                         "etkinlik_no": document.etkinlik_no,
                         "etkinlik_adi": document.etkinlik_adi,
                         "kodu": document.kodu,
@@ -97,7 +97,7 @@ def get_course_with_documents(course):
         "id": course.id,
         "name": course.name,
         "statu_pano": course.statu_pano,
-        "statu_erp": course.statu_erp,
+        "statu_erp": course.statu_pano,
         "description": course.description,
         "start_date": course.start_year,
         "end_date": course.end_year,
@@ -139,7 +139,7 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                 if page == "pano":
                     course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
                 elif page == "erp":
-                    course_statu_dict[course.statu_erp] = course_statu_dict.get(course.statu_erp, 0) + 1
+                    course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
                     
             documents = CourseFile.objects.filter(course=course)
             documents_data = []
@@ -153,19 +153,22 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                             continue
 
                     elif page == "erp":
-                        document_statu_dict[document.statu_erp] = document_statu_dict.get(document.statu_erp, 0) + 1                
-                        if document.statu_erp != status:
+                        document_statu_dict[document.statu_pano] = document_statu_dict.get(document.statu_pano, 0) + 1                
+                        if document.statu_pano != status:
                             continue
+                        
+                versions = CourseFileVersion.objects.filter(course_file=document).order_by('-uploaded_at')
                 document_warning_message = None
                 if document.uyari_date:
-                    uyari_date = document.uyari_date
-                    if uyari_date < today and document.sisteme_giris_tarihi == None:
+                    belge_id = versions[0].id if versions else None
+                    print(belge_id)
+                    if belge_id == None:
                         document_warning_message = "Yüklenme Tarihi Yaklaştı"
                         course_warning_counter += 1
                 else:
                     document_warning_message = None
                     
-                versions = CourseFileVersion.objects.filter(course_file=document).order_by('-uploaded_at')
+                
                 
                 
                 documents_data.append(
@@ -184,7 +187,7 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                         "end_date": document.end_date,
                         "type": document.type,
                         "statu_pano": document.statu_pano,
-                        "statu_erp": document.statu_erp,
+                        "statu_erp": document.statu_pano,
                         "etkinlik_no": document.etkinlik_no,
                         "etkinlik_adi": document.etkinlik_adi,
                         "kodu": document.kodu,
@@ -220,7 +223,7 @@ def get_teachers_with_courses_and_documents(teacher_id=None, course_id=None, sta
                     "id": course.id,
                     "name": course.name,
                     "statu_pano": course.statu_pano,
-                    "statu_erp": course.statu_erp,
+                    "statu_erp": course.statu_pano,
                     "description": course.description,
                     "start_date": course.start_year,
                     "end_date": course.end_year,
@@ -270,7 +273,7 @@ def get_warnings( status=None, page = None):
                 if page == "pano":
                     course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
                 elif page == "erp":
-                    course_statu_dict[course.statu_erp] = course_statu_dict.get(course.statu_erp, 0) + 1
+                    course_statu_dict[course.statu_pano] = course_statu_dict.get(course.statu_pano, 0) + 1
                     
             documents = CourseFile.objects.filter(course=course)
             documents_data = []
@@ -284,8 +287,8 @@ def get_warnings( status=None, page = None):
                             continue
 
                     elif page == "erp":
-                        document_statu_dict[document.statu_erp] = document_statu_dict.get(document.statu_erp, 0) + 1                
-                        if document.statu_erp != status:
+                        document_statu_dict[document.statu_pano] = document_statu_dict.get(document.statu_pano, 0) + 1                
+                        if document.statu_pano != status:
                             continue
                 
                 try:
@@ -300,7 +303,6 @@ def get_warnings( status=None, page = None):
                 except:
                     document_warning_message = None
                     
-                versions = CourseFileVersion.objects.filter(course_file=document)
                 
                 
                 documents_data.append(
@@ -317,7 +319,7 @@ def get_warnings( status=None, page = None):
                         "end_date": document.end_date,
                         "type": document.type,
                         "statu_pano": document.statu_pano,
-                        "statu_erp": document.statu_erp,
+                        "statu_erp": document.statu_pano,
                         "etkinlik_no": document.etkinlik_no,
                         "etkinlik_adi": document.etkinlik_adi,
                         "kodu": document.kodu,
@@ -353,7 +355,7 @@ def get_warnings( status=None, page = None):
                     "id": course.id,
                     "name": course.name,
                     "statu_pano": course.statu_pano,
-                    "statu_erp": course.statu_erp,
+                    "statu_erp": course.statu_pano,
                     "description": course.description,
                     "start_date": course.start_year,
                     "end_date": course.end_year,

@@ -42,7 +42,6 @@ class CourseFile(models.Model):
     name = models.CharField(max_length=255, verbose_name="file_name", null=True, blank=True)
     type = models.CharField(max_length=255, verbose_name="type", null=True, blank=True)
     statu_pano = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_pano", default="aktif")
-    statu_erp = models.CharField(max_length=255, choices=STATU_CHOICES, verbose_name="statu_erp", default="aktif")
     current_version = models.OneToOneField(
         'CourseFileVersion',
         on_delete=models.SET_NULL,
@@ -95,6 +94,7 @@ class CourseFile(models.Model):
             warning_files = cls.objects.filter(
                 uyari_date__lte=today,
                 end_date__gt=today.strftime('%Y-%m-%d'),
+                statu_pano="aktif",
                 sisteme_giris_tarihi__isnull=True
             )
             return warning_files
@@ -128,15 +128,6 @@ class CourseFileVersion(models.Model):
     def __str__(self):
         return f"{self.course_file.name} - Version {self.id}"
 
-
-@receiver(pre_save, sender=Course)
-def update_course_files_statu_erp(sender, instance, **kwargs):
-    if instance.pk:  # Sadece mevcut nesneler için çalıştır
-        previous_instance = Course.objects.get(pk=instance.pk)
-        # Eğer `statu` değiştiyse
-        if previous_instance.statu_erp != instance.statu_erp:
-            # `CourseFile` nesnelerinin `statu` alanını güncelle
-            instance.coursefile_set.filter(statu_erp=previous_instance.statu_erp).update(statu_erp=instance.statu_erp)
 
 @receiver(pre_save, sender=Course)
 def update_course_files_statu_pano(sender, instance, **kwargs):

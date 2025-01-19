@@ -359,7 +359,7 @@ def update_course_file(course_file, form_data):
 @csrf_exempt
 @require_http_methods(["POST"])
 def statu_change(request, id, statu, isCourse="true"):
-    # try:
+    try:
         if isCourse == "true":
             related = get_object_or_404(Course, id=id)
         else:
@@ -367,17 +367,13 @@ def statu_change(request, id, statu, isCourse="true"):
 
         # URL'ye göre statu alanını güncelle
         
-        if 'erp' in request.path:
-            related.statu_erp = statu
-        elif 'pano' in request.path:
-            if statu == 'arsiv' and isCourse == "false":
-                if related.course.dilekce_required:
-                    return JsonResponse({
-                        'success': False,
-                        'message': 'Bu dersde dilekçe adı girilmeden belge arşivlenemez!'
-                    }, status=400)
-            else:
-                related.statu_pano = statu
+        if statu == 'arsiv' and isCourse == "false":
+            if related.course.dilekce_required:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Bu dersde dilekçe adı girilmeden belge arşivlenemez!'
+                }, status=400)
+        related.statu_pano = statu
 
         related.save()
 
@@ -401,8 +397,9 @@ def statu_change(request, id, statu, isCourse="true"):
             'message': message
         })
 
-    # except Exception as e:
-    #     return JsonResponse({
-    #         'success': False,
-    #         'error': str(e)
-    #     }, status=400)
+    except Exception as e:
+        print(e)
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
