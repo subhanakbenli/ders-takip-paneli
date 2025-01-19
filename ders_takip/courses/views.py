@@ -41,7 +41,6 @@ def add_course_view(request):
         dilekce_required = request.POST.get('is_dilekce_required', "").lower() == "yes"  # True/False olarak ayarla
         start_year = request.POST.get('start_year', None)
         end_year = request.POST.get('end_year', None)
-        print(start_year, end_year)
         # Ders kaydı oluştur 
         course = Course(name=course_name, teacher=teacher, description=description, dilekce_required=dilekce_required, start_year=start_year, end_year=end_year)
         course.save()
@@ -110,7 +109,6 @@ def courses_list_view(request):
 @user_has_permission([ADMIN])
 @csrf_exempt
 def delete_file_view(request, id):
-    print("delete_file",id)
     if request.method == 'POST':
         try:
             document = get_object_or_404(CourseFile, id=id)
@@ -212,10 +210,6 @@ def send_selected_documents(request):
         try:
             data = json.loads(request.body)
             documents = data.get('documents', [])
-            
-            # Belgeleri işleme
-            for document in documents:
-                print(f"Belge URL: {document['documentUrl']}")
 
             return JsonResponse({'message': 'Belgeler başarıyla alındı!'}, status=200)
         except Exception as e:
@@ -313,7 +307,6 @@ def save_erp(request, id):
         related_courseFile = get_object_or_404(CourseFile, id=id)
         form_data = get_form_data(request)
         update_course_file(related_courseFile, form_data)
-        print(related_courseFile.description_2)
         return JsonResponse({'success': True, 'message': 'Belge başarıyla güncellendi'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
@@ -350,7 +343,6 @@ def get_form_data(request):
 def update_course_file(course_file, form_data):
     for key, value in form_data.items():
         if value:
-            print(key, value)
             setattr(course_file, key, value)
     course_file.save()
 
@@ -398,7 +390,6 @@ def statu_change(request, id, statu, isCourse="true"):
         })
 
     except Exception as e:
-        print(e)
         return JsonResponse({
             'success': False,
             'error': str(e)

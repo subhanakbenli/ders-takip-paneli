@@ -990,7 +990,7 @@ ERP
                                                                 <input type="text" name="kodu" placeholder="Kod yazın"  value="{{ document.kodu|default:'' }}"/>
                                                             </td>
                                                             <td>
-                                                                <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value=" document.katilimci_sayisi|default:'' " />
+                                                                <input type="number" name="katilimci_sayisi" placeholder="Katılımcı sayısı yazın" min="0" step="1"  value="{{ document.katilimci_sayisi|default:'' }}" />
                                                             </td>
                                                             <td>
                                                                 <input type="number" name="verilen_not" placeholder="Not girin" min="0" max="100" step="1"  value="{{ document.verilen_not|default:'' }}" />
