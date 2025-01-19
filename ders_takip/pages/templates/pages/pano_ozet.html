@@ -90,7 +90,6 @@ Pano Özet
                     <th>Ders Adı</th>
                     <th>Başlangıç Tarihi</th>
                     <th>Bitiş Tarihi</th>
-                    <th>Yükleme Tarihi</th>
                     <th>Uyarı</th>
                 </tr>
             </thead>
@@ -103,16 +102,23 @@ Pano Özet
                         <td>{{ course_file.end_date}}</td>
                         <td>
                             {% if course_file.sisteme_giris_tarihi %}
-                                <span type="date" name="end_date" class="form-control" value="{{ course_file.sisteme_giris_tarihi }}"></span>
+                                <!-- Belge yüklenmişse -->
+                                <span class="status-icon success green-error">Sisteme Yüklendi</span>
                             {% else %}
-                                <span class="status-icon error">Yükleme tarihi girilmedi</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if course_file.sisteme_giris_tarihi %}
-                                <span class="status-icon success green-error">✔️</span>
-                            {% else %}
-                                <span class="status-icon error green-error">❌</span>
+                                <!-- Belge yüklenmemişse -->
+                                {% if course_file.remaining_days is not None %}
+                                    {% if course_file.remaining_days > 5 %}
+                                        <span class="status-icon error">ACİL YÜKLE</span>
+                                    {% elif course_file.remaining_days > 0 %}
+                                        <span class="status-icon error">ACİL YÜKLE {{ course_file.remaining_days }} GÜN KALDI</span>
+                                    {% elif course_file.remaining_days == 0 %}
+                                        <span class="status-icon error">BUGÜN SON GÜN</span>
+                                    {% else %}
+                                        <span class="status-icon error">SÜRESİ DOLDU</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="status-icon error">Yüklenmedi</span>
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>
